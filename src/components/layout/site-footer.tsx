@@ -4,7 +4,9 @@ import { Container } from '@/components/ui/container';
 import { Logo } from '@/components/ui/logo';
 import { family } from '@/lib/family';
 
-const sections = ['impact', 'work', 'processes'] as const;
+/* Same list as the header, in the same order — a footer that disagrees with
+   the nav is a footer that makes the visitor wonder what they missed. */
+const sections = ['approach', 'work', 'impact', 'contact'] as const;
 
 /* Tightened 2026-07-31. Three columns on one strict grid, every list on the
  * same baseline and the same 36px row rhythm; one hairline; one bottom row.

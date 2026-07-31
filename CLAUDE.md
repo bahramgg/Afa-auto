@@ -7,27 +7,31 @@ this file wins.
 
 ## What the site is
 
-REBUILT 2026-07-30 to the brief "minimal, and the map is the point" — modelled
-on the operating-map reference AFA supplied (constellation chart, serif tracked
-labels, "Book a call" pill) and the NodeSpark pattern ("every graph is a live
-view of the real system"). One page, FIVE stops:
+RESTRUCTURED 2026-08 around one question: what does a stranger need, in what
+order, before they will pick up the phone? One page, SIX stops:
 
-1. **MapHero** — the operating map fills the first viewport. Six domains,
-   twenty-four processes, drawn as ivory constellations around a multicolour
-   particle burst, animated and clickable. The claim is a caption over the map
-   («کسب‌وکار شما، روی نقشه» / "YOUR BUSINESS, MAPPED"), not a section before
-   it. `sections/map-hero.tsx` resolves all strings server-side.
+1. **MapHero** — the WORKING map fills the first viewport, the claim beside it.
+   Until now the homepage showed a decorative six-dot mini map and the real one
+   lived a click away on `/map`; the only thing on this site nobody else has
+   was the one thing behind a navigation step. `sections/map-hero.tsx` resolves
+   every string server-side and renders `<CapabilityMap variant="hero">`.
 2. **Manifesto** (01) — one display statement + the four constraints as a
-   ruled row + the method as one numbered line. Replaced three sections
-   (Principles, Method, Benefits): the map now carries the breadth they were
-   explaining in prose.
-3. **Work** (02) — three before/after examples. No metrics we cannot source.
-4. **Impact tool** (03) — four sliders from the visitor's own business.
-5. **Contact** — the form, with the six pre-call FAQ items folded in beside
-   it as `<details>`. Nothing earlier asks for details.
+   ruled row. What we will and will not do with someone's business.
+3. **Work** (02) — three before/after examples. Proof before effort. No
+   metrics we cannot source.
+4. **Impact** (03) — four sliders from the visitor's own business, and an ask
+   under the result. It used to be section two, which asked a stranger for
+   effort before they knew what we do, and it used to be a dead end.
+5. **Start** (04) — how long, how it is priced, what happens after the form.
+   Those were the first two questions anyone asks and they were closed rows in
+   an accordion at the bottom of the page. Every line restates a claim the FAQ
+   already made; nothing here is new.
+6. **Contact** (05) — the form, with the four remaining questions beside it.
 
-There are no other routes. Don't add sections back without being asked —
-anything that repeats what the map already shows was deleted, not moved.
+`/map` is the only other route: the same map with its reading rails, plus all
+twenty-four processes written out. Don't add sections back without being asked
+— the old ProcessIndex was a table of contents for a map that is now the first
+thing on the page, and that is the definition of a section repeating itself.
 
 ## Tone
 
@@ -56,6 +60,18 @@ tracking; Persian gets weight 800 and a tighter block, and **zero tracking** —
 Arabic-script letters join, and spacing them severs the joins. Both are in
 `--display-*` tokens, so a component never has to know which script it is
 rendering. Never set `letter-spacing` on Persian text.
+
+**Two ways to break Persian, not one.** Never set `letter-spacing` on Persian
+text — and never put the raw `font-mono` utility on a translated string
+either. The mono stack carries no Arabic-script glyphs, so Persian falls back
+per character and the letters stop joining: the same failure, a different
+door. Small technical labels use `.meta` (globals.css), which keeps mono for
+Latin and hands Persian `--font-fa` with zero tracking, so a component never
+has to know which script it is setting.
+
+**The window frame is used ONCE**, on the calculator, because that one is
+genuinely a running program. It was on the case studies, the FAQ and the form
+as well; a device used four times is not a device, it is a texture.
 
 No scroll-reveal animation: it left below-fold sections invisible in print and
 full-page captures. The capability map animates on its own timeline instead,
@@ -162,6 +178,11 @@ which script they are rendering. Cormorant is display-only, never body.
 - `npm run dev` · `npm run build` · `npm run start`
 - `npm run lint` · `npm run typecheck` · `npm test`
 - `npm run fonts:sync` — refresh self-hosted fonts from @fontsource.
+- `npm run og:build` — rasterise `public/og-{fa,en}.png` from the live hero
+  (needs a server running; set `OG_BASE_URL`). The output is COMMITTED. Next's
+  `ImageResponse` needs a font buffer and this project's faces are woff2, which
+  satori cannot parse — so the card is built from the real page instead, which
+  also keeps it on the real tokens and the real map geometry.
 
 ## Tools ↔ ownership (plan §5 — the anti-confusion spine)
 

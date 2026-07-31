@@ -119,7 +119,21 @@ const STAGE_LABEL_KEY = {
   action: 'stepAction',
 } as const satisfies Record<StageId, keyof CapabilityMapCopy>;
 
-export function CapabilityMap({ copy }: { copy: CapabilityMapCopy }) {
+/**
+ * `full` is the /map page: rails, list view, everything written out.
+ * `hero` is the homepage's first viewport — the same drawing and the same
+ * interactions, but no directory, no legend and no list toggle. The rails are
+ * a reading apparatus; the hero's job is to be looked at.
+ */
+export type MapVariant = 'full' | 'hero';
+
+export function CapabilityMap({
+  copy,
+  variant = 'full',
+}: {
+  copy: CapabilityMapCopy;
+  variant?: MapVariant;
+}) {
   const [selection, setSelection] = useState<Selection>(null);
   const [view, setView] = useState<'map' | 'list'>('map');
   const titleId = useId();
@@ -167,6 +181,35 @@ export function CapabilityMap({ copy }: { copy: CapabilityMapCopy }) {
       ? { id: selection.process, domain: selection.domain, process }
       : null;
   }, [selection, copy]);
+
+  const stage = (
+    <Stage
+      copy={copy}
+      titleId={titleId}
+      hidden={view === 'list'}
+      fit={variant === 'hero' ? 'height' : 'width'}
+      activeDomain={activeDomain}
+      activeTone={activeTone}
+      selection={selection}
+      detail={detail}
+      onSelect={select}
+      onClear={() => setSelection(null)}
+      step={step}
+    />
+  );
+
+  if (variant === 'hero') {
+    return (
+      <div
+        className="tmapShell"
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') setSelection(null);
+        }}
+      >
+        {stage}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -219,18 +262,7 @@ export function CapabilityMap({ copy }: { copy: CapabilityMapCopy }) {
 
         {/* THE STAGE. */}
         <div className="order-1 xl:order-2">
-          <Stage
-            copy={copy}
-            titleId={titleId}
-            hidden={view === 'list'}
-            activeDomain={activeDomain}
-            activeTone={activeTone}
-            selection={selection}
-            detail={detail}
-            onSelect={select}
-            onClear={() => setSelection(null)}
-            step={step}
-          />
+          {stage}
 
           <div className={cn('tmapList', view === 'map' && 'hidden')}>
             <ListView copy={copy} />
@@ -302,6 +334,7 @@ function Stage({
   copy,
   titleId,
   hidden,
+  fit,
   activeDomain,
   activeTone,
   selection,
@@ -313,6 +346,8 @@ function Stage({
   copy: CapabilityMapCopy;
   titleId: string;
   hidden: boolean;
+  /** `height` bounds the stage by the viewport; `width` lets the column set it. */
+  fit: 'width' | 'height';
   activeDomain: DomainId | null;
   activeTone: number | undefined;
   selection: Selection;
@@ -346,6 +381,7 @@ function Stage({
     <div
       ref={stageRef}
       className={cn('tmapStage', hidden && 'hidden')}
+      data-fit={fit}
       data-view={fan ? 'fan' : 'radial'}
       data-tone={activeTone}
     >
@@ -429,7 +465,7 @@ function Stage({
             onClick={() => step(-1)}
             glyphPath="M8.5 3.5 5 7l3.5 3.5"
           />
-          <span className="min-w-[8rem] text-center font-mono text-xs font-semibold uppercase tracking-[0.1em] text-ink">
+          <span className="meta min-w-[8rem] text-center text-xs font-semibold uppercase text-ink">
             {activeDomain ? copy.domains[activeDomain].title : copy.hub}
           </span>
           <StepButton
@@ -947,7 +983,7 @@ function LegendRow({
         {children}
       </span>
       <span className="min-w-0 flex-1 truncate">{label}</span>
-      <span className="font-mono text-[10px] tabular-nums text-dim">{count}</span>
+      <span className="meta text-[10px] tabular-nums text-dim">{count}</span>
     </li>
   );
 }

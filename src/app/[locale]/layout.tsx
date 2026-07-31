@@ -22,6 +22,7 @@ export async function generateMetadata(props: {
   const languages = Object.fromEntries(
     routing.locales.map((l) => [l, `/${l}`]),
   );
+  const card = `/og-${locale === 'fa' ? 'fa' : 'en'}.png`;
 
   return {
     // Absolute base so per-page canonicals and alternates resolve to real URLs
@@ -44,9 +45,15 @@ export async function generateMetadata(props: {
       title: t('title'),
       description: t('description'),
       url: `/${locale}`,
+      /* Was missing entirely while `twitter.card` already promised a large
+         image — so every link shared into WhatsApp, Telegram or X rendered a
+         blank card. For a business introduced by forwarded link, that was the
+         most expensive omission on the site. Built by `npm run og:build`. */
+      images: [{ url: card, width: 1200, height: 630, alt: t('title') }],
     },
     twitter: {
       card: 'summary_large_image',
+      images: [card],
       title: t('title'),
       description: t('description'),
     },

@@ -1,14 +1,22 @@
 import { useTranslations } from 'next-intl';
 import { Container } from '@/components/ui/container';
 import { SectionHead } from '@/components/ui/editorial';
-import { Window } from '@/components/ui/window';
 import { LeadForm } from '@/components/tools/lead-form';
 
-const faqItems = ['timeline', 'wrong', 'data', 'tools', 'pricing', 'exit'] as const;
+/* The two questions everyone asks first — how much, how long — were promoted
+   out of here into the Start section. What is left is the detail: what happens
+   if it gets something wrong, where the data lives, whether you have to
+   replace your tools, and how to walk away. */
+const faqItems = ['wrong', 'data', 'tools', 'exit'] as const;
 
-/* The form and the pre-call questions, side by side in two MATCHED window
- * frames — same chrome, same row, same top edge. The section head spans both,
- * so the pair reads as one composition rather than a form with a sidebar. */
+/* -----------------------------------------------------------------------------
+   The form and the remaining questions, side by side.
+
+   Restyled 2026-08: the two mac window frames are gone. Both halves are now
+   ruled panels with a mono head, so this section speaks the same language as
+   the map, the directory and the legend rather than a fourth one.
+   -------------------------------------------------------------------------- */
+
 export function Contact() {
   const t = useTranslations('Contact');
   const faq = useTranslations('Faq');
@@ -18,13 +26,16 @@ export function Contact() {
       <Container>
         <SectionHead index="05" eyebrow={t('eyebrow')} title={t('title')} lede={t('subtitle')} />
 
-        <div className="mt-12 grid items-stretch gap-6 lg:grid-cols-2">
-          <Window title={t('windowTitle')} className="h-full">
-            <h3 className="sr-only">{t('formTitle')}</h3>
-            <LeadForm />
-          </Window>
+        <div className="mt-12 grid items-stretch gap-4 lg:grid-cols-2">
+          <div className="tmapPanel h-full">
+            <p className="tmapPanelHead">{t('formTitle')}</p>
+            <div className="p-6 sm:p-7">
+              <LeadForm />
+            </div>
+          </div>
 
-          <Window title={faq('windowTitle')} padded={false} className="h-full">
+          <div className="tmapPanel h-full">
+            <p className="tmapPanelHead">{faq('eyebrow')}</p>
             {faqItems.map((id, index) => (
               <details
                 key={id}
@@ -46,7 +57,7 @@ export function Contact() {
                 </p>
               </details>
             ))}
-          </Window>
+          </div>
         </div>
       </Container>
     </section>

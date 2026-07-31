@@ -153,6 +153,23 @@
     color: var(--dim);
   }
 
+  /* Small technical labels — scope lines, durations, counters.
+   *
+   * NEVER use the raw `font-mono` utility on a translated string. The mono
+   * stack (ui-monospace / Consolas / Menlo) carries no Arabic-script glyphs,
+   * so Persian falls back per character and the letters stop joining — the
+   * same failure mode as letter-spacing, arriving through a different door.
+   * This class keeps the mono voice for Latin and hands Persian its own face
+   * with zero tracking, so a component never has to know which it is setting. */
+  .meta {
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+  }
+  html[lang='fa'] .meta {
+    font-family: var(--font-fa);
+    letter-spacing: 0;
+  }
+
   /* The dotted ground. A gradient, not an image: the token file forbids url()
    * and a data-URI would need `img-src data:` on pages that need nothing. */
   .dot-field {

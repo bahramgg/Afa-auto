@@ -5,10 +5,11 @@
   },
   "Nav": {
     "home": "Home",
-    "impact": "Calculator",
+    "approach": "Approach",
     "work": "Work",
-    "processes": "What we automate",
+    "impact": "Calculator",
     "mapPage": "Full map",
+    "contact": "Get in touch",
     "menu": "Menu",
     "close": "Close"
   },
@@ -19,12 +20,12 @@
     "switchTo": "Switch to {locale}"
   },
   "Hero": {
-    "eyebrow": "AFA · Business automation",
-    "titleLead": "Business automation",
-    "titleAccent": "with AI",
-    "sub": "From before the first visit to after the sale.",
-    "ctaPrimary": "Start a conversation",
-    "ctaSecondary": "See the full map"
+    "eyebrow": "AFA · Business process automation",
+    "title": "Your repetitive work, mapped",
+    "sub": "Six domains, twenty-four processes a system can run. Click any one to see exactly what it does — and where it stops for you.",
+    "ctaPrimary": "Book a call",
+    "ctaSecondary": "Read every process",
+    "mapHint": "Click a domain to open it; click a process for the detail."
   },
   "Map": {
     "hub": "AFA",
@@ -331,11 +332,42 @@
         "label": "Requests answered per month"
       }
     },
-    "disclaimer": "An estimate from your own inputs, not a delivery promise. It assumes roughly 60% of repetitive work can be handed to a system and roughly 70% of missed requests can be rescued; the exact figures follow a review of your processes."
+    "disclaimer": "An estimate from your own inputs, not a delivery promise. It assumes roughly 60% of repetitive work can be handed to a system and roughly 70% of missed requests can be rescued; the exact figures follow a review of your processes.",
+    "ctaNote": "That figure is an estimate off your own numbers. Which part of it is actually recoverable takes a look at your processes.",
+    "cta": "Go through the number with us"
+  },
+  "Start": {
+    "eyebrow": "Getting started",
+    "title": "How long it takes, and how it is priced",
+    "lede": "Four steps to the first process that runs itself. No figure is quoted before the review meeting, because before that it is a guess.",
+    "steps": {
+      "call": {
+        "title": "The call",
+        "body": "You leave a number, we call. A short conversation about the repetitive work in your business."
+      },
+      "review": {
+        "title": "The review",
+        "body": "We walk your current processes and establish which ones a system can take and which ones it cannot."
+      },
+      "proposal": {
+        "title": "The proposal",
+        "body": "Scope and price, based on how many processes and how many tools have to be wired together."
+      },
+      "build": {
+        "title": "First process",
+        "body": "Built and live, with its human checkpoint in place. Then the next one."
+      }
+    },
+    "buildWindow": "Two to four weeks, depending on the tool count",
+    "notes": {
+      "ownership": "Code, domain and data are registered in your name from day one.",
+      "tools": "You keep your current tools; the work starts by connecting them.",
+      "exit": "If you stop, the system keeps running and you get the documentation."
+    },
+    "cta": "Book a call"
   },
   "Faq": {
     "eyebrow": "Before the call",
-    "windowTitle": "faq.afa",
     "items": {
       "timeline": {
         "q": "How long until the first part is running?",
@@ -368,7 +400,6 @@
     "title": "Walk us through your processes",
     "subtitle": "Leave a number; we will call and talk through the repetitive work in your business.",
     "formTitle": "Contact form",
-    "windowTitle": "form.afa",
     "fields": {
       "name": {
         "label": "Name",
@@ -408,12 +439,6 @@
     },
     "privacyNote": "Used only to contact you about this request.",
     "noEndpointNote": "The form isn't connected to a delivery service yet; please use another contact route for now."
-  },
-  "ProcessIndex": {
-    "eyebrow": "The list",
-    "title": "What can be handed to a system?",
-    "lede": "Six parts of a business, twenty-four repetitive jobs. The titles are here; the full story of each lives on the map page.",
-    "cta": "See the full map and details"
   },
   "MapPage": {
     "eyebrow": "The full map",

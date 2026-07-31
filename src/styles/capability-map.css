@@ -79,6 +79,32 @@
 }
 .tmapStage[data-view='fan']::after { opacity: 1; }
 
+/* The homepage stage is bounded by the VIEWPORT, not by its column: the whole
+   point of the first screen is that the map and the claim fit on it together.
+   The aspect ratio follows the view, because the two drawings are not the same
+   shape — a fixed square would letterbox the fan. */
+.tmapStage[data-fit='height'] {
+  inline-size: auto;
+  /* The height drives the size, but the COLUMN still wins: without this cap a
+     square stage taller than a narrow viewport is wide is enough to widen its
+     grid track, and everything beside it — claim, buttons — is pushed off the
+     screen. Height then re-derives from the aspect ratio. */
+  max-inline-size: 100%;
+  margin-inline: auto;
+  block-size: min(56svh, 78vw, 26rem);
+  aspect-ratio: 1;
+}
+.tmapStage[data-fit='height'][data-view='fan'] { aspect-ratio: 1120 / 840; }
+
+@media (min-width: 640px) {
+  .tmapStage[data-fit='height'] { block-size: min(72svh, 84vw, 44rem); }
+}
+
+.tmapStage[data-fit='height'] .tmap {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
 /* In real fullscreen the stage becomes the page: centre the drawing. */
 .tmapStage:fullscreen {
   display: grid;
@@ -773,145 +799,4 @@ html[lang='fa'] .tmapLadderKey { font-family: var(--font-fa); letter-spacing: 0;
   /* On paper the list view IS the argument. */
   .tmapStage { display: none !important; }
   .tmapList { display: block !important; }
-}
-
-/* =============================================================================
-   The MINI map — the hero's companion (ui/mini-map.tsx). Unchanged by the
-   operating-map rebuild; the homepage keeps its light drawing.
-   ========================================================================== */
-
-.mini [data-tone='1'] { --tone: var(--map-1); }
-.mini [data-tone='2'] { --tone: var(--map-2); }
-.mini [data-tone='3'] { --tone: var(--map-3); }
-.mini [data-tone='4'] { --tone: var(--map-4); }
-.mini [data-tone='5'] { --tone: var(--map-5); }
-.mini [data-tone='6'] { --tone: var(--map-6); }
-
-.mini [data-phase='0'] { --mini-delay: 0s; }
-.mini [data-phase='1'] { --mini-delay: -1.4s; }
-.mini [data-phase='2'] { --mini-delay: -2.8s; }
-.mini [data-phase='3'] { --mini-delay: -4.2s; }
-.mini [data-phase='4'] { --mini-delay: -5.6s; }
-.mini [data-phase='5'] { --mini-delay: -7s; }
-
-.miniDomain {
-  outline: none;
-  cursor: default;
-}
-
-.miniHit { fill: transparent; }
-
-.miniOrbit {
-  fill: none;
-  stroke: color-mix(in srgb, var(--ink) 11%, transparent);
-  stroke-width: 1;
-  stroke-dasharray: 0.5 2.1;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  animation: miniMarch 60s linear infinite;
-}
-.miniOrbitReverse { animation-direction: reverse; opacity: 0.8; }
-
-@keyframes miniMarch {
-  from { stroke-dashoffset: 0; }
-  to   { stroke-dashoffset: 100; }
-}
-
-.miniSpoke {
-  stroke: color-mix(in srgb, var(--ink) 14%, transparent);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-  transition: stroke var(--afa-t-base) var(--afa-ease);
-}
-
-.miniPulse {
-  stroke: var(--tone);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-dasharray: 3 97;
-  vector-effect: non-scaling-stroke;
-  opacity: 0.9;
-  animation: miniFlow 8.4s linear infinite;
-  animation-delay: var(--mini-delay, 0s);
-}
-
-@keyframes miniFlow {
-  from { stroke-dashoffset: 100; }
-  to   { stroke-dashoffset: 0; }
-}
-
-.miniSat {
-  fill: var(--tone);
-  opacity: 0.75;
-  animation: miniTwinkle 5.6s var(--ease-ambient) infinite;
-  animation-delay: var(--mini-delay, 0s);
-}
-
-@keyframes miniTwinkle {
-  0%, 100% { opacity: 0.3; }
-  50%      { opacity: 0.9; }
-}
-
-.miniNode {
-  fill: var(--ink);
-  transition: fill var(--afa-t-base) var(--afa-ease);
-}
-
-.miniHalo {
-  fill: var(--tone);
-  opacity: 0.07;
-  transition: opacity var(--afa-t-base) var(--afa-ease);
-}
-
-.miniLabel {
-  fill: var(--muted);
-  font-size: 16.5px;
-  font-weight: 500;
-  text-anchor: middle;
-  transition: fill var(--afa-t-base) var(--afa-ease);
-}
-
-.miniDomain:hover .miniNode,
-.miniDomain:focus-visible .miniNode,
-.miniDomain:active .miniNode { fill: var(--tone); }
-
-.miniDomain:hover .miniSpoke,
-.miniDomain:focus-visible .miniSpoke,
-.miniDomain:active .miniSpoke { stroke: color-mix(in srgb, var(--tone) 55%, transparent); }
-
-.miniDomain:hover .miniHalo,
-.miniDomain:focus-visible .miniHalo,
-.miniDomain:active .miniHalo { opacity: 0.2; }
-
-.miniDomain:hover .miniLabel,
-.miniDomain:focus-visible .miniLabel,
-.miniDomain:active .miniLabel { fill: var(--ink); font-weight: 700; }
-
-.miniHub { position: relative; display: inline-block; }
-.miniHub::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: var(--radius-pill);
-  border: 1px solid color-mix(in srgb, var(--blue) 50%, transparent);
-  animation: miniBreathe 4.8s var(--ease-ambient) infinite;
-  pointer-events: none;
-}
-
-@keyframes miniBreathe {
-  0%   { transform: scale(0.94); opacity: 0.7; }
-  70%  { transform: scale(1.22); opacity: 0; }
-  100% { transform: scale(1.22); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .miniOrbit,
-  .miniPulse,
-  .miniSat,
-  .miniHub::after {
-    animation: none !important;
-  }
-  .miniPulse { opacity: 0.35; }
-  .miniSat { opacity: 0.7; }
-  .miniHub::after { opacity: 0.4; }
 }
