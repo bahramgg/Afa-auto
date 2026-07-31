@@ -26,7 +26,6 @@
     "sub": "You only sign off on the decisions that matter.",
     "ctaPrimary": "Free assessment",
     "ctaSecondary": "Full map",
-    "mapHint": "Click a domain to open it; click a process for the detail.",
     "rotPrefix": "What does it take over?",
     "rot1": "Answering DMs",
     "rot2": "Order intake",
@@ -50,6 +49,11 @@
         "label": "with a human checkpoint"
       }
     }
+  },
+  "Live": {
+    "eyebrow": "Live view",
+    "title": "See the system, live",
+    "hint": "Click a domain to open it; click a process for the detail."
   },
   "Pulse": {
     "label": "operations console",

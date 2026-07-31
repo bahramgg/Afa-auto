@@ -12,11 +12,15 @@ REBUILT 2026-08 on the rasai.ca structure («ras را الگو قرار بدیم
 before/deployed/after — carried in this site's own voice (navy, the map, the
 mono console). One page, the RAS spine:
 
-1. **MapHero**, animated and backgroundless: the working map, the claim
-   («کار تکراری را بسپارید به سیستم»), the ROTATING job line
-   (`ui/rotating-words.tsx`, Lindy's task loop, joined-script-safe), and the
-   reference's proof typography on numbers we can stand behind: the
-   structural counts as a stat strip.
+1. **Hero** (`sections/hero.tsx`), TEXT ONLY on the bare ground; the owner
+   said «هیرو نباید بکگراند داشته باشه» twice, and the second time meant the
+   map panel too. Typography, the ROTATING job line
+   (`ui/rotating-words.tsx`, joined-script-safe), the white primary button,
+   and the structural counts as a hairline stat strip. The body's old violet
+   halo is deleted; the ground is flat.
+1b. **LiveMap** (`sections/live-map.tsx`) — the working map, one scroll in:
+   the slot rasai.ca gives its live dashboard. Same interactions as /map,
+   no rails.
 2. **Pulse** — the operations-console strip: four telemetry lines, one per
    service, ALWAYS tagged «نمونهٔ نمایشی · داده واقعی نیست». The strip earns
    its realism from that tag; removing it turns the section into a fabricated

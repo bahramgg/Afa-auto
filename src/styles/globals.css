@@ -43,8 +43,10 @@
   --font-en-body: var(--font-en-body);
 }
 
-/* Base page: deep navy with a very faint violet radial halo at the top and a
- * 2% SVG noise layer. The page gradient never gets more colorful (plan §2). */
+/* Base page: the flat navy-black, NOTHING on it. The violet halo that used
+ * to sit at the top of every page died 2026-08 by direct request («هیرو
+ * نباید بکگراند داشته باشه», said twice): the hero is typography on the bare
+ * ground, and any glow behind it reads as a background. */
 @layer base {
   html {
     background-color: var(--bg-950);
@@ -55,15 +57,6 @@
     min-height: 100dvh;
     color: var(--ink);
     background-color: var(--bg-950);
-    /* color-mix keeps the halo tied to --violet. The literal rgba this
-     * replaced was the pre-migration violet (#916dff) and would have quietly
-     * kept the old hue alive after the token moved to #9a6bff. */
-    background-image:
-      radial-gradient(
-        60rem 40rem at 50% -10rem,
-        color-mix(in srgb, var(--violet) 14%, transparent),
-        transparent 60%
-      );
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
