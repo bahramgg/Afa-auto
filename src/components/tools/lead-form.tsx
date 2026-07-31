@@ -211,7 +211,7 @@ export function LeadForm() {
       <button
         type="submit"
         disabled={sending}
-        className="rounded-button bg-brand px-5 py-3 text-sm font-semibold text-white shadow-brand transition-opacity disabled:opacity-50"
+        className="rounded-button bg-brand px-5 py-3 text-sm font-semibold text-bg-950 shadow-brand transition-opacity disabled:opacity-50"
       >
         {sending ? t('sending') : t('submit')}
       </button>

@@ -1,7 +1,7 @@
 {
   "Meta": {
     "title": "AFA · Intelligent business automation",
-    "description": "Customer replies, order intake, invoicing and reporting — automated. The decisions that matter wait for your sign-off."
+    "description": "Customer replies, orders, invoices and reports run automatically. Important decisions wait for your sign-off."
   },
   "Nav": {
     "home": "Home",
@@ -22,11 +22,34 @@
   },
   "Hero": {
     "eyebrow": "AFA · Intelligent business automation",
-    "title": "Hand your repetitive work to a system",
-    "sub": "Replies, orders, invoices and reports — automatic. Important decisions — waiting for your sign-off.",
+    "title": "Hand repetitive work to a system",
+    "sub": "You only sign off on the decisions that matter.",
     "ctaPrimary": "Free assessment",
     "ctaSecondary": "Full map",
-    "mapHint": "Click a domain to open it; click a process for the detail."
+    "mapHint": "Click a domain to open it; click a process for the detail.",
+    "rotPrefix": "What does it take over?",
+    "rot1": "Answering DMs",
+    "rot2": "Order intake",
+    "rot3": "Invoicing",
+    "rot4": "The daily report",
+    "stats": {
+      "domains": {
+        "value": "6",
+        "label": "business domains"
+      },
+      "processes": {
+        "value": "24",
+        "label": "processes it can take"
+      },
+      "stages": {
+        "value": "72",
+        "label": "automated stages"
+      },
+      "human": {
+        "value": "All",
+        "label": "with a human checkpoint"
+      }
+    }
   },
   "Pulse": {
     "label": "operations console",
@@ -52,8 +75,8 @@
   },
   "Services": {
     "eyebrow": "Services",
-    "title": "Four things we take off your plate",
-    "lede": "Four systems. Each starts with a scene you know.",
+    "title": "Four jobs, off your desk",
+    "lede": "Each starts with a scene you know.",
     "scenarioLabel": "The scene",
     "solutionLabel": "What the system does",
     "demoTag": "simulated",
@@ -67,7 +90,7 @@
       },
       "automation": {
         "title": "Operations automation",
-        "scenario": "Every order: manual entry, stock check, warehouse ping, invoice. Fifteen minutes — dozens of times a week.",
+        "scenario": "Every order: manual entry, stock check, warehouse ping, invoice. Fifteen minutes; dozens of times a week.",
         "solution": "The chain runs itself, logs every step, and stops for your approval wherever a decision matters.",
         "outcome": "The busywork runs itself. You do the work that’s worth your time."
       },
@@ -86,17 +109,10 @@
     },
     "demos": {
       "assistant": {
-        "in": "Hi — any slots free on Saturday?",
+        "in": "Hi; any slots free on Saturday?",
         "out": "Hi! Saturday 10:30 or 16:00 are open. Which works for you?",
         "in2": "10:30 is perfect.",
         "badge": "Booked · customer file created · reminders armed"
-      },
-      "automation": {
-        "s1": "Order intake",
-        "s2": "Stock check",
-        "s3": "Notify warehouse",
-        "s4": "Issue invoice",
-        "hold": "waiting for your approval"
       },
       "store": {
         "order": "Order #1042",
@@ -112,14 +128,42 @@
       }
     },
     "play": {
-      "prompt": "You’re the customer — send one:",
+      "prompt": "You’re the customer; send one:",
       "q1": "Prices and packages?",
       "a1": "Hi! Sending the package list here. Tell me what it’s for and I’ll narrow it down.",
-      "b1": "Lead captured · customer file created",
       "q2": "Any slots on Saturday?",
-      "a2": "Yes — Saturday 10:30 or 16:00 are open. Which works for you?",
-      "b2": "Slot proposed · reminders armed",
-      "replay": "Replay"
+      "a2": "Yes; Saturday 10:30 or 16:00 are open. Which works for you?",
+      "replay": "Replay",
+      "online": "Online",
+      "replies": "Replies instantly",
+      "actionsLabel": "Actions triggered",
+      "acts1": {
+        "a": "Lead captured",
+        "b": "Customer file created",
+        "c": "Package list sent"
+      },
+      "acts2": {
+        "a": "Slot proposed",
+        "b": "Reminders armed",
+        "c": "Added to calendar"
+      }
+    },
+    "flow": {
+      "title": "Order workflow",
+      "active": "Active",
+      "n1": "New order",
+      "n1k": "Trigger",
+      "n2": "Smart check",
+      "n2k": "Decision",
+      "n3": "Notify warehouse",
+      "n4": "Message customer",
+      "n5": "Issue invoice",
+      "lastRun": "Last run",
+      "e1": "Order received",
+      "e2": "Stock confirmed",
+      "e3": "Warehouse notified",
+      "e4": "Customer messaged",
+      "hold": "Invoice: waiting for your sign-off"
     }
   },
   "Map": {
@@ -341,8 +385,8 @@
   },
   "Work": {
     "eyebrow": "Proof",
-    "title": "What changes when the system goes live",
-    "subtitle": "Three real businesses — before, what was deployed, after.",
+    "title": "Before and after the system",
+    "subtitle": "Three real businesses. No invented numbers.",
     "labels": {
       "before": "Before",
       "deployed": "What was deployed",
@@ -377,8 +421,8 @@
   },
   "Impact": {
     "eyebrow": "Try it",
-    "title": "How much time comes back? Try it here",
-    "subtitle": "Four numbers from your business; the answer is instant.",
+    "title": "How much time comes back?",
+    "subtitle": "Try it here; four numbers are enough.",
     "windowTitle": "calc.afa",
     "inputs": {
       "staff": {
@@ -410,13 +454,13 @@
       }
     },
     "disclaimer": "An estimate from your own inputs, not a delivery promise. It assumes roughly 60% of repetitive work can be handed to a system and roughly 70% of missed requests can be rescued; the exact figures follow a review of your processes.",
-    "ctaNote": "The figure comes from your numbers, but it is still an estimate. The real one comes out of the free assessment.",
+    "ctaNote": "An estimate from your own numbers. The real figure comes out of the free assessment.",
     "cta": "Go through the number with us"
   },
   "Start": {
     "eyebrow": "Process",
-    "title": "From first call to a live system",
-    "lede": "Four steps. A figure only after the review meeting.",
+    "title": "Four steps to a live system",
+    "lede": "A figure only after the review meeting.",
     "steps": {
       "call": {
         "title": "The call",
@@ -437,7 +481,7 @@
     },
     "buildWindow": "Two to four weeks, depending on the tool count",
     "cta": "Request the free assessment",
-    "whyTitle": "Why us — instead of wrestling with it yourself",
+    "whyTitle": "Why us?",
     "why": {
       "fast": {
         "title": "Live in weeks, not months",
@@ -488,8 +532,8 @@
   },
   "Contact": {
     "eyebrow": "Free assessment",
-    "title": "A free assessment of your processes",
-    "subtitle": "Leave a number; one short call tells you which work a system can take. No commitment.",
+    "title": "Free assessment",
+    "subtitle": "Leave a number. One short call tells you which work a system can take. No commitment.",
     "formTitle": "Request an assessment",
     "fields": {
       "name": {

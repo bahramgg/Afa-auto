@@ -18,10 +18,12 @@ export interface AssistantPlayCopy {
   readonly prompt: string;
   readonly q1: string;
   readonly a1: string;
-  readonly b1: string;
   readonly q2: string;
   readonly a2: string;
-  readonly b2: string;
+  /** The reference's "ACTIONS TRIGGERED" list, three per branch. */
+  readonly actionsLabel: string;
+  readonly acts1: readonly [string, string, string];
+  readonly acts2: readonly [string, string, string];
   readonly replay: string;
 }
 
@@ -52,7 +54,7 @@ export function AssistantDemo({ copy }: { copy: AssistantPlayCopy }) {
 
   const question = choice === 1 ? copy.q1 : copy.q2;
   const answer = choice === 1 ? copy.a1 : copy.a2;
-  const badge = choice === 1 ? copy.b1 : copy.b2;
+  const acts = choice === 1 ? copy.acts1 : copy.acts2;
 
   return (
     <div className="grid gap-2.5 text-sm leading-relaxed" aria-live="polite">
@@ -96,8 +98,22 @@ export function AssistantDemo({ copy }: { copy: AssistantPlayCopy }) {
               <p className="ms-8 w-fit justify-self-end rounded-card rounded-se-[4px] border border-[color-mix(in_srgb,var(--tone)_45%,transparent)] bg-[color-mix(in_srgb,var(--tone)_12%,transparent)] px-3.5 py-2 text-ink">
                 {answer}
               </p>
-              <div className="flex items-center justify-between gap-3 border-t border-border pt-3">
-                <p className="meta text-[10.5px] leading-relaxed text-success">{badge}</p>
+              <div className="border-t border-border pt-3">
+                <p className="meta text-[10px] uppercase text-dim">{copy.actionsLabel}</p>
+                <ul className="mt-1.5 grid gap-1">
+                  {acts.map((act) => (
+                    <li key={act} className="flex items-center gap-2 text-xs text-muted">
+                      <span aria-hidden className="grid size-3.5 shrink-0 place-items-center rounded-pill border border-success/60 text-success">
+                        <svg width="7" height="7" viewBox="0 0 10 10">
+                          <path d="M1.6 5.2 3.8 7.4 8.4 2.6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                      {act}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={reset}

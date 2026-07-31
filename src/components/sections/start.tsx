@@ -79,7 +79,7 @@ export function Start() {
         <div className="mt-8 flex justify-center">
           <a
             href="#contact"
-            className="inline-flex min-h-12 items-center justify-center rounded-button bg-brand px-7 text-sm font-semibold text-white shadow-brand"
+            className="inline-flex min-h-12 items-center justify-center rounded-button bg-brand px-7 text-sm font-semibold text-bg-950 shadow-brand"
           >
             {t('cta')}
           </a>

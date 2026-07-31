@@ -14,7 +14,7 @@ const variants: Record<Variant, string> = {
   // Primary = brand gradient + glow (plan §2). The hover glow is a token, not
   // an arbitrary value: the literal rgba this replaced held the pre-migration
   // blue and would have kept #4d69ff on the page after the palette moved.
-  primary: 'bg-brand text-white shadow-brand hover:shadow-brand-hover',
+  primary: 'bg-brand text-bg-950 shadow-brand hover:shadow-brand-hover',
   // Secondary = ghost with a token border.
   ghost: 'border border-border text-ink hover:border-border-glass hover:bg-surface/50',
 };

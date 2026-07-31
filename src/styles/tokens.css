@@ -38,43 +38,42 @@
    *
    * Contrast only improves (darker ground, same ink) — the contrast tests
    * resolve these very hexes and hold the floor. */
-  /* REPALETTED 2026-08, by direct request («رنگ و دیزاین کلاً تغییر کنه»):
-   * the ground is now a WARM black and the accent a single ember-amber, in
-   * the register of the operator-console references AFA keeps sending. The
-   * cool navy family values stay in afa-tokens.css untouched; this alias
-   * layer simply points elsewhere, which is exactly what it is for. The
-   * token NAMES do not change — `--blue` now paints amber so that zero
-   * components churn; the name is a slot, not a hue. All six values below
-   * were run through test/contrast.test.ts, not eyeballed. */
-  --bg-950: #080604;
-  --bg-900: #0b0806;
-  --bg-850: #0e0b08;
+  /* REPALETTED AGAIN 2026-08, by direct request: BLACK CUT WITH DARK NAVY
+   * («مشکی با ترکیبی از سرمه‌ای تیره») and the reference's monochrome
+   * register on top of it. The warm-amber experiment is out. What carries
+   * colour now: ivory for the one primary action (the reference's white
+   * button), green for anything LIVE (online dots, checks, the human
+   * checkpoint), the family blue/violet only as small link/focus accents,
+   * and the map keeps its six categorical tones. Everything else is
+   * monochrome on the navy-black. */
+  --bg-950: #04060c;
+  --bg-900: #060910;
+  --bg-850: #090d17;
 
-  /* Surfaces — one step above the ground, same warmth. */
-  --surface: #14100b;
-  --surface-2: #191410;
+  /* Surfaces — one step above the ground, navy showing through. */
+  --surface: #0c111e;
+  --surface-2: #101627;
 
-  /* Borders — warm greys, quiet on the warm black. */
-  --border: #292219;
-  --border-glass: #3a2f21;
+  /* Borders — cool hairlines, quiet on the navy-black. */
+  --border: #1b2136;
+  --border-glass: #272f4a;
 
-  /* Ink / text — warm ivory instead of the family's cool one, so the page
-   * reads as one temperature. Muted clears AA on every surface (tested). */
-  --ink: #f5efe6;
-  --muted: #c9bfae;
-  --dim: #99907f;
+  /* Ink / text */
+  --ink: var(--afa-ink-050);
+  --muted: var(--afa-ink-200);
+  --dim: var(--afa-ink-300);
 
-  /* The accent pair. Deep ember (#d97416) keeps white readable on top of it
-   * — it is the gradient's bright end and the interactive accent — and the
-   * pale amber carries focus rings and small accent text at AA-normal. */
-  --blue: #d97416;
-  --violet: #b45309;
-  --lilac: #ffc46b;
+  /* Accents. Blue/violet survive only as SMALL accents (index numerals,
+   * links, focus); the page's real accents are ivory and live-green. */
+  --blue: var(--afa-blue-400);
+  --violet: var(--afa-violet-400);
+  --lilac: var(--afa-violet-300);
   --success: var(--afa-green-400);
 
-  /* The single brand gradient — ember, dark end to bright end. Still the
-     ONLY gradient on the page, still the primary action only. */
-  --grad-brand: linear-gradient(120deg, #b45309, #d97416);
+  /* The primary action is IVORY now, reference-style: a white button on
+   * black is the strongest chip on this table. The old brand gradient is
+   * retired from this site; the slot stays so nothing dangles. */
+  --grad-brand: linear-gradient(120deg, #eef0f8, #ffffff);
 
   /* Radii */
   --radius-pill: var(--afa-radius-pill);
@@ -82,9 +81,9 @@
   --radius-button: var(--afa-radius-button);
   --radius-field: var(--afa-radius-field);
 
-  /* Elevation — the ember glow under the one gradient button. */
-  --shadow-brand: 0 8px 28px rgba(217, 116, 22, 0.28);
-  --shadow-brand-hover: 0 10px 36px rgba(217, 116, 22, 0.4);
+  /* Elevation — a soft ivory bloom under the one solid button. */
+  --shadow-brand: 0 6px 24px rgba(238, 240, 248, 0.14);
+  --shadow-brand-hover: 0 8px 32px rgba(238, 240, 248, 0.22);
 
   /* Glass surface (floating header + tool cards only) */
   --glass-bg: var(--afa-glass-bg);
@@ -133,8 +132,8 @@
    * the page rather than tinted panels. The three dots are the one place the
    * status hues appear decoratively — muted via color-mix so they read as
    * chrome, not as alerts. */
-  --win-bg: #0b0906;
-  --win-bar: #060503;
+  --win-bg: #080b13;
+  --win-bar: #04060b;
   --win-dot-close: color-mix(in srgb, var(--afa-red-400) 75%, var(--bg-950));
   --win-dot-min: color-mix(in srgb, var(--afa-amber-400) 75%, var(--bg-950));
   --win-dot-max: color-mix(in srgb, var(--afa-green-400) 75%, var(--bg-950));

@@ -20,6 +20,23 @@ describe('message catalogs', () => {
     expect(faKeys).toEqual(enKeys);
   });
 
+  it('no dash characters anywhere, by direct request', () => {
+    // «هیچ جای سایت نباید ام دش استفاده بشه» is a standing owner rule. The
+    // guard covers en/em dashes in BOTH catalogs; the Persian voice uses
+    // «؛» or a full stop where a dash would have gone.
+    for (const [locale, catalog] of [['fa', fa], ['en', en]] as const) {
+      for (const path of keyPaths(catalog)) {
+        const value = String(
+          path
+            .split('.')
+            .reduce<unknown>((acc, k) => (acc as Record<string, unknown>)[k], catalog),
+        );
+        expect(value.includes('\u2014'), `${locale}:${path} contains an em dash`).toBe(false);
+        expect(value.includes('\u2013'), `${locale}:${path} contains an en dash`).toBe(false);
+      }
+    }
+  });
+
   it('no message value is empty', () => {
     for (const catalog of [fa, en]) {
       for (const path of keyPaths(catalog)) {

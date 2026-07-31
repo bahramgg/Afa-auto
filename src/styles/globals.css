@@ -170,6 +170,31 @@
     letter-spacing: 0;
   }
 
+  /* The hero's rotating job line. Absolute stack inside a sized box; only
+   * opacity/translate move, and reduced-motion freezes on the first word. */
+  .rotWrap {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .rotWord {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    opacity: 0;
+    transform: translateY(0.35em);
+    transition: opacity 0.45s var(--afa-ease), transform 0.45s var(--afa-ease);
+  }
+  .rotWord[data-on] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rotWord { transition: none; }
+  }
+
   /* The console strip's live dot. The pulse is the only motion the strip has,
    * and prefers-reduced-motion stills it below. */
   .pulseDot {

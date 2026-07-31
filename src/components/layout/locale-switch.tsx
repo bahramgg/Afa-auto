@@ -41,7 +41,7 @@ export function LocaleSwitch() {
             className={cn(
               'rounded-pill px-3 py-1 text-xs font-semibold transition-colors',
               isActive
-                ? 'bg-brand text-white'
+                ? 'bg-brand text-bg-950'
                 : 'text-muted hover:text-ink',
             )}
           >

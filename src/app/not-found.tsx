@@ -17,7 +17,7 @@ export default function GlobalNotFound() {
             </h1>
             <Link
               href="/fa"
-              className="mt-8 inline-flex rounded-button bg-brand px-5 py-3 text-sm font-semibold text-white shadow-brand"
+              className="mt-8 inline-flex rounded-button bg-brand px-5 py-3 text-sm font-semibold text-bg-950 shadow-brand"
             >
               بازگشت به خانه
             </Link>

@@ -147,7 +147,7 @@ export function SiteHeader() {
               <a
                 href="#contact"
                 onClick={() => setOpen(false)}
-                className="mt-3 flex min-h-12 items-center justify-center rounded-button bg-brand px-5 text-sm font-semibold text-white shadow-brand"
+                className="mt-3 flex min-h-12 items-center justify-center rounded-button bg-brand px-5 text-sm font-semibold text-bg-950 shadow-brand"
               >
                 {t('contact')}
               </a>

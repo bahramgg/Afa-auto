@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Eyebrow } from '@/components/ui/editorial';
+import { RotatingWords } from '@/components/ui/rotating-words';
 import {
   CapabilityMap,
   type CapabilityMapCopy,
@@ -97,17 +98,19 @@ export function MapHero() {
           <div>
             <Eyebrow>{t('eyebrow')}</Eyebrow>
 
-            {/* No gradient on the headline. The house rule gives the brand
-                gradient to the primary action and nothing else — it is the one
-                rule keeping this page off the 2024 AI-landing template. */}
             <h1 className="display-hero mt-5 text-ink">{t('title')}</h1>
 
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted sm:text-lg">
-              {t('sub')}
+            {/* The moving line, by direct request: the jobs it takes, cycling.
+                Each word is one block, so joined Persian stays joined. */}
+            <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
+              {t('rotPrefix')}{' '}
+              <RotatingWords words={[t('rot1'), t('rot2'), t('rot3'), t('rot4')]} />
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <a href="#contact" className={`${action} bg-brand text-white shadow-brand`}>
+            <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{t('sub')}</p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="#contact" className={`${action} bg-brand text-bg-950 shadow-brand`}>
                 {t('ctaPrimary')}
               </a>
               <Link
@@ -118,7 +121,20 @@ export function MapHero() {
               </Link>
             </div>
 
-            <p className="tmapStatus mt-8">{page('statusline')}</p>
+            {/* The reference's proof typography, on numbers we can stand
+                behind: the structure itself. Hairlines, not cards. */}
+            <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-4">
+              {(['domains', 'processes', 'stages', 'human'] as const).map((stat) => (
+                <div key={stat} className="bg-bg-950 px-4 py-3.5">
+                  <dd className="text-xl font-extrabold tabular-nums text-ink sm:text-2xl">
+                    {t(`stats.${stat}.value`)}
+                  </dd>
+                  <dt className="mt-0.5 text-[11px] leading-snug text-dim">
+                    {t(`stats.${stat}.label`)}
+                  </dt>
+                </div>
+              ))}
+            </dl>
           </div>
 
           <div>

@@ -103,15 +103,37 @@ export function Services() {
 
 /* ------------------------------------------------------------- demo cards */
 
-/** The framed card every demo sits in, with the honesty tag in its head. */
-function DemoCard({ id, children }: { id: ServiceId; children: React.ReactNode }) {
+/** The framed card every demo sits in, with the honesty tag in its head.
+ *  `live` adds the reference's green online dot; `note` its status line. */
+function DemoCard({
+  id,
+  live,
+  note,
+  children,
+}: {
+  id: ServiceId;
+  live?: string;
+  note?: string;
+  children: React.ReactNode;
+}) {
   const t = useTranslations('Services');
   return (
     <div className="tmapPanel">
       <p className="tmapPanelHead flex items-center justify-between gap-4">
-        <span className="truncate">{t(`items.${id}.title`)}</span>
-        <span className="shrink-0 rounded-pill border border-border px-2 py-0.5 text-[9px] normal-case tracking-normal opacity-80">
-          {t('demoTag')}
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="truncate">{t(`items.${id}.title`)}</span>
+          {note ? <span className="hidden truncate opacity-70 sm:inline">· {note}</span> : null}
+        </span>
+        <span className="flex shrink-0 items-center gap-2">
+          {live ? (
+            <span className="flex items-center gap-1.5 rounded-pill border border-success/40 px-2 py-0.5 text-[9px] text-success">
+              <span aria-hidden className="pulseDot !size-1.5" />
+              {live}
+            </span>
+          ) : null}
+          <span className="rounded-pill border border-border px-2 py-0.5 text-[9px] normal-case tracking-normal opacity-80">
+            {t('demoTag')}
+          </span>
         </span>
       </p>
       <div className="p-4">{children}</div>
@@ -130,55 +152,65 @@ function Demo({ id }: { id: ServiceId }) {
       prompt: t('play.prompt'),
       q1: t('play.q1'),
       a1: t('play.a1'),
-      b1: t('play.b1'),
       q2: t('play.q2'),
       a2: t('play.a2'),
-      b2: t('play.b2'),
+      actionsLabel: t('play.actionsLabel'),
+      acts1: [t('play.acts1.a'), t('play.acts1.b'), t('play.acts1.c')],
+      acts2: [t('play.acts2.a'), t('play.acts2.b'), t('play.acts2.c')],
       replay: t('play.replay'),
     };
     return (
-      <DemoCard id={id}>
+      <DemoCard id={id} live={t('play.online')} note={t('play.replies')}>
         <AssistantDemo copy={play} />
       </DemoCard>
     );
   }
 
   if (id === 'automation') {
-    const done = ['s1', 's2', 's3'] as const;
+    /* The reference's workflow canvas, miniature: trigger and decision nodes
+       with a fan of actions, then the last-run log. The run ENDS on the
+       waiting-for-you row; the pause is the product. */
     return (
-      <DemoCard id={id}>
-        <ol className="grid gap-0.5 text-sm">
-          {done.map((step) => (
-            <li key={step} className="flex items-center gap-3 py-1.5 text-muted">
-              <span
-                aria-hidden
-                className="grid size-4 shrink-0 place-items-center rounded-pill border border-[color-mix(in_srgb,var(--tone)_60%,transparent)] text-[var(--tone)]"
-              >
-                <svg width="8" height="8" viewBox="0 0 10 10">
-                  <path
-                    d="M1.6 5.2 3.8 7.4 8.4 2.6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-              {t(`demos.automation.${step}`)}
+      <DemoCard id={id} live={t('flow.active')}>
+        <div className="flex items-stretch gap-2 text-center">
+          <div className="flex-1 rounded-field border border-border bg-surface px-2 py-2.5">
+            <p className="text-xs font-semibold text-ink">{t('flow.n1')}</p>
+            <p className="meta mt-0.5 text-[9px] text-dim">{t('flow.n1k')}</p>
+          </div>
+          <span aria-hidden className="self-center text-dim rtl:-scale-x-100">→</span>
+          <div className="flex-1 rounded-field border border-[color-mix(in_srgb,var(--tone)_55%,transparent)] bg-surface px-2 py-2.5">
+            <p className="text-xs font-semibold text-ink">{t('flow.n2')}</p>
+            <p className="meta mt-0.5 text-[9px] text-[var(--tone)]">{t('flow.n2k')}</p>
+          </div>
+          <span aria-hidden className="self-center text-dim rtl:-scale-x-100">→</span>
+          <div className="flex flex-1 flex-col justify-center gap-1">
+            {(['n3', 'n4', 'n5'] as const).map((node) => (
+              <p key={node} className="rounded-field border border-border bg-surface px-2 py-1 text-[10.5px] text-muted">
+                {t(`flow.${node}`)}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-3 border-t border-border pt-3">
+          <p className="meta text-[10px] uppercase text-dim">{t('flow.lastRun')}</p>
+          <ul className="mt-1.5 grid gap-1">
+            {(['e1', 'e2', 'e3', 'e4'] as const).map((event) => (
+              <li key={event} className="flex items-center gap-2 text-xs text-muted">
+                <span aria-hidden className="grid size-3.5 shrink-0 place-items-center rounded-pill border border-success/60 text-success">
+                  <svg width="7" height="7" viewBox="0 0 10 10">
+                    <path d="M1.6 5.2 3.8 7.4 8.4 2.6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                {t(`flow.${event}`)}
+              </li>
+            ))}
+            <li className="mt-1 flex items-center gap-2 border-s-2 border-success bg-success/5 py-1.5 ps-2.5 text-xs text-ink">
+              <span aria-hidden className="size-3 shrink-0 rounded-[2px] border-[1.5px] border-success" />
+              {t('flow.hold')}
             </li>
-          ))}
-          {/* The fourth step is the argument: the chain STOPS for the human. */}
-          <li className="mt-1.5 flex items-center gap-3 border-s-2 border-success bg-success/5 py-2 ps-3 text-ink">
-            <span aria-hidden className="size-3 shrink-0 rounded-[2px] border-[1.5px] border-success" />
-            <span className="min-w-0">
-              {t('demos.automation.s4')}
-              <span className="meta ms-2 text-[10px] text-success">
-                {t('demos.automation.hold')}
-              </span>
-            </span>
-          </li>
-        </ol>
+          </ul>
+        </div>
       </DemoCard>
     );
   }

@@ -12,16 +12,23 @@ REBUILT 2026-08 on the rasai.ca structure («ras را الگو قرار بدیم
 before/deployed/after — carried in this site's own voice (navy, the map, the
 mono console). One page, the RAS spine:
 
-1. **MapHero** — the working map + «کسب‌وکار شما، روی خلبان خودکار».
+1. **MapHero**, animated and backgroundless: the working map, the claim
+   («کار تکراری را بسپارید به سیستم»), the ROTATING job line
+   (`ui/rotating-words.tsx`, Lindy's task loop, joined-script-safe), and the
+   reference's proof typography on numbers we can stand behind: the
+   structural counts as a stat strip.
 2. **Pulse** — the operations-console strip: four telemetry lines, one per
    service, ALWAYS tagged «نمونهٔ نمایشی · داده واقعی نیست». The strip earns
    its realism from that tag; removing it turns the section into a fabricated
    metric.
 3. **Services** (01) — the heart. Four offers (assistant, operations
-   automation, website/store, reports), each in three beats. The assistant's
-   demo card is PLAYABLE (`tools/assistant-demo.tsx` — visitor picks a
-   customer message, watches the scripted answer + filing); copy arrives as
-   props, the client ships no catalog. Each offer: the SCENE (a
+   automation, website/store, reports). The assistant card is PLAYABLE
+   (`tools/assistant-demo.tsx`) and closes with the reference's ACTIONS
+   TRIGGERED check-list; the automation card is a miniature workflow canvas
+   (trigger → decision → actions) with a LAST RUN log that ends on
+   «منتظر تأیید شما» — the pause is the product. Demo cards carry a green
+   ONLINE pill plus the «نمونه نمایشی» honesty tag. Copy arrives as props;
+   the client ships no catalog. Each offer: the SCENE (a
    moment the visitor recognises, present tense), the SYSTEM (what gets
    deployed, no adjectives), the OUTCOME (one bold line). A console card
    beside each shows the thing itself — chat exchange, run with its human
