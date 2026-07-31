@@ -12,15 +12,12 @@ REBUILT 2026-08 on the rasai.ca structure («ras را الگو قرار بدیم
 before/deployed/after — carried in this site's own voice (navy, the map, the
 mono console). One page, the RAS spine:
 
-1. **Hero** (`sections/hero.tsx`), TEXT ONLY on the bare ground; the owner
-   said «هیرو نباید بکگراند داشته باشه» twice, and the second time meant the
-   map panel too. Typography, the ROTATING job line
-   (`ui/rotating-words.tsx`, joined-script-safe), the white primary button,
-   and the structural counts as a hairline stat strip. The body's old violet
-   halo is deleted; the ground is flat.
-1b. **LiveMap** (`sections/live-map.tsx`) — the working map, one scroll in:
-   the slot rasai.ca gives its live dashboard. Same interactions as /map,
-   no rails.
+1. **Hero** (`sections/hero.tsx`) — the claim on the start side, the working
+   wheel on the end side, both on the first screen. What had to go was never
+   the diagram, it was the BACKGROUND under it: no grid, no frame, no panel
+   fill, and the body's old violet halo is deleted outright. Typography, the
+   ROTATING job line (`ui/rotating-words.tsx`, joined-script-safe), the white
+   primary button, and the structural counts over one hairline.
 2. **Pulse** — the operations-console strip: four telemetry lines, one per
    service, ALWAYS tagged «نمونهٔ نمایشی · داده واقعی نیست». The strip earns
    its realism from that tag; removing it turns the section into a fabricated
@@ -119,21 +116,30 @@ and stops entirely under `prefers-reduced-motion`.
 
 ## The operating map
 
-Rebuilt 2026-07-31 to the **"OPTIMAL ENGINE"** operator-console reel AFA
-supplied. It is now TWO drawings, because the reference has two, and the whole
-design depends on the move between them:
+REDRAWN 2026-08 on the note «قشنگ‌تر و تمیزتر و حرفه‌ای‌تر». The console
+pastiche (blueprint grid, four dashed guides, seventy-two stage nodes, a
+hundred crossing hairlines) is gone: dense, but it read as static at any real
+size. Two drawings remain:
 
-- **RADIAL** — the whole system at once. A particle core inside a thin ring,
-  then three orbits outward: six domain badges, twenty-four process rings, and
-  a crowd of seventy-two stage nodes. Reading outward is reading down the
-  hierarchy, and the crowd is the point — it is what makes the drawing look
-  like a company rather than a diagram.
-- **FAN** — one domain, opened. The domain drops to the foot of the stage over
-  its own particle seed, dotted rays climb to the four HUMAN CHECKPOINTS
-  (squares, green — the only status colour on the map), one plumb line runs
-  from each up to its PROCESS, and the processes splay wide into the twelve
-  machine stages across the top. Stages are grouped by stage, not by process,
-  so the branches cross: that crossing is the reference's texture.
+- **THE WHEEL** — three rings and nothing else. A particle core inside one
+  thin circle; six domain badges on the inner ring, each labelled INWARD into
+  the empty annulus (the one part of the drawing nothing else wants, and the
+  inset must clear half a label plus the badge or 3 and 9 o'clock print
+  through themselves); twenty-four process rings on the outer ring, four per
+  60° sector, reached by a QUADRATIC BEZIER that leaves the badge along its
+  own ray and bows into place. Curves, not spokes — that bow is what makes six
+  identical sectors look designed rather than generated. One marching orbit
+  is the only ambient motion; the scene itself holds still.
+- **THE FAN** — one domain, opened. The domain drops to the foot of the stage
+  over its own particle seed, dotted rays climb to the four HUMAN CHECKPOINTS
+  (squares, green, the only status colour on the map), a plumb line runs from
+  each up to its PROCESS, and the processes splay into the twelve machine
+  stages across the top, grouped by stage so the branches cross.
+
+**NO GROUND UNDER EITHER.** No grid, no page halo, no panel fill; the hero
+stage is frameless entirely and only /map keeps a hairline, because there it
+sits between two rails. The seventy-two stage nodes live in the fan, where
+they are labelled and readable, and `COUNTS` still counts them for the legend.
 
 Rules that hold across both:
 
@@ -143,23 +149,19 @@ Rules that hold across both:
   id, never `Math.random()`** — the map renders on the server and again in the
   browser, and two different pictures is a hydration error. `unit()` runs the
   lowbias32 finaliser over FNV: raw FNV on sequential keys scatters in visible
-  spokes, not a cloud. `COUNTS` is read off the structure, so the legend can
-  never drift from the drawing.
-- `src/components/tools/capability-map.tsx` — the client component. Holds no
-  arithmetic. Domain labels sit directly under the badge in the domain's own
-  colour, the one place a label is not ivory.
+  spokes, not a cloud.
+- `src/components/tools/capability-map.tsx` — the client component, no
+  arithmetic. `variant="hero"` drops the reading rails and the fullscreen
+  chip; a `hidden` utility cannot hide `.tmapChip`, which sets display itself
+  and wins the cascade, so that one is a conditional render.
 - Selecting a DOMAIN opens the fan and nothing else; only a PROCESS opens the
-  detail window. The fan already carries the domain's name, tags and summary
-  across its head, and a panel over the drawing you just asked to see is the
-  one thing the reference never does.
-- `src/styles/capability-map.css` — all visuals. Colour is rationed: it burns
-  at the domain badge, the process ring and the core; the outer crowd and the
-  connectors stay ivory-quiet. State via `data-*` attributes; animation delays
-  are CSS phase buckets, never inline styles.
-- `test/capability-map.test.ts` — determinism, bounds, collision, outward
-  monotonicity, row order in the fan, the no-two-adjacent-stages-share-a-process
-  rule, and that both catalogs describe every node in full (including each
-  domain's `tags` descriptor line).
+  detail window.
+- `src/styles/capability-map.css` — all visuals. State via `data-*`
+  attributes; animation delays are CSS phase buckets, never inline styles.
+- `test/capability-map.test.ts` — determinism, bounds, ring radii, that every
+  link actually BOWS (a control point on the chord would be a spoke), that
+  labels clear both the core and their own badge and each other, collision,
+  and that both catalogs describe every node in full.
 
 Strings are resolved **on the server** in `sections/map-hero.tsx` and passed
 as props. Do not move them into a client namespace: `Map` is the largest thing

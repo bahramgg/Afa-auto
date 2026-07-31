@@ -178,11 +178,14 @@
     top: 0;
     opacity: 0;
     transform: translateY(0.35em);
-    transition: opacity 0.45s var(--afa-ease), transform 0.45s var(--afa-ease);
+    transition: opacity 0.28s var(--afa-ease), transform 0.28s var(--afa-ease);
   }
   .rotWord[data-on] {
     opacity: 1;
     transform: translateY(0);
+    /* The incoming word arrives after the outgoing one has left, so the two
+       never print through each other. */
+    transition-delay: 0.16s;
   }
   @media (prefers-reduced-motion: reduce) {
     .rotWord { transition: none; }

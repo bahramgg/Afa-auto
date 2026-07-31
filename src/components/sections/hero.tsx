@@ -2,62 +2,144 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Eyebrow } from '@/components/ui/editorial';
 import { RotatingWords } from '@/components/ui/rotating-words';
+import {
+  CapabilityMap,
+  type CapabilityMapCopy,
+  type DomainCopy,
+  type ProcessCopy,
+} from '@/components/tools/capability-map';
+import { DOMAINS, PROCESS_IDS, type DomainId } from '@/lib/capability-map';
 
 /* -----------------------------------------------------------------------------
-   The hero, rasai.ca structure, 2026-08 by direct request and on the second
-   telling: TEXT ONLY on the bare navy-black. No map beside it, no framed
-   panel, no ground texture; the reference's hero is typography, stats and one
-   button, and the live view is its own section BELOW. The motion the owner
-   asked for is the rotating job line; the map brings more the moment the
-   visitor scrolls once.
+   The hero: the claim on the start side, the working wheel on the end side,
+   both inside the first screen.
+
+   The diagram belongs HERE, by direct request; what had to go was the
+   BACKGROUND under it. So the stage is frameless now: no blueprint grid, no
+   border, no panel fill, no page halo. The wheel is drawn straight onto the
+   ground, and nothing behind it competes.
+
+   The motion is the rotating job line plus the wheel's own marching orbit;
+   nothing wobbles.
+
+   Strings resolve here, on the server, and travel as props. The `Map` catalog
+   is the largest thing in either message file and must never enter the client
+   bundle (the same rule /map follows).
    -------------------------------------------------------------------------- */
 
 export function Hero() {
   const t = useTranslations('Hero');
+  const map = useTranslations('Map');
+  const page = useTranslations('MapPage');
+
+  const domains = Object.fromEntries(
+    DOMAINS.map((domain) => [
+      domain.id,
+      {
+        title: map(`domains.${domain.id}.title`),
+        summary: map(`domains.${domain.id}.summary`),
+        tags: map(`domains.${domain.id}.tags`),
+      } satisfies DomainCopy,
+    ]),
+  ) as Record<DomainId, DomainCopy>;
+
+  const processes = Object.fromEntries(
+    PROCESS_IDS.map((id) => [
+      id,
+      {
+        title: map(`processes.${id}.title`),
+        trigger: map(`processes.${id}.trigger`),
+        decision: map(`processes.${id}.decision`),
+        action: map(`processes.${id}.action`),
+        human: map(`processes.${id}.human`),
+      } satisfies ProcessCopy,
+    ]),
+  ) as Record<string, ProcessCopy>;
+
+  const copy: CapabilityMapCopy = {
+    hub: map('hub'),
+    hubNote: map('hubNote'),
+    viewMap: map('viewMap'),
+    viewList: map('viewList'),
+    viewLabel: map('viewLabel'),
+    reset: map('reset'),
+    close: map('close'),
+    stepTrigger: map('stepTrigger'),
+    stepDecision: map('stepDecision'),
+    stepAction: map('stepAction'),
+    stepHuman: map('stepHuman'),
+    ladderLabel: map('ladderLabel'),
+    figureLabel: map('figureLabel'),
+    directoryLabel: page('directory'),
+    legendLabel: page('legend'),
+    domainsLabel: page('domains'),
+    typeDomain: page('typeDomain'),
+    typeProcess: page('typeProcess'),
+    typeStage: page('typeStage'),
+    typeHuman: page('typeHuman'),
+    backAll: page('backAll'),
+    fullscreen: page('fullscreen'),
+    fullscreenExit: page('fullscreenExit'),
+    statusline: page('statusline'),
+    prevDomain: page('prevDomain'),
+    nextDomain: page('nextDomain'),
+    domains,
+    processes,
+  };
 
   const action =
     'inline-flex min-h-12 items-center justify-center rounded-button px-7 text-sm font-semibold transition-colors';
 
   return (
     <section id="top">
-      <div className="mx-auto flex w-full max-w-6xl flex-col justify-center px-4 py-16 sm:px-6 lg:min-h-[calc(88svh-4rem)] lg:py-12">
-        <Eyebrow>{t('eyebrow')}</Eyebrow>
+      <div className="mx-auto w-full max-w-[86rem] px-4 py-12 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:py-8">
+        <div className="grid h-full grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14">
+          <div>
+            <Eyebrow>{t('eyebrow')}</Eyebrow>
 
-        <h1 className="display-hero mt-5 max-w-4xl text-ink">{t('title')}</h1>
+            <h1 className="display-hero mt-5 text-ink">{t('title')}</h1>
 
-        {/* The moving line. Each word is one block, so joined Persian stays
-            joined; reduced-motion freezes it on the first word. */}
-        <p className="mt-6 text-lg leading-relaxed text-muted sm:text-xl">
-          {t('rotPrefix')}{' '}
-          <RotatingWords words={[t('rot1'), t('rot2'), t('rot3'), t('rot4')]} />
-        </p>
+            {/* The moving line. Each word is one block, so joined Persian
+                stays joined; reduced-motion freezes it on the first word. */}
+            <p className="mt-6 text-lg leading-relaxed text-muted">
+              {t('rotPrefix')}{' '}
+              <RotatingWords words={[t('rot1'), t('rot2'), t('rot3'), t('rot4')]} />
+            </p>
 
-        <p className="mt-3 max-w-xl text-base leading-relaxed text-muted">{t('sub')}</p>
+            <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{t('sub')}</p>
 
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <a href="#contact" className={`${action} bg-brand text-bg-950 shadow-brand`}>
-            {t('ctaPrimary')}
-          </a>
-          <Link
-            href="/map"
-            className={`${action} border border-border text-ink hover:border-border-glass`}
-          >
-            {t('ctaSecondary')}
-          </Link>
-        </div>
-
-        {/* The reference's under-hero stats, on numbers we can stand behind:
-            the structure itself. Hairlines only; no card, no ground. */}
-        <dl className="mt-14 grid max-w-3xl grid-cols-2 gap-x-10 gap-y-8 border-t border-border pt-8 sm:grid-cols-4">
-          {(['domains', 'processes', 'stages', 'human'] as const).map((stat) => (
-            <div key={stat}>
-              <dd className="text-3xl font-extrabold tabular-nums text-ink sm:text-4xl">
-                {t(`stats.${stat}.value`)}
-              </dd>
-              <dt className="mt-1.5 text-xs leading-snug text-dim">{t(`stats.${stat}.label`)}</dt>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="#contact" className={`${action} bg-brand text-bg-950 shadow-brand`}>
+                {t('ctaPrimary')}
+              </a>
+              <Link
+                href="/map"
+                className={`${action} border border-border text-ink hover:border-border-glass`}
+              >
+                {t('ctaSecondary')}
+              </Link>
             </div>
-          ))}
-        </dl>
+
+            {/* Structural counts, over one hairline. No cards. */}
+            <dl className="mt-10 grid max-w-xl grid-cols-2 gap-x-8 gap-y-6 border-t border-border pt-7 sm:grid-cols-4">
+              {(['domains', 'processes', 'stages', 'human'] as const).map((stat) => (
+                <div key={stat}>
+                  <dd className="text-2xl font-extrabold tabular-nums text-ink sm:text-3xl">
+                    {t(`stats.${stat}.value`)}
+                  </dd>
+                  <dt className="mt-1 text-[11px] leading-snug text-dim">
+                    {t(`stats.${stat}.label`)}
+                  </dt>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div>
+            <CapabilityMap copy={copy} variant="hero" />
+            <p className="mt-2 text-center text-xs text-dim">{t('mapHint')}</p>
+          </div>
+        </div>
       </div>
     </section>
   );

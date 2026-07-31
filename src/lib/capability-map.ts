@@ -1,22 +1,27 @@
 /* -----------------------------------------------------------------------------
    The operating map — structure and geometry, with no React and no strings.
 
-   FOURTH LAYOUT, 2026-07-31, built to the operator-console reel AFA supplied
-   ("OPTIMAL ENGINE"). Two drawings, not one, because the reference has two:
+   FIFTH LAYOUT, 2026-08, redrawn from scratch on the note «قشنگ‌تر و تمیزتر و
+   حرفه‌ای‌تر». The fourth was an operator-console pastiche: a blueprint grid,
+   four dashed guide circles, seventy-two stage nodes and a hundred crossing
+   hairlines. Dense, but noisy — at any real rendered size it read as static.
 
-     RADIAL — the whole system at once. A particle core inside a thin ring,
-     then THREE orbits outward: six domain badges, twenty-four process nodes,
-     and a dense outer ring of stage nodes. Reading outward is reading down
-     the hierarchy, and the crowd on the outside is the point — it is what
-     makes the drawing look like a company rather than a diagram.
+   What replaced it is a WHEEL with three rings and nothing else:
 
-     FAN — one domain, opened. The reference drops the chosen domain to the
-     bottom of the stage with its own particle seed, fans dotted rays up to a
-     row of square task nodes, runs one vertical line from each square up to
-     its agent, and lets the agents fan wide into a top row of tool nodes.
-     Ours is the same drawing with AFA's own four fields on it: the domain,
-     its four HUMAN CHECKPOINTS as the squares, its four PROCESSES as the
-     circles, and the three machine stages of each process as the top row.
+     · a small particle core inside one thin circle;
+     · six domain badges on the inner ring, each labelled INWARD, into the
+       empty annulus between core and ring — the one part of the drawing
+       nothing else wants;
+     · twenty-four process rings on the outer ring, four inside each domain's
+       60° sector, reached by a QUADRATIC BEZIER that leaves the badge along
+       its own ray and bows into place. Curves, not spokes: the fan a curve
+       draws is what makes six identical sectors look designed rather than
+       generated.
+
+   The seventy-two stage nodes are gone from this view. They still exist in
+   the model and are drawn, labelled, in the opened-domain fan below — which
+   is where a visitor can actually read them. The crowd was costing the
+   drawing its hierarchy and buying nothing back.
 
    Everything is CLOSED-FORM: angles and radii computed from indices, no
    randomness anywhere except the two particle fields, which hash stable ids —
@@ -25,28 +30,30 @@
 
 /* ------------------------------------------------------------ radial stage */
 
-/** Square stage. Panels flank it in the page grid; the drawing stays square. */
-export const VIEW = 1120;
+/** Square stage, sized so the drawing fills it with one clear margin. */
+export const VIEW = 820;
 
 const C = VIEW / 2;
 
-/** Orbit radii. The gaps ARE the hierarchy: core → domains → processes → stages. */
-export const R_CORE = 92;
-export const R_DOMAIN = 172;
-export const R_PROCESS_IN = 300;
-export const R_PROCESS_OUT = 348;
-export const R_STAGE_IN = 436;
-export const R_STAGE_OUT = 464;
+/** Three radii, and only three. The gaps ARE the hierarchy. */
+export const R_CORE = 52;
+export const R_DOMAIN = 196;
+export const R_PROCESS = 330;
 
-/* Process angular offsets inside a domain's 60° sector, paired with orbit
-   alternation in-out-in-out — the texture the reference's double ring has. */
+/* Where a domain's name sits: inward, in the empty annulus. The inset has to
+   clear HALF A LABEL plus the badge, or the two domains at 3 and 9 o'clock
+   print their names straight through their own badges — the first draft of
+   this layout did exactly that. */
+const LABEL_INSET = 78;
+
+/** Process angular offsets inside a domain's 60° sector. */
 const PROCESS_OFFSETS = [-21, -7, 7, 21] as const;
-const PROCESS_ORBITS = [R_PROCESS_IN, R_PROCESS_OUT, R_PROCESS_IN, R_PROCESS_OUT] as const;
 
-/** Twelve stage nodes per domain, evenly spread across its sector. */
-const STAGE_STEP = 4.6;
+/** The bezier's control point: outward of the badge, barely off its ray. */
+const CURVE_RADIUS = 258;
+const CURVE_LEAN = 0.34;
 
-/** Hubs at 30°, 90°, …, 330° — dead top/bottom stay clear for chrome. */
+/** Domains at 30°, 90°, …, 330° — dead top/bottom stay clear for chrome. */
 const ANGLE_OFFSET = 30;
 
 export type DomainId =
@@ -58,17 +65,17 @@ export type DomainId =
   | 'intelligence';
 
 /**
- * The three MACHINE stages of a process, in order. They are the outer ring of
- * the radial drawing and the top row of the fan. The fourth field — the human
- * checkpoint — is deliberately not one of them: it is drawn as its own square,
- * because on this map the human is a different kind of node, not a fourth step.
+ * The three MACHINE stages of a process, in order. They are the top row of
+ * the opened-domain fan. The fourth field — the human checkpoint — is
+ * deliberately not one of them: it is drawn as its own square, because on
+ * this map the human is a different kind of node, not a fourth step.
  */
 export const STAGES = ['trigger', 'decision', 'action'] as const;
 export type StageId = (typeof STAGES)[number];
 
 /**
  * The second channel carrying domain identity, so the map is not colour-alone
- * (WCAG 2.1 §1.4.1). Drawn inside the hub ring.
+ * (WCAG 2.1 §1.4.1). Drawn inside the badge ring.
  */
 export type Glyph = 'circle' | 'square' | 'diamond' | 'triangle' | 'hexagon' | 'cross';
 
@@ -84,7 +91,7 @@ export interface DomainSpec {
 }
 
 /* The structure itself — six domains, four real processes each. The content
-   contract with messages/ is unchanged across all four layouts. */
+   contract with messages/ is unchanged across all five layouts. */
 export const DOMAINS: readonly DomainSpec[] = [
   {
     id: 'sales',
@@ -127,7 +134,7 @@ export const DOMAINS: readonly DomainSpec[] = [
 /** Every process id on the map, flattened. Validates the message catalogs. */
 export const PROCESS_IDS: readonly string[] = DOMAINS.flatMap((d) => d.processes);
 
-/** What the legend counts. Real numbers, read off the structure — never typed. */
+/** What the legend counts, across BOTH drawings. Read off the structure. */
 export const COUNTS = {
   domains: DOMAINS.length,
   processes: PROCESS_IDS.length,
@@ -142,29 +149,19 @@ export interface Point {
   readonly y: number;
 }
 
-/** One machine stage of one process — the outer ring / the fan's top row. */
-export interface StageNode extends Point {
-  readonly id: string;
-  readonly stage: StageId;
-  readonly process: string;
-  readonly domain: DomainId;
-  readonly tone: Tone;
-  readonly phase: number;
-}
-
 export interface ProcessNode extends Point {
   readonly id: string;
   readonly domain: DomainId;
   readonly tone: Tone;
   /** 1-based position inside its domain — the numeral drawn in the ring. */
   readonly index: number;
-  /** Which orbit it rides; the component only needs it for the aria order. */
-  readonly orbit: number;
   /** Degrees from 12 o'clock. */
   readonly angle: number;
   /** 0–7 animation-delay bucket. */
   readonly phase: number;
-  readonly stages: readonly StageNode[];
+  /** Quadratic control point for the badge → process curve. */
+  readonly cx: number;
+  readonly cy: number;
 }
 
 export interface HubNode extends Point {
@@ -173,7 +170,7 @@ export interface HubNode extends Point {
   readonly glyph: Glyph;
   readonly angle: number;
   readonly phase: number;
-  /** Label anchor, just under the badge — the reference sets it there. */
+  /** Label anchor — inward, between the core and the badge ring. */
   readonly lx: number;
   readonly ly: number;
   readonly processes: readonly ProcessNode[];
@@ -186,7 +183,7 @@ export interface Mote extends Point {
   readonly tone: number;
 }
 
-/** A filament between two motes — the web running through the reference's core. */
+/** A filament between two motes — the web running through the core. */
 export interface Filament {
   readonly x1: number;
   readonly y1: number;
@@ -241,9 +238,10 @@ function polar(angleDeg: number, radius: number, cx = C, cy = C): Point {
 }
 
 /**
- * A particle field — the reference's "company brain". Dense at the middle,
- * thinning outward, every tone plus ivory. Decorative, never announced.
- * `seed` keeps two fields on the same page from being the same picture.
+ * A particle field — the company brain at the centre. Dense at the middle,
+ * thinning outward, mostly ivory with the tones running through it.
+ * Decorative, never announced. `seed` keeps two fields on the same page from
+ * being the same picture.
  */
 function buildMotes(count: number, spread: number, seed: string, cx = C, cy = C): Mote[] {
   return Array.from({ length: count }, (_, i) => {
@@ -252,21 +250,20 @@ function buildMotes(count: number, spread: number, seed: string, cx = C, cy = C)
     const radius = spread * 0.05 + unit(`${key}r`) ** 1.55 * spread;
     return {
       ...polar(angle, radius, cx, cy),
-      r: 0.8 + unit(`${key}s`) * 1.9,
+      r: 0.7 + unit(`${key}s`) * 1.5,
       phase: hash(key) % 8,
-      /* Half the field is ivory. An evenly-mixed core reads as confetti; the
-         reference's brain is a pale mass with colour running through it. */
+      /* Half the field is ivory. An evenly-mixed core reads as confetti; a
+         brain is a pale mass with colour running through it. */
       tone: Math.max(0, (hash(`${key}t`) % 12) - 5),
     };
   });
 }
 
 /**
- * The web through the core. The reference's brain is not a spray of dots, it
- * is a MESH — take that away and the middle of the map reads as noise. Each
- * mote reaches for a fixed, co-prime-strided neighbour and keeps the link only
- * if it is short, which is a closed-form stand-in for nearest-neighbour and
- * costs no sort.
+ * The web through the core. Take it away and the middle reads as a spray of
+ * dots. Each mote reaches for a fixed, co-prime-strided neighbour and keeps
+ * the link only if it is short — a closed-form stand-in for nearest-neighbour
+ * that costs no sort.
  */
 function buildFilaments(motes: readonly Mote[], reach: number): Filament[] {
   const out: Filament[] = [];
@@ -283,8 +280,8 @@ function buildFilaments(motes: readonly Mote[], reach: number): Filament[] {
 }
 
 /**
- * Build the radial map. Pure and closed-form — the test calls it twice and
- * asserts identity, and asserts every ring relation stated above.
+ * Build the wheel. Pure and closed-form — the test calls it twice and asserts
+ * identity, and asserts every ring relation stated above.
  */
 export function layoutMandala(domains: readonly DomainSpec[] = DOMAINS): MandalaLayout {
   const step = 360 / domains.length;
@@ -292,40 +289,23 @@ export function layoutMandala(domains: readonly DomainSpec[] = DOMAINS): Mandala
   const hubs = domains.map((domain, index): HubNode => {
     const angle = ANGLE_OFFSET + index * step;
     const at = polar(angle, R_DOMAIN);
+    const label = polar(angle, R_DOMAIN - LABEL_INSET);
 
     const processes = domain.processes.map((processId, p): ProcessNode => {
-      const processAngle = angle + PROCESS_OFFSETS[p]!;
-      const orbit = PROCESS_ORBITS[p]!;
-
-      /* Stages are laid out ACROSS the domain's whole sector, grouped by stage
-         rather than by process — so a process's three lines splay wide and
-         cross its neighbours'. That crossing is the reference's texture; three
-         stages bunched over their own process would read as a comb. */
-      const stages = STAGES.map((stage, s): StageNode => {
-        const k = s * domain.processes.length + p;
-        const stageAngle = angle + (k - 5.5) * STAGE_STEP;
-        const id = `${processId}:${stage}`;
-        return {
-          id,
-          stage,
-          process: processId,
-          domain: domain.id,
-          tone: domain.tone,
-          phase: hash(id) % 8,
-          ...polar(stageAngle, k % 2 === 0 ? R_STAGE_IN : R_STAGE_OUT),
-        };
-      });
+      const offset = PROCESS_OFFSETS[p]!;
+      const processAngle = angle + offset;
+      const control = polar(angle + offset * CURVE_LEAN, CURVE_RADIUS);
 
       return {
         id: processId,
         domain: domain.id,
         tone: domain.tone,
         index: p + 1,
-        orbit,
         angle: processAngle,
         phase: hash(processId) % 8,
-        stages,
-        ...polar(processAngle, orbit),
+        cx: control.x,
+        cy: control.y,
+        ...polar(processAngle, R_PROCESS),
       };
     });
 
@@ -335,20 +315,20 @@ export function layoutMandala(domains: readonly DomainSpec[] = DOMAINS): Mandala
       glyph: domain.glyph,
       angle,
       phase: hash(domain.id) % 8,
-      lx: at.x,
-      ly: round(at.y + 42),
+      lx: label.x,
+      ly: label.y,
       processes,
       ...at,
     };
   });
 
-  const motes = buildMotes(340, 80, 'core');
+  const motes = buildMotes(190, 38, 'core');
 
   return {
     center: { x: C, y: C },
     hubs,
     motes,
-    filaments: buildFilaments(motes, 34),
+    filaments: buildFilaments(motes, 17),
   };
 }
 

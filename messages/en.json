@@ -48,12 +48,8 @@
         "value": "All",
         "label": "with a human checkpoint"
       }
-    }
-  },
-  "Live": {
-    "eyebrow": "Live view",
-    "title": "See the system, live",
-    "hint": "Click a domain to open it; click a process for the detail."
+    },
+    "mapHint": "Click a domain to open it; click a process for the detail."
   },
   "Pulse": {
     "label": "operations console",

@@ -7,11 +7,7 @@ import {
   STAGES,
   VIEW,
   R_CORE,
-  R_DOMAIN,
-  R_PROCESS_IN,
-  R_PROCESS_OUT,
-  R_STAGE_IN,
-  R_STAGE_OUT,
+  R_PROCESS,
   FAN_W,
   FAN_H,
   layoutFan,
@@ -107,11 +103,11 @@ const FANS = Object.fromEntries(DOMAINS.map((d) => [d.id, layoutFan(d.id)])) as 
   ReturnType<typeof layoutFan>
 >;
 
-const HUB_R = 24;
-const PROC_R = 19;
+const HUB_R = 21;
+const PROC_R = 13;
 const STAGE_R = 8;
 const HUMAN_R = 9;
-const HIT_R = 30;
+const HIT_R = 28;
 
 const STAGE_LABEL_KEY = {
   trigger: 'stepTrigger',
@@ -405,24 +401,32 @@ function Stage({
           {copy.backAll}
         </button>
 
-        <button
-          type="button"
-          onClick={toggleFullscreen}
-          className="tmapChip pointer-events-auto"
-          aria-pressed={expanded}
-        >
-          <svg width="11" height="11" viewBox="0 0 14 14" aria-hidden>
-            <path
-              d="M5 1.5H1.5V5M9 1.5h3.5V5M5 12.5H1.5V9M9 12.5h3.5V9"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {expanded ? copy.fullscreenExit : copy.fullscreen}
-        </button>
+        {/* No fullscreen chip on the hero: with the stage frameless there is
+            no panel for it to belong to, and it reads as a button floating in
+            space. A `hidden` utility cannot do this job — `.tmapChip` sets
+            display itself and wins the cascade. */}
+        {fit === 'width' ? (
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            className="tmapChip pointer-events-auto"
+            aria-pressed={expanded}
+          >
+            <svg width="11" height="11" viewBox="0 0 14 14" aria-hidden>
+              <path
+                d="M5 1.5H1.5V5M9 1.5h3.5V5M5 12.5H1.5V9M9 12.5h3.5V9"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {expanded ? copy.fullscreenExit : copy.fullscreen}
+          </button>
+        ) : (
+          <span />
+        )}
       </div>
 
       {fan ? (
@@ -493,33 +497,20 @@ function RadialView({
   onSelect: (next: Selection) => void;
 }) {
   return (
-    <svg
-      className="tmap"
-      viewBox={`0 0 ${VIEW} ${VIEW}`}
-      role="group"
-      aria-labelledby={titleId}
-    >
+    <svg className="tmap" viewBox={`0 0 ${VIEW} ${VIEW}`} role="group" aria-labelledby={titleId}>
       <title id={titleId}>{copy.figureLabel}</title>
 
       <g className="tmapScene">
         <g aria-hidden="true">
-          {[R_CORE, R_DOMAIN, R_PROCESS_IN, R_PROCESS_OUT, R_STAGE_IN, R_STAGE_OUT].map(
-            (radius) => (
-              <circle
-                key={radius}
-                className="tmapGuide"
-                cx={layout.center.x}
-                cy={layout.center.y}
-                r={radius}
-              />
-            ),
-          )}
+          {/* ONE marching ring, not four dashed guides. */}
           <circle
-            className="tmapCoreRing"
+            className="tmapOrbit"
             cx={layout.center.x}
             cy={layout.center.y}
-            r={R_CORE}
+            r={R_PROCESS}
+            pathLength={100}
           />
+          <circle className="tmapCoreRing" cx={layout.center.x} cy={layout.center.y} r={R_CORE} />
         </g>
 
         <MoteField motes={layout.motes} filaments={layout.filaments} />
@@ -587,59 +578,17 @@ function DomainVolume({
 
   return (
     <g className="tmapDomain" data-tone={hub.tone}>
+      {/* Badge → process: a quadratic that leaves along the domain's own ray
+          and bows into place. The bow is the whole difference between this
+          and a bicycle wheel. */}
       <g aria-hidden="true">
-        <line
-          className="tmapSpokeHub"
-          x1={layout.center.x}
-          y1={layout.center.y}
-          x2={hub.x}
-          y2={hub.y}
-        />
-        <g data-phase={hub.phase}>
-          <line
-            className="tmapPulse"
-            x1={layout.center.x}
-            y1={layout.center.y}
-            x2={hub.x}
-            y2={hub.y}
-            pathLength={100}
-          />
-        </g>
         {hub.processes.map((process) => (
-          <g key={process.id}>
-            <line
-              className="tmapSpokeProc"
-              x1={hub.x}
-              y1={hub.y}
-              x2={process.x}
-              y2={process.y}
-            />
-            {process.stages.map((stage) => (
-              <line
-                key={stage.id}
-                className="tmapSpokeStage"
-                x1={process.x}
-                y1={process.y}
-                x2={stage.x}
-                y2={stage.y}
-              />
-            ))}
-          </g>
+          <path
+            key={process.id}
+            className="tmapLink"
+            d={`M${hub.x} ${hub.y}Q${process.cx} ${process.cy} ${process.x} ${process.y}`}
+          />
         ))}
-      </g>
-
-      {/* The outer crowd. Decorative on this view — every stage is written out
-          in the detail window and in the list, so nothing is lost by muting it
-          for assistive tech, and announcing 72 unlabelled rings would be noise. */}
-      <g aria-hidden="true">
-        {hub.processes.flatMap((process) =>
-          process.stages.map((stage) => (
-            <g key={stage.id} className="tmapIn" data-phase={stage.phase}>
-              <circle className="tmapStageRing" cx={stage.x} cy={stage.y} r={STAGE_R} />
-              <StageGlyph stage={stage.stage} x={stage.x} y={stage.y} />
-            </g>
-          )),
-        )}
       </g>
 
       {hub.processes.map((process) => (
@@ -667,12 +616,14 @@ function DomainVolume({
           }
         }}
       >
-        <circle className="tmapHit" cx={hub.x} cy={hub.y} r={HIT_R + 8} />
+        <circle className="tmapHit" cx={hub.x} cy={hub.y} r={HIT_R + 10} />
         <g className="tmapIn">
-          <circle className="tmapAura" cx={hub.x} cy={hub.y} r={HUB_R + 10} />
+          <circle className="tmapAura" cx={hub.x} cy={hub.y} r={HUB_R + 9} />
           <circle className="tmapHubRing" cx={hub.x} cy={hub.y} r={HUB_R} />
-          <HubGlyph glyph={hub.glyph} x={hub.x} y={hub.y} r={HUB_R * 0.42} />
-          <text className="tmapHubLabel" x={hub.lx} y={hub.ly}>
+          <HubGlyph glyph={hub.glyph} x={hub.x} y={hub.y} r={HUB_R * 0.4} />
+          {/* Inward, into the empty annulus — the one place nothing else
+              wants, so the name never fights a node or a curve. */}
+          <text className="tmapHubLabel" x={hub.lx} y={hub.ly + 5}>
             {domainCopy.title}
           </text>
         </g>

@@ -7,17 +7,13 @@ import {
   VIEW,
   R_CORE,
   R_DOMAIN,
-  R_PROCESS_IN,
-  R_PROCESS_OUT,
-  R_STAGE_IN,
-  R_STAGE_OUT,
+  R_PROCESS,
   FAN_W,
   FAN_H,
   layoutFan,
   layoutMandala,
   type HubNode,
   type ProcessNode,
-  type StageNode,
 } from '@/lib/capability-map';
 import fa from '../messages/fa.json';
 import en from '../messages/en.json';
@@ -31,25 +27,24 @@ import en from '../messages/en.json';
 const layout = layoutMandala();
 
 const allProcesses: ProcessNode[] = layout.hubs.flatMap((h) => [...h.processes]);
-const allStages: StageNode[] = allProcesses.flatMap((p) => [...p.stages]);
 const interactive: (HubNode | ProcessNode)[] = [...layout.hubs, ...allProcesses];
 
 const distance = (a: { x: number; y: number }, b: { x: number; y: number }) =>
   Math.hypot(a.x - b.x, a.y - b.y);
 
 describe('operating map — structure', () => {
-  it('lays out every declared domain, process and stage', () => {
+  it('lays out every declared domain and process', () => {
     expect(layout.hubs).toHaveLength(DOMAINS.length);
     expect(allProcesses).toHaveLength(PROCESS_IDS.length);
     expect(allProcesses.map((p) => p.id).sort()).toEqual([...PROCESS_IDS].sort());
-    expect(allStages).toHaveLength(PROCESS_IDS.length * STAGES.length);
-    expect(new Set(allStages.map((s) => s.id)).size).toBe(allStages.length);
   });
 
-  it('publishes counts that match the drawing, so the legend cannot drift', () => {
+  it('publishes counts that match the model, so the legend cannot drift', () => {
+    // The wheel no longer DRAWS the stages (they are the fan's top row), but
+    // the legend counts the model across both views.
     expect(COUNTS.domains).toBe(layout.hubs.length);
     expect(COUNTS.processes).toBe(allProcesses.length);
-    expect(COUNTS.stages).toBe(allStages.length);
+    expect(COUNTS.stages).toBe(allProcesses.length * STAGES.length);
     expect(COUNTS.humans).toBe(allProcesses.length);
   });
 
@@ -66,18 +61,11 @@ describe('operating map — structure', () => {
     }
   });
 
-  it('gives every process the three machine stages, in order, and no fourth', () => {
-    // The human checkpoint is deliberately NOT a stage: it is drawn as its own
-    // kind of node. If it ever creeps in here the drawing lies about the model.
-    for (const process of allProcesses) {
-      expect(process.stages.map((s) => s.stage)).toEqual([...STAGES]);
-      for (const stage of process.stages) {
-        expect(stage.process).toBe(process.id);
-        expect(stage.domain).toBe(process.domain);
-        expect(stage.tone).toBe(process.tone);
-      }
-    }
+  it('keeps the human checkpoint out of the machine stages', () => {
+    // The human is drawn as its own kind of node in the fan, never as a
+    // fourth step. If it ever creeps in here the drawing lies about the model.
     expect(STAGES).not.toContain('human');
+    expect(STAGES).toHaveLength(3);
   });
 });
 
@@ -87,7 +75,7 @@ describe('operating map — radial geometry', () => {
   });
 
   it('keeps every node inside the stage', () => {
-    const points = [...interactive, ...allStages, ...layout.motes];
+    const points = [...interactive, ...layout.motes];
     for (const p of points) {
       expect(p.x).toBeGreaterThanOrEqual(0);
       expect(p.x).toBeLessThanOrEqual(VIEW);
@@ -100,70 +88,74 @@ describe('operating map — radial geometry', () => {
     expect(layout.hubs.map((h) => h.angle)).toEqual([30, 90, 150, 210, 270, 330]);
   });
 
-  it('rides exactly the declared radii, orbit by orbit', () => {
+  it('rides exactly the two declared rings', () => {
     for (const hub of layout.hubs) {
       expect(distance(hub, layout.center)).toBeCloseTo(R_DOMAIN, 0);
       for (const process of hub.processes) {
-        expect(distance(process, layout.center)).toBeCloseTo(process.orbit, 0);
-        expect([R_PROCESS_IN, R_PROCESS_OUT]).toContain(process.orbit);
-        for (const stage of process.stages) {
-          const r = distance(stage, layout.center);
-          expect(
-            Math.min(Math.abs(r - R_STAGE_IN), Math.abs(r - R_STAGE_OUT)),
-          ).toBeLessThan(1);
-        }
+        expect(distance(process, layout.center)).toBeCloseTo(R_PROCESS, 0);
       }
-      // Orbit alternation in-out-in-out — the double-ring texture.
-      expect(hub.processes.map((p) => p.orbit)).toEqual([
-        R_PROCESS_IN,
-        R_PROCESS_OUT,
-        R_PROCESS_IN,
-        R_PROCESS_OUT,
-      ]);
+    }
+  });
+
+  it('bows every link instead of drawing a spoke', () => {
+    // A control point ON the straight line would render as a spoke, which is
+    // the drawing this layout replaced.
+    for (const hub of layout.hubs) {
+      for (const process of hub.processes) {
+        const control = { x: process.cx, y: process.cy };
+        expect(distance(control, layout.center)).toBeGreaterThan(R_DOMAIN);
+        expect(distance(control, layout.center)).toBeLessThan(R_PROCESS);
+        // Distance from the control point to the hub→process chord.
+        const dx = process.x - hub.x;
+        const dy = process.y - hub.y;
+        const len = Math.hypot(dx, dy);
+        const off =
+          Math.abs(dx * (hub.y - control.y) - (hub.x - control.x) * dy) / len;
+        expect(off).toBeGreaterThan(2);
+      }
     }
   });
 
   it('reads outward as the hierarchy reads downward', () => {
-    // core ring < domains < processes < stages. If this inverts, the drawing
-    // stops meaning anything.
+    // core ring < domains < processes. If this inverts, the drawing stops
+    // meaning anything.
     expect(R_CORE).toBeLessThan(R_DOMAIN);
-    expect(R_DOMAIN).toBeLessThan(R_PROCESS_IN);
-    expect(R_PROCESS_OUT).toBeLessThan(R_STAGE_IN);
-    expect(R_STAGE_IN).toBeLessThan(R_STAGE_OUT);
+    expect(R_DOMAIN).toBeLessThan(R_PROCESS);
+    // And the whole wheel has to leave a margin inside the stage.
+    expect(R_PROCESS + 20).toBeLessThan(VIEW / 2);
   });
 
-  it('keeps every process and stage inside its own domain sector', () => {
+  it('keeps every process inside its own domain sector', () => {
     // A node wandering into the neighbouring arc would visually re-assign it.
     for (const hub of layout.hubs) {
       for (const process of hub.processes) {
         expect(Math.abs(process.angle - hub.angle)).toBeLessThan(30);
-        for (const stage of process.stages) {
-          const angle =
-            (Math.atan2(stage.y - layout.center.y, stage.x - layout.center.x) * 180) /
-              Math.PI +
-            90;
-          const delta = ((angle - hub.angle + 540) % 360) - 180;
-          expect(Math.abs(delta)).toBeLessThan(30);
-        }
+      }
+    }
+  });
+
+  it('labels each domain inward, clear of the core and its own badge', () => {
+    for (const hub of layout.hubs) {
+      const r = distance({ x: hub.lx, y: hub.ly }, layout.center);
+      expect(r).toBeGreaterThan(R_CORE + 40);
+      expect(r).toBeLessThan(R_DOMAIN - 20);
+    }
+    // Six labels on one ring must not run into each other.
+    for (let i = 0; i < layout.hubs.length; i += 1) {
+      for (let j = i + 1; j < layout.hubs.length; j += 1) {
+        const a = layout.hubs[i]!;
+        const b = layout.hubs[j]!;
+        expect(distance({ x: a.lx, y: a.ly }, { x: b.lx, y: b.ly })).toBeGreaterThan(90);
       }
     }
   });
 
   it('never lets two interactive nodes crowd each other', () => {
-    // Domains draw at r≈24, process rings at r≈19, both with 44px hit targets
+    // Domains draw at r≈21, process rings at r≈13, both with 44px hit targets
     // at display size. 34 viewBox units is the floor before halos collide.
     for (let i = 0; i < interactive.length; i += 1) {
       for (let j = i + 1; j < interactive.length; j += 1) {
         expect(distance(interactive[i]!, interactive[j]!)).toBeGreaterThan(34);
-      }
-    }
-  });
-
-  it('keeps the outer crowd from overlapping itself', () => {
-    // Stage rings draw at r=8; below 20 units apart they merge into a smear.
-    for (let i = 0; i < allStages.length; i += 1) {
-      for (let j = i + 1; j < allStages.length; j += 1) {
-        expect(distance(allStages[i]!, allStages[j]!)).toBeGreaterThan(20);
       }
     }
   });
@@ -181,7 +173,7 @@ describe('operating map — radial geometry', () => {
       // long enough to cross the core would read as a stray line, not a mesh.
       expect(distance({ x: f.x1, y: f.y1 }, layout.center)).toBeLessThan(R_CORE);
       expect(distance({ x: f.x2, y: f.y2 }, layout.center)).toBeLessThan(R_CORE);
-      expect(distance({ x: f.x1, y: f.y1 }, { x: f.x2, y: f.y2 })).toBeLessThan(34);
+      expect(distance({ x: f.x1, y: f.y1 }, { x: f.x2, y: f.y2 })).toBeLessThan(17);
     }
   });
 
@@ -191,7 +183,7 @@ describe('operating map — radial geometry', () => {
   });
 
   it('spreads animation phases across the buckets', () => {
-    const nodes = [...interactive, ...allStages, ...layout.motes];
+    const nodes = [...interactive, ...layout.motes];
     const phases = new Set(nodes.map((n) => n.phase));
     expect(phases.size).toBeGreaterThanOrEqual(6);
     for (const n of nodes) {
