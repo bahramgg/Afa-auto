@@ -1,17 +1,20 @@
 /* =============================================================================
-   The operating map — terminal styling, rebuilt 2026-07-31 to the operator-OS
-   reel AFA supplied ("Bennett OS").
+   The operating map — operator-console styling, rebuilt 2026-07-31 to the
+   "OPTIMAL ENGINE" reel AFA supplied.
 
    What the reference does and this file now does:
-     · a BLUEPRINT stage: fine line grid + dot grid on near-black, vignetted;
-     · monospace, uppercase, comment-style labels ("// DIRECTORY");
-     · ring-badge nodes: a circle outline with a glyph or numeral inside,
-       coloured by domain tone;
-     · dashed guide circles for the orbits, dashed spokes hub → core, thin
-       solid spokes process → hub;
-     · a multicoloured particle core;
-     · when a domain opens, the whole stage tints toward its tone (the root
-       carries data-tone, so --tone cascades into guides and pulses).
+     · a BLUEPRINT stage: a fine line grid over a dot grid on near-black,
+       edge-vignetted, with the open domain's colour pooled behind the drawing;
+     · monospace, uppercase, comment-style chrome ("// DIRECTORY", "⤢");
+     · ring-badge nodes — a circle outline with a glyph or numeral inside,
+       coloured by domain tone — and SQUARE nodes for the human checkpoints,
+       because on this map the human is a different kind of node;
+     · dashed guide circles for the orbits, dashed rays domain → checkpoint,
+       straight stems checkpoint → process, thin branches process → stage;
+     · a multicoloured particle core, and a smaller seed of it under the
+       domain badge when one domain is open;
+     · when a domain opens, the whole stage tints toward its tone (the stage
+       root carries data-tone, so --tone cascades into guides, glow and rays).
 
    `.cmap [data-tone]` stays as the shared tone-mapping block — the process
    index and the map page's detail sections select tones through it.
@@ -19,21 +22,23 @@
    ========================================================================== */
 
 .cmap,
-.tmap {
+.tmap,
+.tmapStage {
   --tone: var(--map-1);
 }
 
-.cmap [data-tone='1'], .cmap[data-tone='1'], .tmap [data-tone='1'], .tmap[data-tone='1'] { --tone: var(--map-1); }
-.cmap [data-tone='2'], .cmap[data-tone='2'], .tmap [data-tone='2'], .tmap[data-tone='2'] { --tone: var(--map-2); }
-.cmap [data-tone='3'], .cmap[data-tone='3'], .tmap [data-tone='3'], .tmap[data-tone='3'] { --tone: var(--map-3); }
-.cmap [data-tone='4'], .cmap[data-tone='4'], .tmap [data-tone='4'], .tmap[data-tone='4'] { --tone: var(--map-4); }
-.cmap [data-tone='5'], .cmap[data-tone='5'], .tmap [data-tone='5'], .tmap[data-tone='5'] { --tone: var(--map-5); }
-.cmap [data-tone='6'], .cmap[data-tone='6'], .tmap [data-tone='6'], .tmap[data-tone='6'] { --tone: var(--map-6); }
+.cmap [data-tone='1'], .cmap[data-tone='1'], .tmap [data-tone='1'], .tmap[data-tone='1'], .tmapStage[data-tone='1'] { --tone: var(--map-1); }
+.cmap [data-tone='2'], .cmap[data-tone='2'], .tmap [data-tone='2'], .tmap[data-tone='2'], .tmapStage[data-tone='2'] { --tone: var(--map-2); }
+.cmap [data-tone='3'], .cmap[data-tone='3'], .tmap [data-tone='3'], .tmap[data-tone='3'], .tmapStage[data-tone='3'] { --tone: var(--map-3); }
+.cmap [data-tone='4'], .cmap[data-tone='4'], .tmap [data-tone='4'], .tmap[data-tone='4'], .tmapStage[data-tone='4'] { --tone: var(--map-4); }
+.cmap [data-tone='5'], .cmap[data-tone='5'], .tmap [data-tone='5'], .tmap[data-tone='5'], .tmapStage[data-tone='5'] { --tone: var(--map-5); }
+.cmap [data-tone='6'], .cmap[data-tone='6'], .tmap [data-tone='6'], .tmap[data-tone='6'], .tmapStage[data-tone='6'] { --tone: var(--map-6); }
 
 /* ---------------------------------------------------------------- the stage */
 
-/* Blueprint ground: a 48px line grid over a 24px dot grid, faded at the
-   edges. Gradients, never images — the token contract forbids url(). */
+/* Blueprint ground: a 46px line grid over a 23px dot grid. In the reference
+   the grid runs edge to edge and only the corners fall away, so the mask is
+   generous — a tight vignette turns the instrument back into a vignette. */
 .tmapStage {
   position: relative;
   border: 1px solid var(--border);
@@ -47,22 +52,52 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px),
-    radial-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
-  background-size: 48px 48px, 48px 48px, 24px 24px;
-  mask-image: radial-gradient(75% 75% at 50% 50%, #000 30%, transparent 100%);
+    linear-gradient(color-mix(in srgb, var(--ink) 4.5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 4.5%, transparent) 1px, transparent 1px),
+    radial-gradient(color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px);
+  background-size: 46px 46px, 46px 46px, 23px 23px;
+  mask-image: radial-gradient(105% 105% at 50% 45%, #000 55%, transparent 100%);
   pointer-events: none;
+  z-index: 0;
+}
+
+/* The pool of colour the reference throws behind an opened domain. Off in the
+   radial view — the whole point of that view is that no domain is favoured. */
+.tmapStage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    58% 48% at 50% 70%,
+    color-mix(in srgb, var(--tone) 26%, transparent) 0%,
+    transparent 74%
+  );
+  opacity: 0;
+  transition: opacity var(--afa-t-slow) var(--afa-ease);
+  pointer-events: none;
+  z-index: 0;
+}
+.tmapStage[data-view='fan']::after { opacity: 1; }
+
+/* In real fullscreen the stage becomes the page: centre the drawing. */
+.tmapStage:fullscreen {
+  display: grid;
+  align-content: center;
+  border-radius: 0;
+  padding: 0 4vw;
 }
 
 .tmap {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
   touch-action: manipulation;
 }
 
-/* Ambient sway, barely there — an instrument, not a mobile. */
+/* Ambient sway, barely there — an instrument, not a mobile. The fan is a
+   diagram of one thing and holds still. */
 .tmapScene {
   transform-box: fill-box;
   transform-origin: center;
@@ -93,42 +128,52 @@
   to   { opacity: 1; }
 }
 
-/* ---------------------------------------------------------------- guides */
+/* ------------------------------------------------------------------ guides */
 
 .tmapGuide {
   fill: none;
-  stroke: color-mix(in srgb, var(--ink) 10%, transparent);
+  stroke: color-mix(in srgb, var(--ink) 8%, transparent);
   stroke-width: 1;
-  stroke-dasharray: 2 6;
+  stroke-dasharray: 2 7;
   vector-effect: non-scaling-stroke;
-  transition: stroke var(--afa-t-slow) var(--afa-ease);
 }
 
-/* Focus tint: with a domain open, the instrument itself leans its colour. */
-.tmap[data-focus] .tmapGuide {
-  stroke: color-mix(in srgb, var(--tone) 22%, transparent);
+/* The one solid circle: the ring the reference draws around the brain. */
+.tmapCoreRing {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 24%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
-/* Hub → core: dashed, like the reference's converging spokes. */
+/* Domain → core: dashed, like the reference's converging spokes. */
 .tmapSpokeHub {
   fill: none;
-  stroke: color-mix(in srgb, var(--ink) 13%, transparent);
+  stroke: color-mix(in srgb, var(--ink) 12%, transparent);
   stroke-width: 1;
   stroke-dasharray: 1 6;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
 }
 
-/* Process → hub: thin and solid. */
+/* Process → domain: thin and solid. */
 .tmapSpokeProc {
   fill: none;
-  stroke: color-mix(in srgb, var(--ink) 14%, transparent);
+  stroke: color-mix(in srgb, var(--tone) 26%, transparent);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
-  transition: stroke var(--afa-t-base) var(--afa-ease);
 }
 
-/* A bead of the domain's tone travelling the hub spoke. */
+/* Stage → process: the faintest line on the map. Seventy-two of them draw the
+   outer crowd; any heavier and the drawing turns into a ball of wool. */
+.tmapSpokeStage {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 9%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* A bead of the domain's tone travelling the core spoke. */
 .tmapPulse {
   fill: none;
   stroke: var(--tone);
@@ -155,7 +200,15 @@
 .tmap [data-phase='7'] { --tmap-delay: -10.5s; }
 .tmapPulse, .tmapMote, .tmapAura { animation-delay: var(--tmap-delay, 0s); }
 
-/* ------------------------------------------------------------------ core */
+/* -------------------------------------------------------------------- core */
+
+/* The mesh through the brain. It has to sit right at the edge of visible: any
+   brighter and it becomes a scribble, any fainter and the core is a spray. */
+.tmapFilament {
+  stroke: color-mix(in srgb, var(--ink) 20%, transparent);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
 
 .tmapMote { animation: tmapTwinkle 6s var(--ease-ambient) infinite; }
 .tmapMote[data-mote='0'] { fill: var(--ink); }
@@ -167,8 +220,16 @@
 .tmapMote[data-mote='6'] { fill: var(--map-6); }
 
 @keyframes tmapTwinkle {
-  0%, 100% { opacity: 0.2; }
-  50%      { opacity: 0.9; }
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+
+/* The circle the opened domain's seed sits in. */
+.tmapSeedRing {
+  fill: color-mix(in srgb, var(--win-bg) 70%, transparent);
+  stroke: color-mix(in srgb, var(--ink) 20%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
 /* ------------------------------------------------------------------- nodes */
@@ -177,11 +238,11 @@
 
 .tmapNode { cursor: pointer; outline: none; }
 
-/* Hub: ring + glyph, the domain's flag. */
+/* Domain: ring + glyph, the domain's flag. */
 .tmapHubRing {
-  fill: color-mix(in srgb, var(--win-bg) 88%, var(--tone) 6%);
+  fill: color-mix(in srgb, var(--win-bg) 86%, var(--tone) 8%);
   stroke: var(--tone);
-  stroke-width: 1.6;
+  stroke-width: 1.8;
   vector-effect: non-scaling-stroke;
   transition: fill var(--afa-t-base) var(--afa-ease), stroke-width var(--afa-t-base) var(--afa-ease);
 }
@@ -213,42 +274,40 @@
 .tmapNode:hover .tmapHubRing,
 .tmapNode[aria-pressed='true'] .tmapHubRing {
   fill: color-mix(in srgb, var(--win-bg) 55%, var(--tone) 26%);
-  stroke-width: 2.2;
+  stroke-width: 2.4;
 }
 
-/* Hub label: mono caps under the ring. */
+/* Domain label: the reference sets it directly under the badge, in the
+   domain's own colour — the one place a label is not ivory. */
 .tmapHubLabel {
-  fill: var(--muted);
+  fill: var(--tone);
   font-family: var(--font-mono);
-  font-size: 16.5px;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-anchor: middle;
   pointer-events: none;
-  transition: fill var(--afa-t-base) var(--afa-ease);
 }
 html[lang='fa'] .tmapHubLabel {
   font-family: var(--font-fa);
   letter-spacing: 0;
-  font-size: 17.5px;
+  font-size: 18px;
 }
-.tmapNode:hover .tmapHubLabel,
-.tmapNode[aria-pressed='true'] .tmapHubLabel { fill: var(--ink); }
 
-/* Process: small ring with a mono numeral. */
+/* Process: ring with a mono numeral. */
 .tmapProcRing {
-  fill: var(--win-bg);
-  stroke: color-mix(in srgb, var(--tone) 75%, transparent);
+  fill: color-mix(in srgb, var(--win-bg) 92%, var(--tone) 6%);
+  stroke: color-mix(in srgb, var(--tone) 72%, transparent);
   stroke-width: 1.4;
   vector-effect: non-scaling-stroke;
   transition: fill var(--afa-t-base) var(--afa-ease), stroke var(--afa-t-base) var(--afa-ease);
 }
 
 .tmapProcNum {
-  fill: var(--dim);
+  fill: var(--muted);
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: central;
@@ -268,6 +327,43 @@ html[lang='fa'] .tmapHubLabel {
   fill: var(--win-bg);
 }
 
+/* Stage: the small outer ring. Seventy-two of these are the crowd, so they
+   stay quiet until their process is the one being read. */
+.tmapStageRing {
+  fill: var(--win-bg);
+  stroke: color-mix(in srgb, var(--tone) 30%, var(--dim));
+  stroke-width: 1.2;
+  opacity: 0.75;
+  vector-effect: non-scaling-stroke;
+}
+
+.tmapStageGlyph {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tone) 30%, var(--dim));
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The human checkpoint. Square, and green — the one status colour on the map,
+   and it is only ever this. */
+.tmapHumanBox {
+  fill: color-mix(in srgb, var(--success) 14%, var(--win-bg));
+  stroke: var(--success);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.tmapHumanTick {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
 .tmapFocusRing {
   fill: none;
   stroke: none;
@@ -280,18 +376,88 @@ html[lang='fa'] .tmapHubLabel {
   opacity: 1;
 }
 
-/* ---------------------------------------------------------------- focusing */
+/* ---------------------------------------------------------------- the fan */
 
-.tmap[data-focus] .tmapDomain {
-  opacity: var(--fade);
-  transition: opacity var(--afa-t-slow) var(--afa-ease);
+.tmapFanTitle {
+  fill: var(--tone);
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-anchor: middle;
 }
-.tmap[data-focus] .tmapDomain[data-active='true'] { opacity: 1; }
-.tmap[data-focus] .tmapMote { opacity: var(--fade-strong); animation: none; }
-.tmapDomain[data-active='true'] .tmapPulse { opacity: 1; stroke-width: 2.2; }
-.tmapDomain[data-active='true'] .tmapSpokeProc {
-  stroke: color-mix(in srgb, var(--tone) 45%, transparent);
+html[lang='fa'] .tmapFanTitle {
+  font-family: var(--font-fa);
+  letter-spacing: 0;
+  font-weight: 800;
 }
+
+.tmapFanTags {
+  fill: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-anchor: middle;
+}
+html[lang='fa'] .tmapFanTags { font-family: var(--font-fa); letter-spacing: 0; }
+
+.tmapFanSummary {
+  fill: var(--muted);
+  font-size: 15px;
+  text-anchor: middle;
+}
+
+/* Domain → checkpoint: the dotted converging rays. */
+.tmapFanRay {
+  stroke: color-mix(in srgb, var(--ink) 55%, transparent);
+  stroke-width: 1.2;
+  stroke-dasharray: 1 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  animation: tmapMarch 24s linear infinite;
+}
+
+@keyframes tmapMarch {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -160; }
+}
+
+/* Checkpoint → process: one straight stem, the reference's plumb lines. */
+.tmapFanStem {
+  stroke: color-mix(in srgb, var(--ink) 34%, transparent);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Process → stages: the wide splay across the top. */
+.tmapFanBranch {
+  stroke: color-mix(in srgb, var(--ink) 22%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.tmapFanProcLabel {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+html[lang='fa'] .tmapFanProcLabel { font-family: var(--font-fa); }
+
+.tmapFanStageLabel,
+.tmapFanHumanLabel {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.tmapFanStageLabel { fill: var(--dim); }
+.tmapFanHumanLabel { fill: color-mix(in srgb, var(--success) 78%, transparent); }
+html[lang='fa'] .tmapFanStageLabel,
+html[lang='fa'] .tmapFanHumanLabel { font-family: var(--font-fa); }
 
 /* ----------------------------------------------------------------- chrome */
 
@@ -310,7 +476,7 @@ html[lang='fa'] .tmapHubLabel {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--dim);
-  padding: 12px 16px;
+  padding: 11px 16px;
   border-bottom: 1px solid var(--border);
   background: var(--win-bar);
 }
@@ -323,14 +489,265 @@ html[lang='fa'] .tmapHubLabel {
 }
 html[lang='fa'] .tmapPanelHead { font-family: var(--font-fa); letter-spacing: 0; }
 
-/* The status strip under the stage. */
+/* One directory / legend row. */
+.tmapRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.25rem;
+  padding-inline: 0.5rem;
+  border-radius: var(--radius-field);
+  font-size: 0.75rem;
+  text-align: start;
+  transition: background-color var(--afa-t-base) var(--afa-ease), color var(--afa-t-base) var(--afa-ease);
+}
+
+.tmapDot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: var(--radius-pill);
+  background: var(--tone);
+}
+
+.tmapBadge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--tone) 70%, transparent);
+  color: var(--tone);
+}
+.tmapBadge .tmapHubGlyph { stroke: currentColor; }
+
+.tmapRowTag,
+.tmapRowNum {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--dim);
+  opacity: 0.8;
+}
+html[lang='fa'] .tmapRowTag, html[lang='fa'] .tmapRowNum { font-family: var(--font-fa); }
+
+/* Legend keys — miniature versions of the four node kinds. */
+.tmapKeyRing,
+.tmapKeyProc,
+.tmapKeyStage {
+  display: block;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--muted);
+}
+.tmapKeyRing { width: 13px; height: 13px; }
+.tmapKeyProc { width: 10px; height: 10px; border-color: var(--map-1); }
+.tmapKeyStage { width: 6px; height: 6px; border-color: var(--dim); }
+.tmapKeyHuman {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  border: 1.5px solid var(--success);
+  background: color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+/* The small mono buttons the reference floats over its stage. */
+.tmapChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding-inline: 0.7rem;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-field);
+  background: color-mix(in srgb, var(--win-bar) 82%, transparent);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: color var(--afa-t-base) var(--afa-ease), border-color var(--afa-t-base) var(--afa-ease);
+}
+.tmapChip:hover { color: var(--ink); border-color: var(--ink); }
+html[lang='fa'] .tmapChip { font-family: var(--font-fa); letter-spacing: 0; }
+
+/* Radial | List — the reference's boxed segmented tabs. */
+.tmapTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-field);
+  background: var(--win-bar);
+}
+
+.tmapTab {
+  min-height: 2rem;
+  padding-inline: 1.1rem;
+  border-radius: calc(var(--radius-field) - 3px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: color var(--afa-t-base) var(--afa-ease), background-color var(--afa-t-base) var(--afa-ease);
+}
+.tmapTab:hover { color: var(--muted); }
+.tmapTabOn {
+  background: var(--ink);
+  color: var(--bg-950);
+}
+html[lang='fa'] .tmapTab { font-family: var(--font-fa); letter-spacing: 0; }
+
+.tmapStepper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--win-bar) 86%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+/* The status strip beside the tabs. */
 .tmapStatus {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--dim);
 }
+.tmapStatus::before { content: '// '; opacity: 0.55; }
 html[lang='fa'] .tmapStatus { font-family: var(--font-fa); letter-spacing: 0; }
+
+/* The console masthead — the reference prefixes its titles like a comment and
+   parks a live cursor after them. Both are decoration, so both live here. */
+.tmapMasthead::before { content: '// '; opacity: 0.55; }
+
+.tmapCursor {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.86em;
+  margin-inline-start: 0.18em;
+  vertical-align: -0.06em;
+  background: var(--blue);
+  animation: tmapBlink 1.1s steps(1, end) infinite;
+}
+
+@keyframes tmapBlink {
+  0%, 45%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ----------------------------------------------------- the detail window */
+
+.tmapWindow {
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--win-bg) 92%, transparent);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.55);
+  backdrop-filter: blur(10px);
+}
+
+.tmapWindowBar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--win-bar);
+  border-start-start-radius: var(--radius-card);
+  border-start-end-radius: var(--radius-card);
+}
+
+.tmapCrumb,
+.tmapCrumbNow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+html[lang='fa'] .tmapCrumb, html[lang='fa'] .tmapCrumbNow { font-family: var(--font-fa); letter-spacing: 0; }
+
+.tmapCrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+  padding-inline: 0.5rem;
+  border-radius: var(--radius-field);
+  color: var(--dim);
+  transition: color var(--afa-t-base) var(--afa-ease);
+}
+.tmapCrumb:hover { color: var(--ink); }
+.tmapCrumbSep { color: var(--dim); opacity: 0.6; }
+.tmapCrumbNow { color: var(--tone); }
+
+.tmapWindowTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.tmapWindowSub {
+  margin-top: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+html[lang='fa'] .tmapWindowSub { font-family: var(--font-fa); letter-spacing: 0; text-transform: none; }
+
+.tmapSectionHead {
+  margin-top: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.tmapSectionHead::before { content: '// '; opacity: 0.55; }
+html[lang='fa'] .tmapSectionHead { font-family: var(--font-fa); letter-spacing: 0; }
+
+/* The ladder — key on the start edge, value beside it, one hairline each. */
+.tmapLadderRow {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 0.7rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+}
+
+.tmapLadderKey {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding-top: 0.15rem;
+}
+html[lang='fa'] .tmapLadderKey { font-family: var(--font-fa); letter-spacing: 0; }
+
+/* The row that matters gets the reference's side rule. */
+.tmapHumanBlock {
+  margin-top: 1rem;
+  padding: 0.75rem 0.9rem;
+  border-inline-start: 2px solid var(--success);
+  background: color-mix(in srgb, var(--success) 7%, transparent);
+}
 
 /* ---------------------------------------------------------- reduced motion */
 
@@ -339,6 +756,8 @@ html[lang='fa'] .tmapStatus { font-family: var(--font-fa); letter-spacing: 0; }
   .tmapPulse,
   .tmapAura,
   .tmapMote,
+  .tmapFanRay,
+  .tmapCursor,
   .tmapIn {
     animation: none !important;
   }
@@ -352,7 +771,7 @@ html[lang='fa'] .tmapStatus { font-family: var(--font-fa); letter-spacing: 0; }
 
 @media print {
   /* On paper the list view IS the argument. */
-  .tmapCanvas { display: none !important; }
+  .tmapStage { display: none !important; }
   .tmapList { display: block !important; }
 }
 

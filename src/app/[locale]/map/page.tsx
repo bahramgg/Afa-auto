@@ -87,10 +87,18 @@ function MapPageBody() {
     stepDecision: map('stepDecision'),
     stepAction: map('stepAction'),
     stepHuman: map('stepHuman'),
-    processesLabel: map('processesLabel'),
+    ladderLabel: map('ladderLabel'),
     figureLabel: map('figureLabel'),
     directoryLabel: t('directory'),
     legendLabel: t('legend'),
+    domainsLabel: t('domains'),
+    typeDomain: t('typeDomain'),
+    typeProcess: t('typeProcess'),
+    typeStage: t('typeStage'),
+    typeHuman: t('typeHuman'),
+    backAll: t('backAll'),
+    fullscreen: t('fullscreen'),
+    fullscreenExit: t('fullscreenExit'),
     statusline: t('statusline'),
     prevDomain: t('prevDomain'),
     nextDomain: t('nextDomain'),
@@ -108,19 +116,29 @@ function MapPageBody() {
 
   return (
     <>
-      {/* The stage. Full width, dark sky, no competing copy. */}
+      {/* The stage. Full width, dark sky, no competing copy.
+
+          The header is the reference's console masthead: a comment-style
+          eyebrow, the title with a live cursor after it, and the lede parked
+          on the far side rather than centred under it — so the drawing starts
+          as high on the screen as it can. */}
       <section className="relative overflow-hidden border-b border-border">
         <span aria-hidden className="dot-field dot-fade absolute inset-0" />
 
-        <header className="relative z-10 mx-auto max-w-3xl px-5 pb-2 pt-20 text-center">
-          <Eyebrow>{t('eyebrow')}</Eyebrow>
-          <h1 className="display-hero mt-5 text-ink">{t('title')}</h1>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
-            {t('lede')}
-          </p>
-        </header>
+        <div className="relative z-10 mx-auto w-full max-w-[90rem] px-3 pb-16 pt-20 sm:px-6">
+          <header className="mb-8 grid items-end gap-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
+            <div>
+              <Eyebrow className="tmapMasthead">{t('eyebrow')}</Eyebrow>
+              <h1 className="display-hero mt-4 text-ink">
+                {t('title')}
+                <span aria-hidden className="tmapCursor" />
+              </h1>
+            </div>
+            <p className="text-sm leading-relaxed text-muted lg:border-s lg:border-border lg:ps-6">
+              {t('lede')}
+            </p>
+          </header>
 
-        <div className="relative z-0 mx-auto w-full max-w-[90rem] px-3 pb-16 sm:px-6">
           <CapabilityMap copy={copy} />
         </div>
       </section>

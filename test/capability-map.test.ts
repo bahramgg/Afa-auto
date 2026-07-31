@@ -1,37 +1,56 @@
 import { describe, expect, it } from 'vitest';
 import {
+  COUNTS,
   DOMAINS,
   PROCESS_IDS,
+  STAGES,
   VIEW,
-  R_HUB,
-  R_ORBIT_IN,
-  R_ORBIT_OUT,
+  R_CORE,
+  R_DOMAIN,
+  R_PROCESS_IN,
+  R_PROCESS_OUT,
+  R_STAGE_IN,
+  R_STAGE_OUT,
+  FAN_W,
+  FAN_H,
+  layoutFan,
   layoutMandala,
   type HubNode,
   type ProcessNode,
+  type StageNode,
 } from '@/lib/capability-map';
 import fa from '../messages/fa.json';
 import en from '../messages/en.json';
 
-// Third geometry, third contract. The mandala is closed-form, so these tests
-// are mostly exact equalities rather than tolerances — which is the point of
-// a closed-form layout. The invariants that survived all three layouts are
-// the ones that matter most: determinism, bounds, collision, and that both
-// catalogs describe every node in full.
+// Fourth geometry, fourth contract. Both drawings are closed-form, so these
+// tests are mostly exact equalities rather than tolerances — which is the
+// point of a closed-form layout. The invariants that survived all four
+// layouts are the ones that matter most: determinism, bounds, collision, and
+// that both catalogs describe every node in full.
 
 const layout = layoutMandala();
 
 const allProcesses: ProcessNode[] = layout.hubs.flatMap((h) => [...h.processes]);
+const allStages: StageNode[] = allProcesses.flatMap((p) => [...p.stages]);
 const interactive: (HubNode | ProcessNode)[] = [...layout.hubs, ...allProcesses];
 
 const distance = (a: { x: number; y: number }, b: { x: number; y: number }) =>
   Math.hypot(a.x - b.x, a.y - b.y);
 
-describe('operating mandala — structure', () => {
-  it('lays out every declared domain and process', () => {
+describe('operating map — structure', () => {
+  it('lays out every declared domain, process and stage', () => {
     expect(layout.hubs).toHaveLength(DOMAINS.length);
     expect(allProcesses).toHaveLength(PROCESS_IDS.length);
     expect(allProcesses.map((p) => p.id).sort()).toEqual([...PROCESS_IDS].sort());
+    expect(allStages).toHaveLength(PROCESS_IDS.length * STAGES.length);
+    expect(new Set(allStages.map((s) => s.id)).size).toBe(allStages.length);
+  });
+
+  it('publishes counts that match the drawing, so the legend cannot drift', () => {
+    expect(COUNTS.domains).toBe(layout.hubs.length);
+    expect(COUNTS.processes).toBe(allProcesses.length);
+    expect(COUNTS.stages).toBe(allStages.length);
+    expect(COUNTS.humans).toBe(allProcesses.length);
   });
 
   it('gives every domain a distinct tone and a distinct glyph', () => {
@@ -46,15 +65,29 @@ describe('operating mandala — structure', () => {
       expect(hub.processes.map((p) => p.id)).toEqual([...spec.processes]);
     }
   });
+
+  it('gives every process the three machine stages, in order, and no fourth', () => {
+    // The human checkpoint is deliberately NOT a stage: it is drawn as its own
+    // kind of node. If it ever creeps in here the drawing lies about the model.
+    for (const process of allProcesses) {
+      expect(process.stages.map((s) => s.stage)).toEqual([...STAGES]);
+      for (const stage of process.stages) {
+        expect(stage.process).toBe(process.id);
+        expect(stage.domain).toBe(process.domain);
+        expect(stage.tone).toBe(process.tone);
+      }
+    }
+    expect(STAGES).not.toContain('human');
+  });
 });
 
-describe('operating mandala — geometry', () => {
+describe('operating map — radial geometry', () => {
   it('is deterministic, so the server and the browser draw the same picture', () => {
     expect(layoutMandala()).toEqual(layoutMandala());
   });
 
   it('keeps every node inside the stage', () => {
-    const points = [...interactive, ...layout.motes];
+    const points = [...interactive, ...allStages, ...layout.motes];
     for (const p of points) {
       expect(p.x).toBeGreaterThanOrEqual(0);
       expect(p.x).toBeLessThanOrEqual(VIEW);
@@ -63,39 +96,62 @@ describe('operating mandala — geometry', () => {
     }
   });
 
-  it('spaces the hubs evenly at 60°, avoiding dead top and bottom', () => {
+  it('spaces the domains evenly at 60°, avoiding dead top and bottom', () => {
     expect(layout.hubs.map((h) => h.angle)).toEqual([30, 90, 150, 210, 270, 330]);
   });
 
-  it('rides exactly the three declared radii', () => {
+  it('rides exactly the declared radii, orbit by orbit', () => {
     for (const hub of layout.hubs) {
-      expect(distance(hub, layout.center)).toBeCloseTo(R_HUB, 0);
+      expect(distance(hub, layout.center)).toBeCloseTo(R_DOMAIN, 0);
       for (const process of hub.processes) {
         expect(distance(process, layout.center)).toBeCloseTo(process.orbit, 0);
-        expect([R_ORBIT_IN, R_ORBIT_OUT]).toContain(process.orbit);
+        expect([R_PROCESS_IN, R_PROCESS_OUT]).toContain(process.orbit);
+        for (const stage of process.stages) {
+          const r = distance(stage, layout.center);
+          expect(
+            Math.min(Math.abs(r - R_STAGE_IN), Math.abs(r - R_STAGE_OUT)),
+          ).toBeLessThan(1);
+        }
       }
       // Orbit alternation in-out-in-out — the double-ring texture.
       expect(hub.processes.map((p) => p.orbit)).toEqual([
-        R_ORBIT_IN,
-        R_ORBIT_OUT,
-        R_ORBIT_IN,
-        R_ORBIT_OUT,
+        R_PROCESS_IN,
+        R_PROCESS_OUT,
+        R_PROCESS_IN,
+        R_PROCESS_OUT,
       ]);
     }
   });
 
-  it('keeps every process inside its own domain sector', () => {
+  it('reads outward as the hierarchy reads downward', () => {
+    // core ring < domains < processes < stages. If this inverts, the drawing
+    // stops meaning anything.
+    expect(R_CORE).toBeLessThan(R_DOMAIN);
+    expect(R_DOMAIN).toBeLessThan(R_PROCESS_IN);
+    expect(R_PROCESS_OUT).toBeLessThan(R_STAGE_IN);
+    expect(R_STAGE_IN).toBeLessThan(R_STAGE_OUT);
+  });
+
+  it('keeps every process and stage inside its own domain sector', () => {
     // A node wandering into the neighbouring arc would visually re-assign it.
     for (const hub of layout.hubs) {
       for (const process of hub.processes) {
         expect(Math.abs(process.angle - hub.angle)).toBeLessThan(30);
+        for (const stage of process.stages) {
+          const angle =
+            (Math.atan2(stage.y - layout.center.y, stage.x - layout.center.x) * 180) /
+              Math.PI +
+            90;
+          const delta = ((angle - hub.angle + 540) % 360) - 180;
+          expect(Math.abs(delta)).toBeLessThan(30);
+        }
       }
     }
   });
 
   it('never lets two interactive nodes crowd each other', () => {
-    // Hubs draw at r≈26, process rings at r≈14, both with 44px hit targets at
-    // display size. 34 viewBox units is the floor before halos collide.
+    // Domains draw at r≈24, process rings at r≈19, both with 44px hit targets
+    // at display size. 34 viewBox units is the floor before halos collide.
     for (let i = 0; i < interactive.length; i += 1) {
       for (let j = i + 1; j < interactive.length; j += 1) {
         expect(distance(interactive[i]!, interactive[j]!)).toBeGreaterThan(34);
@@ -103,9 +159,29 @@ describe('operating mandala — geometry', () => {
     }
   });
 
-  it('keeps the particle core clear of the hub ring', () => {
+  it('keeps the outer crowd from overlapping itself', () => {
+    // Stage rings draw at r=8; below 20 units apart they merge into a smear.
+    for (let i = 0; i < allStages.length; i += 1) {
+      for (let j = i + 1; j < allStages.length; j += 1) {
+        expect(distance(allStages[i]!, allStages[j]!)).toBeGreaterThan(20);
+      }
+    }
+  });
+
+  it('keeps the particle core inside its ring', () => {
     for (const mote of layout.motes) {
-      expect(distance(mote, layout.center)).toBeLessThan(R_HUB - 40);
+      expect(distance(mote, layout.center)).toBeLessThan(R_CORE);
+    }
+  });
+
+  it('webs the core together instead of leaving a spray of dots', () => {
+    expect(layout.filaments.length).toBeGreaterThan(60);
+    for (const f of layout.filaments) {
+      // Both ends are motes, so both ends are inside the ring — and a filament
+      // long enough to cross the core would read as a stray line, not a mesh.
+      expect(distance({ x: f.x1, y: f.y1 }, layout.center)).toBeLessThan(R_CORE);
+      expect(distance({ x: f.x2, y: f.y2 }, layout.center)).toBeLessThan(R_CORE);
+      expect(distance({ x: f.x1, y: f.y1 }, { x: f.x2, y: f.y2 })).toBeLessThan(34);
     }
   });
 
@@ -115,16 +191,107 @@ describe('operating mandala — geometry', () => {
   });
 
   it('spreads animation phases across the buckets', () => {
-    const phases = new Set([...interactive, ...layout.motes].map((n) => n.phase));
+    const nodes = [...interactive, ...allStages, ...layout.motes];
+    const phases = new Set(nodes.map((n) => n.phase));
     expect(phases.size).toBeGreaterThanOrEqual(6);
-    for (const n of [...interactive, ...layout.motes]) {
+    for (const n of nodes) {
       expect(n.phase).toBeGreaterThanOrEqual(0);
       expect(n.phase).toBeLessThan(8);
     }
   });
 });
 
-describe('operating mandala — content', () => {
+describe('operating map — the opened domain', () => {
+  const fans = DOMAINS.map((d) => layoutFan(d.id));
+
+  it('is deterministic', () => {
+    for (const domain of DOMAINS) {
+      expect(layoutFan(domain.id)).toEqual(layoutFan(domain.id));
+    }
+  });
+
+  it('draws every process of the domain it was asked for, and nothing else', () => {
+    for (const domain of DOMAINS) {
+      const fan = layoutFan(domain.id);
+      expect(fan.domain).toBe(domain.id);
+      expect(fan.tone).toBe(domain.tone);
+      expect(fan.processes.map((p) => p.id)).toEqual([...domain.processes]);
+      for (const process of fan.processes) {
+        expect(process.stages.map((s) => s.stage)).toEqual([...STAGES]);
+        expect(process.stages.map((s) => s.process)).toEqual([
+          process.id,
+          process.id,
+          process.id,
+        ]);
+      }
+    }
+  });
+
+  it('keeps every node inside the landscape stage', () => {
+    for (const fan of fans) {
+      const points = [
+        fan.hub,
+        fan.seed,
+        ...fan.motes,
+        ...fan.processes,
+        ...fan.processes.map((p) => ({ x: p.hx, y: p.hy })),
+        ...fan.processes.flatMap((p) => [...p.stages]),
+      ];
+      for (const p of points) {
+        expect(p.x).toBeGreaterThanOrEqual(0);
+        expect(p.x).toBeLessThanOrEqual(FAN_W);
+        expect(p.y).toBeGreaterThanOrEqual(0);
+        expect(p.y).toBeLessThanOrEqual(FAN_H);
+      }
+    }
+  });
+
+  it('stacks the rows in reading order: stages, processes, checkpoints, domain', () => {
+    for (const fan of fans) {
+      for (const process of fan.processes) {
+        for (const stage of process.stages) {
+          expect(stage.y).toBeLessThan(process.y);
+        }
+        expect(process.y).toBeLessThan(process.hy);
+        expect(process.hy).toBeLessThan(fan.hub.y);
+        // The checkpoint hangs directly under its process — the plumb line.
+        expect(process.hx).toBe(process.x);
+      }
+      expect(fan.hub.y).toBeLessThan(fan.seed.y);
+    }
+  });
+
+  it('spaces the fan rows so no two labels sit on top of each other', () => {
+    for (const fan of fans) {
+      const xs = fan.processes.map((p) => p.x).sort((a, b) => a - b);
+      for (let i = 1; i < xs.length; i += 1) {
+        expect(xs[i]! - xs[i - 1]!).toBeGreaterThanOrEqual(120);
+      }
+      const stages = fan.processes.flatMap((p) => [...p.stages]);
+      const sx = stages.map((s) => s.x).sort((a, b) => a - b);
+      for (let i = 1; i < sx.length; i += 1) {
+        expect(sx[i]! - sx[i - 1]!).toBeGreaterThanOrEqual(60);
+      }
+      // Twelve labels in one row only fit because they stagger onto two lines.
+      expect(new Set(stages.map((s) => s.ly)).size).toBe(2);
+    }
+  });
+
+  it('splays each process across the row instead of bunching its own three', () => {
+    // Adjacent stage nodes must belong to DIFFERENT processes — that crossing
+    // is the whole texture of the reference's fan.
+    for (const fan of fans) {
+      const row = fan.processes
+        .flatMap((p) => p.stages.map((s) => ({ x: s.x, process: p.id })))
+        .sort((a, b) => a.x - b.x);
+      for (let i = 1; i < row.length; i += 1) {
+        expect(row[i]!.process).not.toBe(row[i - 1]!.process);
+      }
+    }
+  });
+});
+
+describe('operating map — content', () => {
   // The map is only as good as the copy behind it. A node with no strings
   // renders as an unlabelled ring, which is worse than not shipping it.
   const REQUIRED = ['title', 'trigger', 'decision', 'action', 'human'] as const;
@@ -151,6 +318,16 @@ describe('operating mandala — content', () => {
       for (const field of REQUIRED) {
         expect(String(entry?.[field] ?? '').trim().length).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it('every drawn stage has a label to draw', () => {
+    // The fan writes the stage name under each of its twelve top nodes; a
+    // stage with no key in the catalog would render an empty label.
+    const labels = (fa as unknown as { Map: Record<string, string> }).Map;
+    for (const stage of STAGES) {
+      const key = `step${stage[0]!.toUpperCase()}${stage.slice(1)}`;
+      expect(String(labels[key] ?? '').trim().length).toBeGreaterThan(0);
     }
   });
 

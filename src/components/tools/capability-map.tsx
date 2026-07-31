@@ -1,33 +1,51 @@
 'use client';
 
-import { useCallback, useId, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
+  COUNTS,
   DOMAINS,
+  STAGES,
   VIEW,
-  R_HUB,
-  R_ORBIT_IN,
-  R_ORBIT_OUT,
+  R_CORE,
+  R_DOMAIN,
+  R_PROCESS_IN,
+  R_PROCESS_OUT,
+  R_STAGE_IN,
+  R_STAGE_OUT,
+  FAN_W,
+  FAN_H,
+  layoutFan,
   layoutMandala,
   type DomainId,
+  type FanProcess,
+  type Filament,
   type Glyph,
   type HubNode,
+  type Mote,
   type ProcessNode,
+  type StageId,
 } from '@/lib/capability-map';
 import { cn } from '@/lib/cn';
 
 /* -----------------------------------------------------------------------------
-   The operating map, operator-OS edition — rebuilt 2026-07-31 to the reel AFA
-   supplied. The composition is the reference's, one to one:
+   The operating map, operator-console edition — rebuilt 2026-07-31 to the
+   "OPTIMAL ENGINE" reel AFA supplied. The composition is the reference's:
 
-     [ directory panel ]  [ blueprint stage: the mandala ]  [ legend panel ]
-                              drawer overlays the stage
-                          [ ‹ domain stepper › ]  [ statusline ]
+     [ directory ]  [ stage ]                       [ legend · domains ]
+                    ├ ⟵ all domains        fullscreen ⤢
+                    ├ RADIAL: core → domains → processes → stages
+                    │   click a domain →
+                    ├ FAN: the domain at the foot of the stage, its human
+                    │   checkpoints as squares, its processes as circles, and
+                    │   every machine stage fanned across the top row
+                    ├ the detail window, floating over the stage
+                    └ [ ‹ domain › ]
 
    Every string arrives resolved from the server; the Map catalog never enters
    the client bundle. Selection semantics are unchanged from the first build:
-   click a hub → its volume opens and the rest recede; click a ring → the
-   process drawer; click again or Esc → closed. The LIST view stays — the
-   screen-reader's, printer's and skimmer's fair deal.
+   click a domain → it opens; click a process → the detail window; click again
+   or Esc → closed. The LIST view stays — the screen-reader's, printer's and
+   skimmer's fair deal.
    -------------------------------------------------------------------------- */
 
 export interface ProcessCopy {
@@ -56,11 +74,19 @@ export interface CapabilityMapCopy {
   readonly stepDecision: string;
   readonly stepAction: string;
   readonly stepHuman: string;
-  readonly processesLabel: string;
+  readonly ladderLabel: string;
   readonly figureLabel: string;
-  /** Operator-OS chrome. */
+  /** Operator-console chrome. */
   readonly directoryLabel: string;
   readonly legendLabel: string;
+  readonly domainsLabel: string;
+  readonly typeDomain: string;
+  readonly typeProcess: string;
+  readonly typeStage: string;
+  readonly typeHuman: string;
+  readonly backAll: string;
+  readonly fullscreen: string;
+  readonly fullscreenExit: string;
   readonly statusline: string;
   readonly prevDomain: string;
   readonly nextDomain: string;
@@ -75,9 +101,23 @@ type Selection =
 
 const layout = layoutMandala();
 
-const HUB_R = 26;
-const PROC_R = 14;
+/** Every fan is closed-form, so all six can be built once at module scope. */
+const FANS = Object.fromEntries(DOMAINS.map((d) => [d.id, layoutFan(d.id)])) as Record<
+  DomainId,
+  ReturnType<typeof layoutFan>
+>;
+
+const HUB_R = 24;
+const PROC_R = 19;
+const STAGE_R = 8;
+const HUMAN_R = 9;
 const HIT_R = 30;
+
+const STAGE_LABEL_KEY = {
+  trigger: 'stepTrigger',
+  decision: 'stepDecision',
+  action: 'stepAction',
+} as const satisfies Record<StageId, keyof CapabilityMapCopy>;
 
 export function CapabilityMap({ copy }: { copy: CapabilityMapCopy }) {
   const [selection, setSelection] = useState<Selection>(null);
@@ -116,191 +156,721 @@ export function CapabilityMap({ copy }: { copy: CapabilityMapCopy }) {
     [activeDomain],
   );
 
+  /* Only a PROCESS opens the window. Selecting a domain opens the fan, and the
+     fan already carries the domain's name, tags and summary across its head —
+     the reference works the same way, and a panel over the drawing you just
+     asked to see is the one thing it never does. */
   const detail = useMemo(() => {
-    if (!selection) return null;
-    if (selection.kind === 'process') {
-      const process = copy.processes[selection.process];
-      return process
-        ? { kind: 'process' as const, id: selection.process, domain: selection.domain, process }
-        : null;
-    }
-    return {
-      kind: 'domain' as const,
-      id: selection.domain,
-      domain: copy.domains[selection.domain],
-    };
+    if (selection?.kind !== 'process') return null;
+    const process = copy.processes[selection.process];
+    return process
+      ? { id: selection.process, domain: selection.domain, process }
+      : null;
   }, [selection, copy]);
 
   return (
     <div
+      className="tmapShell"
       onKeyDown={(event) => {
         if (event.key === 'Escape') setSelection(null);
       }}
     >
-      <div className="mb-4 flex items-center justify-center lg:justify-start">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <ViewToggle copy={copy} view={view} onChange={setView} />
+        <p className={cn('tmapStatus', view === 'list' && 'hidden')}>{copy.statusline}</p>
       </div>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[15rem_minmax(0,1fr)_14rem]">
-        {/* DIRECTORY — every process, one row each, reference-left. */}
-        <aside className={cn('tmapPanel order-2 lg:order-1', view === 'list' && 'hidden')}>
+      <div className="grid items-start gap-3 xl:grid-cols-[15.5rem_minmax(0,1fr)_15.5rem]">
+        {/* DIRECTORY — every process, one row each, with its domain in the
+            right-hand column. Reference-left. */}
+        <aside className={cn('tmapPanel order-2 xl:order-1', view === 'list' && 'hidden')}>
           <p className="tmapPanelHead">{copy.directoryLabel}</p>
-          <ul className="max-h-[26rem] overflow-y-auto p-2 lg:max-h-[34rem]">
+          <ul className="max-h-[22rem] overflow-y-auto p-1.5 xl:max-h-[38rem]">
             {DOMAINS.map((domain) =>
-              domain.processes.map((processId, index) => (
-                <li key={processId} className="cmap" data-tone={domain.tone}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      select({ kind: 'process', domain: domain.id, process: processId })
-                    }
-                    aria-pressed={
-                      selection?.kind === 'process' && selection.process === processId
-                    }
-                    className={cn(
-                      'flex min-h-9 w-full items-center gap-2.5 rounded-field px-2.5 text-start text-xs transition-colors',
-                      selection?.kind === 'process' && selection.process === processId
-                        ? 'bg-ink/10 text-ink'
-                        : 'text-muted hover:bg-ink/5 hover:text-ink',
-                    )}
-                  >
-                    <span
-                      aria-hidden
-                      className="grid size-5 shrink-0 place-items-center rounded-pill border border-[var(--tone)] font-mono text-[9px] text-dim"
+              domain.processes.map((processId) => {
+                const on = selection?.kind === 'process' && selection.process === processId;
+                return (
+                  <li key={processId} className="cmap" data-tone={domain.tone}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        select({ kind: 'process', domain: domain.id, process: processId })
+                      }
+                      aria-pressed={on}
+                      className={cn(
+                        'tmapRow',
+                        on ? 'bg-ink/10 text-ink' : 'text-muted hover:bg-ink/5 hover:text-ink',
+                      )}
                     >
-                      {index + 1}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">
-                      {copy.processes[processId]?.title}
-                    </span>
-                  </button>
-                </li>
-              )),
+                      <span aria-hidden className="tmapDot" />
+                      <span className="min-w-0 flex-1 truncate">
+                        {copy.processes[processId]?.title}
+                      </span>
+                      <span aria-hidden className="tmapRowTag">
+                        {copy.domains[domain.id].title}
+                      </span>
+                    </button>
+                  </li>
+                );
+              }),
             )}
           </ul>
         </aside>
 
         {/* THE STAGE. */}
-        <div className="order-1 lg:order-2">
-          <div className={cn('tmapStage', view === 'list' && 'hidden')}>
-            <svg
-              className="tmap relative"
-              viewBox={`0 0 ${VIEW} ${VIEW}`}
-              role="group"
-              aria-labelledby={titleId}
-              data-focus={activeDomain ?? undefined}
-              data-tone={activeTone}
-            >
-              <title id={titleId}>{copy.figureLabel}</title>
-
-              <g className="tmapScene">
-                {/* Orbit guides. */}
-                <g aria-hidden="true">
-                  {[R_HUB, R_ORBIT_IN, R_ORBIT_OUT].map((radius) => (
-                    <circle
-                      key={radius}
-                      className="tmapGuide"
-                      cx={layout.center.x}
-                      cy={layout.center.y}
-                      r={radius}
-                    />
-                  ))}
-                </g>
-
-                {/* The particle core. */}
-                <g aria-hidden="true">
-                  {layout.motes.map((mote, index) => (
-                    <circle
-                      key={index}
-                      className="tmapMote tmapIn"
-                      data-mote={mote.tone}
-                      data-phase={mote.phase}
-                      cx={mote.x}
-                      cy={mote.y}
-                      r={mote.r}
-                    />
-                  ))}
-                </g>
-
-                {layout.hubs.map((hub) => (
-                  <DomainVolume
-                    key={hub.id}
-                    hub={hub}
-                    copy={copy}
-                    selection={selection}
-                    isActive={activeDomain === hub.id}
-                    onSelect={select}
-                  />
-                ))}
-              </g>
-            </svg>
-
-            {/* The drawer, over the stage on desktop, reference-style. */}
-            <div
-              aria-live="polite"
-              className={cn(
-                'lg:absolute lg:inset-y-4 lg:start-4 lg:w-[21.5rem] lg:overflow-y-auto',
-                !detail && 'hidden lg:block lg:pointer-events-none',
-              )}
-            >
-              {detail && (
-                <Drawer copy={copy} detail={detail} onSelect={select} onClear={() => setSelection(null)} step={step} />
-              )}
-            </div>
-
-            {/* The ‹ domain › stepper, bottom-centre. */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
-              <div className="pointer-events-auto flex items-center gap-1 rounded-pill border border-border-glass bg-bg-950/80 px-1.5 py-1 backdrop-blur">
-                <StepButton label={copy.prevDomain} onClick={() => step(-1)} glyphPath="M8.5 3.5 5 7l3.5 3.5" />
-                <span className="min-w-[7.5rem] text-center font-mono text-xs font-semibold uppercase tracking-[0.1em] text-ink">
-                  {activeDomain ? copy.domains[activeDomain].title : copy.hub}
-                </span>
-                <StepButton label={copy.nextDomain} onClick={() => step(1)} glyphPath="M5.5 3.5 9 7l-3.5 3.5" />
-              </div>
-            </div>
-          </div>
-
-          <p className={cn('tmapStatus mt-2.5 text-center lg:text-start', view === 'list' && 'hidden')}>
-            {copy.statusline}
-          </p>
+        <div className="order-1 xl:order-2">
+          <Stage
+            copy={copy}
+            titleId={titleId}
+            hidden={view === 'list'}
+            activeDomain={activeDomain}
+            activeTone={activeTone}
+            selection={selection}
+            detail={detail}
+            onSelect={select}
+            onClear={() => setSelection(null)}
+            step={step}
+          />
 
           <div className={cn('tmapList', view === 'map' && 'hidden')}>
             <ListView copy={copy} />
           </div>
         </div>
 
-        {/* LEGEND — six domains, reference-right. */}
-        <aside className={cn('tmapPanel order-3', view === 'list' && 'hidden')}>
-          <p className="tmapPanelHead">{copy.legendLabel}</p>
-          <ul className="p-2">
-            {DOMAINS.map((domain) => (
-              <li key={domain.id} className="cmap" data-tone={domain.tone}>
-                <button
-                  type="button"
-                  onClick={() => select({ kind: 'domain', domain: domain.id })}
-                  aria-pressed={activeDomain === domain.id}
-                  className={cn(
-                    'flex min-h-10 w-full items-center gap-3 rounded-field px-2.5 text-start text-sm transition-colors',
-                    activeDomain === domain.id
-                      ? 'bg-ink/10 text-ink'
-                      : 'text-muted hover:bg-ink/5 hover:text-ink',
-                  )}
-                >
-                  <span aria-hidden className="size-2.5 shrink-0 rounded-pill bg-[var(--tone)]" />
-                  <span className="min-w-0 flex-1 truncate">{copy.domains[domain.id].title}</span>
-                  <span aria-hidden className="font-mono text-[10px] text-dim">
-                    4
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className="border-t border-border px-4 py-3 text-xs leading-relaxed text-dim">
-            {copy.hubNote}
-          </p>
-        </aside>
+        {/* LEGEND + DOMAINS — reference-right. */}
+        <div className={cn('order-3 grid gap-3', view === 'list' && 'hidden')}>
+          <aside className="tmapPanel">
+            <p className="tmapPanelHead">{copy.legendLabel}</p>
+            <ul className="p-3">
+              <LegendRow label={copy.typeDomain} count={COUNTS.domains}>
+                <span className="tmapKeyRing" />
+              </LegendRow>
+              <LegendRow label={copy.typeProcess} count={COUNTS.processes}>
+                <span className="tmapKeyProc" />
+              </LegendRow>
+              <LegendRow label={copy.typeStage} count={COUNTS.stages}>
+                <span className="tmapKeyStage" />
+              </LegendRow>
+              <LegendRow label={copy.typeHuman} count={COUNTS.humans}>
+                <span className="tmapKeyHuman" />
+              </LegendRow>
+            </ul>
+          </aside>
+
+          <aside className="tmapPanel">
+            <p className="tmapPanelHead">{copy.domainsLabel}</p>
+            <ul className="p-1.5">
+              {DOMAINS.map((domain) => (
+                <li key={domain.id} className="cmap" data-tone={domain.tone}>
+                  <button
+                    type="button"
+                    onClick={() => select({ kind: 'domain', domain: domain.id })}
+                    aria-pressed={activeDomain === domain.id}
+                    className={cn(
+                      'tmapRow',
+                      activeDomain === domain.id
+                        ? 'bg-ink/10 text-ink'
+                        : 'text-muted hover:bg-ink/5 hover:text-ink',
+                    )}
+                  >
+                    <span aria-hidden className="tmapBadge">
+                      <svg viewBox="-12 -12 24 24" width="14" height="14">
+                        <HubGlyph glyph={domain.glyph} x={0} y={0} r={7} />
+                      </svg>
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">{copy.domains[domain.id].title}</span>
+                    <span aria-hidden className="tmapRowNum">
+                      4
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p className="border-t border-border px-4 py-3 text-xs leading-relaxed text-dim">
+              {copy.hubNote}
+            </p>
+          </aside>
+        </div>
       </div>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------- stage */
+
+function Stage({
+  copy,
+  titleId,
+  hidden,
+  activeDomain,
+  activeTone,
+  selection,
+  detail,
+  onSelect,
+  onClear,
+  step,
+}: {
+  copy: CapabilityMapCopy;
+  titleId: string;
+  hidden: boolean;
+  activeDomain: DomainId | null;
+  activeTone: number | undefined;
+  selection: Selection;
+  detail: DetailModel;
+  onSelect: (next: Selection) => void;
+  onClear: () => void;
+  step: (direction: 1 | -1) => void;
+}) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
+
+  /* The reference's ⤢ Fullscreen. Real API, no fake chrome — and the button
+     hides itself where the browser has no fullscreen to give. */
+  useEffect(() => {
+    const sync = () => setExpanded(document.fullscreenElement === stageRef.current);
+    document.addEventListener('fullscreenchange', sync);
+    return () => document.removeEventListener('fullscreenchange', sync);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen();
+    } else {
+      void stageRef.current?.requestFullscreen?.();
+    }
+  }, []);
+
+  const fan = activeDomain ? FANS[activeDomain] : null;
+
+  return (
+    <div
+      ref={stageRef}
+      className={cn('tmapStage', hidden && 'hidden')}
+      data-view={fan ? 'fan' : 'radial'}
+      data-tone={activeTone}
+    >
+      {/* Stage toolbar — ⟵ all domains on the start edge, ⤢ on the end. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-3">
+        <button
+          type="button"
+          onClick={onClear}
+          className={cn('tmapChip pointer-events-auto', !activeDomain && 'invisible')}
+        >
+          <svg width="11" height="11" viewBox="0 0 14 14" aria-hidden className="rtl:-scale-x-100">
+            <path
+              d="M11 7H3.5M6.5 3.5 3 7l3.5 3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {copy.backAll}
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          className="tmapChip pointer-events-auto"
+          aria-pressed={expanded}
+        >
+          <svg width="11" height="11" viewBox="0 0 14 14" aria-hidden>
+            <path
+              d="M5 1.5H1.5V5M9 1.5h3.5V5M5 12.5H1.5V9M9 12.5h3.5V9"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {expanded ? copy.fullscreenExit : copy.fullscreen}
+        </button>
+      </div>
+
+      {fan ? (
+        <FanView
+          copy={copy}
+          titleId={titleId}
+          domain={activeDomain!}
+          fan={fan}
+          selection={selection}
+          onSelect={onSelect}
+        />
+      ) : (
+        <RadialView copy={copy} titleId={titleId} selection={selection} onSelect={onSelect} />
+      )}
+
+      {/* The detail window, over the stage on desktop, reference-style. */}
+      <div
+        aria-live="polite"
+        className={cn(
+          'relative z-10 xl:absolute xl:inset-y-14 xl:start-4 xl:w-[22rem] xl:overflow-y-auto',
+          !detail && 'hidden xl:block xl:pointer-events-none',
+        )}
+      >
+        {detail && (
+          <DetailWindow
+            copy={copy}
+            detail={detail}
+            onSelect={onSelect}
+            onClear={onClear}
+            step={step}
+          />
+        )}
+      </div>
+
+      {/* The ‹ domain › stepper, bottom-centre. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center">
+        <div className="tmapStepper pointer-events-auto">
+          <StepButton
+            label={copy.prevDomain}
+            onClick={() => step(-1)}
+            glyphPath="M8.5 3.5 5 7l3.5 3.5"
+          />
+          <span className="min-w-[8rem] text-center font-mono text-xs font-semibold uppercase tracking-[0.1em] text-ink">
+            {activeDomain ? copy.domains[activeDomain].title : copy.hub}
+          </span>
+          <StepButton
+            label={copy.nextDomain}
+            onClick={() => step(1)}
+            glyphPath="M5.5 3.5 9 7l-3.5 3.5"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------ radial view */
+
+function RadialView({
+  copy,
+  titleId,
+  selection,
+  onSelect,
+}: {
+  copy: CapabilityMapCopy;
+  titleId: string;
+  selection: Selection;
+  onSelect: (next: Selection) => void;
+}) {
+  return (
+    <svg
+      className="tmap"
+      viewBox={`0 0 ${VIEW} ${VIEW}`}
+      role="group"
+      aria-labelledby={titleId}
+    >
+      <title id={titleId}>{copy.figureLabel}</title>
+
+      <g className="tmapScene">
+        <g aria-hidden="true">
+          {[R_CORE, R_DOMAIN, R_PROCESS_IN, R_PROCESS_OUT, R_STAGE_IN, R_STAGE_OUT].map(
+            (radius) => (
+              <circle
+                key={radius}
+                className="tmapGuide"
+                cx={layout.center.x}
+                cy={layout.center.y}
+                r={radius}
+              />
+            ),
+          )}
+          <circle
+            className="tmapCoreRing"
+            cx={layout.center.x}
+            cy={layout.center.y}
+            r={R_CORE}
+          />
+        </g>
+
+        <MoteField motes={layout.motes} filaments={layout.filaments} />
+
+        {layout.hubs.map((hub) => (
+          <DomainVolume
+            key={hub.id}
+            hub={hub}
+            copy={copy}
+            selection={selection}
+            onSelect={onSelect}
+          />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+function MoteField({
+  motes,
+  filaments,
+}: {
+  motes: readonly Mote[];
+  filaments: readonly Filament[];
+}) {
+  return (
+    <g aria-hidden="true">
+      {filaments.map((f, index) => (
+        <line
+          key={`f${index}`}
+          className="tmapFilament"
+          x1={f.x1}
+          y1={f.y1}
+          x2={f.x2}
+          y2={f.y2}
+        />
+      ))}
+      {motes.map((mote, index) => (
+        <circle
+          key={index}
+          className="tmapMote tmapIn"
+          data-mote={mote.tone}
+          data-phase={mote.phase}
+          cx={mote.x}
+          cy={mote.y}
+          r={mote.r}
+        />
+      ))}
+    </g>
+  );
+}
+
+function DomainVolume({
+  hub,
+  copy,
+  selection,
+  onSelect,
+}: {
+  hub: HubNode;
+  copy: CapabilityMapCopy;
+  selection: Selection;
+  onSelect: (next: Selection) => void;
+}) {
+  const domainCopy = copy.domains[hub.id];
+
+  return (
+    <g className="tmapDomain" data-tone={hub.tone}>
+      <g aria-hidden="true">
+        <line
+          className="tmapSpokeHub"
+          x1={layout.center.x}
+          y1={layout.center.y}
+          x2={hub.x}
+          y2={hub.y}
+        />
+        <g data-phase={hub.phase}>
+          <line
+            className="tmapPulse"
+            x1={layout.center.x}
+            y1={layout.center.y}
+            x2={hub.x}
+            y2={hub.y}
+            pathLength={100}
+          />
+        </g>
+        {hub.processes.map((process) => (
+          <g key={process.id}>
+            <line
+              className="tmapSpokeProc"
+              x1={hub.x}
+              y1={hub.y}
+              x2={process.x}
+              y2={process.y}
+            />
+            {process.stages.map((stage) => (
+              <line
+                key={stage.id}
+                className="tmapSpokeStage"
+                x1={process.x}
+                y1={process.y}
+                x2={stage.x}
+                y2={stage.y}
+              />
+            ))}
+          </g>
+        ))}
+      </g>
+
+      {/* The outer crowd. Decorative on this view — every stage is written out
+          in the detail window and in the list, so nothing is lost by muting it
+          for assistive tech, and announcing 72 unlabelled rings would be noise. */}
+      <g aria-hidden="true">
+        {hub.processes.flatMap((process) =>
+          process.stages.map((stage) => (
+            <g key={stage.id} className="tmapIn" data-phase={stage.phase}>
+              <circle className="tmapStageRing" cx={stage.x} cy={stage.y} r={STAGE_R} />
+              <StageGlyph stage={stage.stage} x={stage.x} y={stage.y} />
+            </g>
+          )),
+        )}
+      </g>
+
+      {hub.processes.map((process) => (
+        <ProcessRing
+          key={process.id}
+          node={process}
+          title={copy.processes[process.id]?.title ?? process.id}
+          selected={selection?.kind === 'process' && selection.process === process.id}
+          onSelect={() => onSelect({ kind: 'process', domain: hub.id, process: process.id })}
+        />
+      ))}
+
+      <g
+        className="tmapNode"
+        data-phase={hub.phase}
+        role="button"
+        tabIndex={0}
+        aria-pressed={selection?.domain === hub.id}
+        aria-label={domainCopy.title}
+        onClick={() => onSelect({ kind: 'domain', domain: hub.id })}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onSelect({ kind: 'domain', domain: hub.id });
+          }
+        }}
+      >
+        <circle className="tmapHit" cx={hub.x} cy={hub.y} r={HIT_R + 8} />
+        <g className="tmapIn">
+          <circle className="tmapAura" cx={hub.x} cy={hub.y} r={HUB_R + 10} />
+          <circle className="tmapHubRing" cx={hub.x} cy={hub.y} r={HUB_R} />
+          <HubGlyph glyph={hub.glyph} x={hub.x} y={hub.y} r={HUB_R * 0.42} />
+          <text className="tmapHubLabel" x={hub.lx} y={hub.ly}>
+            {domainCopy.title}
+          </text>
+        </g>
+        <circle className="tmapFocusRing" cx={hub.x} cy={hub.y} r={HUB_R + 6} />
+      </g>
+    </g>
+  );
+}
+
+function ProcessRing({
+  node,
+  title,
+  selected,
+  onSelect,
+}: {
+  node: ProcessNode;
+  title: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <g
+      className="tmapNode"
+      role="button"
+      tabIndex={0}
+      aria-pressed={selected}
+      aria-label={title}
+      onClick={onSelect}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect();
+        }
+      }}
+    >
+      <circle className="tmapHit" cx={node.x} cy={node.y} r={HIT_R} />
+      <g className="tmapIn" data-phase={node.phase}>
+        <circle className="tmapProcRing" cx={node.x} cy={node.y} r={PROC_R} />
+        <text className="tmapProcNum" x={node.x} y={node.y}>
+          {node.index}
+        </text>
+      </g>
+      <circle className="tmapFocusRing" cx={node.x} cy={node.y} r={PROC_R + 6} />
+    </g>
+  );
+}
+
+/* --------------------------------------------------------------- fan view */
+
+function FanView({
+  copy,
+  titleId,
+  domain,
+  fan,
+  selection,
+  onSelect,
+}: {
+  copy: CapabilityMapCopy;
+  titleId: string;
+  domain: DomainId;
+  fan: ReturnType<typeof layoutFan>;
+  selection: Selection;
+  onSelect: (next: Selection) => void;
+}) {
+  const domainCopy = copy.domains[domain];
+
+  return (
+    <svg
+      className="tmap tmapFan"
+      viewBox={`0 0 ${FAN_W} ${FAN_H}`}
+      role="group"
+      aria-labelledby={titleId}
+      data-tone={fan.tone}
+    >
+      <title id={titleId}>{domainCopy.title}</title>
+
+      <text className="tmapFanTitle" x={FAN_W / 2} y={58}>
+        {domainCopy.title}
+      </text>
+      <text className="tmapFanTags" x={FAN_W / 2} y={84}>
+        {domainCopy.tags}
+      </text>
+      <text className="tmapFanSummary" x={FAN_W / 2} y={112}>
+        {domainCopy.summary}
+      </text>
+
+      <g aria-hidden="true">
+        {fan.processes.map((process) => (
+          <g key={process.id}>
+            {/* Domain → checkpoint: dotted rays, the reference's converging fan. */}
+            <line
+              className="tmapFanRay"
+              x1={fan.hub.x}
+              y1={fan.hub.y - HUB_R}
+              x2={process.hx}
+              y2={process.hy + HUMAN_R}
+            />
+            {/* Checkpoint → process: one straight vertical. */}
+            <line
+              className="tmapFanStem"
+              x1={process.hx}
+              y1={process.hy - HUMAN_R}
+              x2={process.x}
+              y2={process.y + PROC_R}
+            />
+            {/* Process → its three machine stages, splayed across the top. */}
+            {process.stages.map((stage) => (
+              <line
+                key={stage.id}
+                className="tmapFanBranch"
+                x1={process.x}
+                y1={process.y - PROC_R}
+                x2={stage.x}
+                y2={stage.y + STAGE_R}
+              />
+            ))}
+          </g>
+        ))}
+      </g>
+
+      {/* Top row: every machine stage of every process in this domain. */}
+      <g aria-hidden="true">
+        {fan.processes.flatMap((process) =>
+          process.stages.map((stage) => (
+            <g key={stage.id} className="tmapIn" data-phase={stage.phase}>
+              <circle className="tmapStageRing" cx={stage.x} cy={stage.y} r={STAGE_R} />
+              <StageGlyph stage={stage.stage} x={stage.x} y={stage.y} />
+              <text className="tmapFanStageLabel" x={stage.x} y={stage.ly}>
+                {copy[STAGE_LABEL_KEY[stage.stage]]}
+              </text>
+            </g>
+          )),
+        )}
+      </g>
+
+      {/* Middle row: the processes. Bottom row of squares: their human checks. */}
+      {fan.processes.map((process) => (
+        <FanNode
+          key={process.id}
+          copy={copy}
+          domain={domain}
+          process={process}
+          selected={selection?.kind === 'process' && selection.process === process.id}
+          onSelect={onSelect}
+        />
+      ))}
+
+      {/* The domain itself, at the foot of the stage, over its particle seed. */}
+      <g className="tmapFanHub" data-phase={0}>
+        <g aria-hidden="true">
+          <circle className="tmapSeedRing" cx={fan.seed.x} cy={fan.seed.y} r={46} />
+          <MoteField motes={fan.motes} filaments={fan.filaments} />
+        </g>
+        <circle className="tmapAura" cx={fan.hub.x} cy={fan.hub.y} r={HUB_R + 10} />
+        <circle className="tmapHubRing" cx={fan.hub.x} cy={fan.hub.y} r={HUB_R} />
+        <HubGlyph glyph={fan.glyph} x={fan.hub.x} y={fan.hub.y} r={HUB_R * 0.42} />
+        <text className="tmapHubLabel" x={fan.hub.x} y={fan.hub.y + 42}>
+          {domainCopy.title}
+        </text>
+      </g>
+    </svg>
+  );
+}
+
+function FanNode({
+  copy,
+  domain,
+  process,
+  selected,
+  onSelect,
+}: {
+  copy: CapabilityMapCopy;
+  domain: DomainId;
+  process: FanProcess;
+  selected: boolean;
+  onSelect: (next: Selection) => void;
+}) {
+  const title = copy.processes[process.id]?.title ?? process.id;
+  const open = () => onSelect({ kind: 'process', domain, process: process.id });
+
+  return (
+    <g
+      className="tmapNode"
+      role="button"
+      tabIndex={0}
+      aria-pressed={selected}
+      aria-label={title}
+      onClick={open}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open();
+        }
+      }}
+    >
+      <circle className="tmapHit" cx={process.x} cy={process.y} r={HIT_R + 6} />
+      <rect
+        className="tmapHit"
+        x={process.hx - 26}
+        y={process.hy - 20}
+        width={52}
+        height={40}
+      />
+
+      <g className="tmapIn" data-phase={process.phase}>
+        <circle className="tmapProcRing" cx={process.x} cy={process.y} r={PROC_R} />
+        <text className="tmapProcNum" x={process.x} y={process.y}>
+          {process.index}
+        </text>
+        <text className="tmapFanProcLabel" x={process.x} y={process.y + 40}>
+          {title}
+        </text>
+
+        {/* The human checkpoint — a square, never a ring: on this map the
+            human is a different kind of node, not one more machine step. */}
+        <rect
+          className="tmapHumanBox"
+          x={process.hx - HUMAN_R}
+          y={process.hy - HUMAN_R}
+          width={HUMAN_R * 2}
+          height={HUMAN_R * 2}
+          rx={3}
+        />
+        <path
+          className="tmapHumanTick"
+          d={`M${process.hx - 4.4} ${process.hy}l3 3.2 5.6-6`}
+        />
+        <text className="tmapFanHumanLabel" x={process.hx} y={process.hy + 26}>
+          {copy.stepHuman}
+        </text>
+      </g>
+
+      <circle className="tmapFocusRing" cx={process.x} cy={process.y} r={PROC_R + 6} />
+    </g>
   );
 }
 
@@ -316,21 +886,14 @@ function ViewToggle({
   onChange: (next: 'map' | 'list') => void;
 }) {
   return (
-    <div
-      className="flex items-center gap-1 rounded-field border border-border bg-[var(--win-bar)] p-1"
-      role="group"
-      aria-label={copy.viewLabel}
-    >
+    <div className="tmapTabs" role="group" aria-label={copy.viewLabel}>
       {(['map', 'list'] as const).map((candidate) => (
         <button
           key={candidate}
           type="button"
           onClick={() => onChange(candidate)}
           aria-pressed={view === candidate}
-          className={cn(
-            'min-h-9 rounded-[8px] px-4 font-mono text-xs font-semibold uppercase tracking-[0.14em] transition-colors',
-            view === candidate ? 'bg-ink text-bg-950' : 'text-dim hover:text-muted',
-          )}
+          className={cn('tmapTab', view === candidate && 'tmapTabOn')}
         >
           {candidate === 'map' ? copy.viewMap : copy.viewList}
         </button>
@@ -356,138 +919,40 @@ function StepButton({
       className="grid size-9 place-items-center rounded-pill text-dim transition-colors hover:text-ink"
     >
       <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className="rtl:-scale-x-100">
-        <path d={glyphPath} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d={glyphPath}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </button>
   );
 }
 
-/* -------------------------------------------------------------- one domain */
-
-function DomainVolume({
-  hub,
-  copy,
-  selection,
-  isActive,
-  onSelect,
+function LegendRow({
+  label,
+  count,
+  children,
 }: {
-  hub: HubNode;
-  copy: CapabilityMapCopy;
-  selection: Selection;
-  isActive: boolean;
-  onSelect: (next: Selection) => void;
+  label: string;
+  count: number;
+  children: React.ReactNode;
 }) {
-  const domainCopy = copy.domains[hub.id];
-
   return (
-    <g className="tmapDomain" data-tone={hub.tone} data-active={isActive}>
-      <g aria-hidden="true">
-        <line className="tmapSpokeHub" x1={layout.center.x} y1={layout.center.y} x2={hub.x} y2={hub.y} />
-        <g data-phase={hub.phase}>
-          <line
-            className="tmapPulse"
-            x1={layout.center.x}
-            y1={layout.center.y}
-            x2={hub.x}
-            y2={hub.y}
-            pathLength={100}
-          />
-        </g>
-        {hub.processes.map((process) => (
-          <line
-            key={process.id}
-            className="tmapSpokeProc"
-            x1={hub.x}
-            y1={hub.y}
-            x2={process.x}
-            y2={process.y}
-          />
-        ))}
-      </g>
-
-      {hub.processes.map((process) => (
-        <ProcessRing
-          key={process.id}
-          node={process}
-          title={copy.processes[process.id]?.title ?? process.id}
-          selected={selection?.kind === 'process' && selection.process === process.id}
-          reachable={isActive}
-          onSelect={() => onSelect({ kind: 'process', domain: hub.id, process: process.id })}
-        />
-      ))}
-
-      <g
-        className="tmapNode"
-        data-phase={hub.phase}
-        role="button"
-        tabIndex={0}
-        aria-pressed={isActive}
-        aria-label={domainCopy.title}
-        onClick={() => onSelect({ kind: 'domain', domain: hub.id })}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            onSelect({ kind: 'domain', domain: hub.id });
-          }
-        }}
-      >
-        <circle className="tmapHit" cx={hub.x} cy={hub.y} r={HIT_R + 8} />
-        <g className="tmapIn">
-          <circle className="tmapAura" cx={hub.x} cy={hub.y} r={HUB_R + 10} />
-          <circle className="tmapHubRing" cx={hub.x} cy={hub.y} r={HUB_R} />
-          <HubGlyph glyph={hub.glyph} x={hub.x} y={hub.y} r={HUB_R * 0.42} />
-          <text className="tmapHubLabel" x={hub.lx} y={hub.ly + 6}>
-            {domainCopy.title}
-          </text>
-        </g>
-        <circle className="tmapFocusRing" cx={hub.x} cy={hub.y} r={HUB_R + 6} />
-      </g>
-    </g>
+    <li className="flex items-center gap-2.5 py-1.5 text-xs text-muted">
+      <span aria-hidden className="grid size-4 shrink-0 place-items-center">
+        {children}
+      </span>
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      <span className="font-mono text-[10px] tabular-nums text-dim">{count}</span>
+    </li>
   );
 }
 
-function ProcessRing({
-  node,
-  title,
-  selected,
-  reachable,
-  onSelect,
-}: {
-  node: ProcessNode;
-  title: string;
-  selected: boolean;
-  reachable: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <g
-      className="tmapNode"
-      role="button"
-      tabIndex={reachable ? 0 : -1}
-      aria-pressed={selected}
-      aria-label={title}
-      aria-hidden={reachable ? undefined : true}
-      onClick={onSelect}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          onSelect();
-        }
-      }}
-    >
-      <circle className="tmapHit" cx={node.x} cy={node.y} r={HIT_R} />
-      <g className="tmapIn" data-phase={node.phase}>
-        <circle className="tmapProcRing" cx={node.x} cy={node.y} r={PROC_R} />
-        <text className="tmapProcNum" x={node.x} y={node.y}>
-          {node.index}
-        </text>
-      </g>
-      <circle className="tmapFocusRing" cx={node.x} cy={node.y} r={PROC_R + 6} />
-    </g>
-  );
-}
-
-/* -------------------------------------------------------------- hub glyphs */
+/* ------------------------------------------------------------------ glyphs */
 
 function HubGlyph({ glyph, x, y, r }: { glyph: Glyph; x: number; y: number; r: number }) {
   const cls = 'tmapHubGlyph';
@@ -500,7 +965,9 @@ function HubGlyph({ glyph, x, y, r }: { glyph: Glyph; x: number; y: number; r: n
     }
     case 'diamond': {
       const s = r * 1.2;
-      return <path className={cls} d={`M${x} ${y - s}L${x + s} ${y}L${x} ${y + s}L${x - s} ${y}Z`} />;
+      return (
+        <path className={cls} d={`M${x} ${y - s}L${x + s} ${y}L${x} ${y + s}L${x - s} ${y}Z`} />
+      );
     }
     case 'triangle': {
       const s = r * 1.25;
@@ -526,9 +993,22 @@ function HubGlyph({ glyph, x, y, r }: { glyph: Glyph; x: number; y: number; r: n
   }
 }
 
-/* ------------------------------------------------------------------ drawer */
+/** Three stage marks, so the outer ring is not read by colour alone either. */
+function StageGlyph({ stage, x, y }: { stage: StageId; x: number; y: number }) {
+  const d =
+    stage === 'trigger'
+      ? `M${x - 3.4} ${y}h6.8M${x + 0.6} ${y - 2.6}L${x + 3.4} ${y}l-2.8 2.6`
+      : stage === 'decision'
+        ? `M${x - 3.2} ${y - 3.2}L${x + 3.2} ${y + 3.2}M${x + 3.2} ${y - 3.2}L${x - 3.2} ${y + 3.2}`
+        : `M${x} ${y - 3.4}v6.8M${x - 2.6} ${y + 0.6}L${x} ${y + 3.4}l2.6 -2.8`;
+  return <path className="tmapStageGlyph" d={d} />;
+}
 
-function Drawer({
+/* ---------------------------------------------------------- detail window */
+
+type DetailModel = { id: string; domain: DomainId; process: ProcessCopy } | null;
+
+function DetailWindow({
   copy,
   detail,
   onSelect,
@@ -536,30 +1016,51 @@ function Drawer({
   step,
 }: {
   copy: CapabilityMapCopy;
-  detail:
-    | { kind: 'domain'; id: DomainId; domain: DomainCopy }
-    | { kind: 'process'; id: string; domain: DomainId; process: ProcessCopy };
+  detail: NonNullable<DetailModel>;
   onSelect: (next: Selection) => void;
   onClear: () => void;
   step: (direction: 1 | -1) => void;
 }) {
-  const spec = DOMAINS.find((d) =>
-    detail.kind === 'domain' ? d.id === detail.id : d.id === detail.domain,
-  );
-  const domainTitle = spec ? copy.domains[spec.id].title : '';
+  const spec = DOMAINS.find((d) => d.id === detail.domain);
+  const domainTitle = copy.domains[detail.domain].title;
 
   return (
-    <aside
-      data-tone={spec?.tone}
-      className="cmap rounded-card border border-border-glass bg-bg-950/90 shadow-[0_18px_50px_rgba(0,0,0,0.55)] backdrop-blur-md"
-    >
-      {/* Breadcrumb bar: ‹ › steps neighbouring domains, × closes. */}
-      <div className="flex items-center gap-1 border-b border-border px-2 py-1.5">
-        <StepButton label={copy.prevDomain} onClick={() => step(-1)} glyphPath="M8.5 3.5 5 7l3.5 3.5" />
-        <StepButton label={copy.nextDomain} onClick={() => step(1)} glyphPath="M5.5 3.5 9 7l-3.5 3.5" />
-        <span className="min-w-0 flex-1 truncate text-center font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-dim">
-          {domainTitle}
+    <aside data-tone={spec?.tone} className="cmap tmapWindow">
+      {/* Breadcrumb bar: ← back to the domain, then ‹ ›, then ×. */}
+      <div className="tmapWindowBar">
+        <button
+          type="button"
+          onClick={() => onSelect({ kind: 'domain', domain: detail.domain })}
+          className="tmapCrumb"
+        >
+          <svg width="10" height="10" viewBox="0 0 14 14" aria-hidden className="rtl:-scale-x-100">
+            <path
+              d="M11 7H3.5M6.5 3.5 3 7l3.5 3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {copy.reset}
+        </button>
+        <span aria-hidden className="tmapCrumbSep">
+          ·
         </span>
+        <span className="tmapCrumbNow">{domainTitle}</span>
+
+        <span className="flex-1" />
+        <StepButton
+          label={copy.prevDomain}
+          onClick={() => step(-1)}
+          glyphPath="M8.5 3.5 5 7l3.5 3.5"
+        />
+        <StepButton
+          label={copy.nextDomain}
+          onClick={() => step(1)}
+          glyphPath="M5.5 3.5 9 7l-3.5 3.5"
+        />
         <button
           type="button"
           onClick={onClear}
@@ -574,79 +1075,29 @@ function Drawer({
       </div>
 
       <div className="p-5">
-        {detail.kind === 'domain' && (
-          <>
-            <h3 className="text-base font-bold text-ink">{detail.domain.title}</h3>
-            <p className="mt-1 text-xs text-dim">{detail.domain.tags}</p>
-            <p className="mt-3 text-sm leading-relaxed text-muted">{detail.domain.summary}</p>
+        <h3 className="tmapWindowTitle">{detail.process.title}</h3>
+        <p className="tmapWindowSub">
+          {domainTitle} · {copy.domains[detail.domain].tags}
+        </p>
 
-            <p className="tmapPanelHead mt-5 rounded-field border border-border">
-              {copy.processesLabel}
-            </p>
-            <ul className="mt-2 space-y-0.5">
-              {(spec?.processes ?? []).map((processId, index) => (
-                <li key={processId}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onSelect({ kind: 'process', domain: detail.id, process: processId })
-                    }
-                    className="flex min-h-10 w-full items-center gap-2.5 rounded-field px-2.5 text-start text-sm text-muted transition-colors hover:bg-ink/5 hover:text-ink"
-                  >
-                    <span aria-hidden className="font-mono text-[10px] text-dim">
-                      0{index + 1}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">
-                      {copy.processes[processId]?.title}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-
-        {detail.kind === 'process' && (
-          <>
-            <h3 className="text-base font-bold text-ink">{detail.process.title}</h3>
-
-            <dl className="mt-4 space-y-3.5">
-              <DrawerStep label={copy.stepTrigger} value={detail.process.trigger} />
-              <DrawerStep label={copy.stepDecision} value={detail.process.decision} />
-              <DrawerStep label={copy.stepAction} value={detail.process.action} />
-            </dl>
-
-            {/* The human checkpoint — the reference highlights its active
-                ladder row with a side rule; ours is the row that matters. */}
-            <div className="mt-4 border-s-2 border-[var(--tone)] bg-ink/[0.04] p-3 ps-3.5">
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dim">
-                {copy.stepHuman}
-              </p>
-              <p className="mt-1.5 text-sm leading-relaxed text-success">{detail.process.human}</p>
+        {/* The ladder. The reference rules its active row; here every row is
+            real, and the last one is the row that matters. */}
+        <p className="tmapSectionHead">{copy.ladderLabel}</p>
+        <dl className="mt-1.5">
+          {STAGES.map((stage) => (
+            <div key={stage} className="tmapLadderRow">
+              <dt className="tmapLadderKey">{copy[STAGE_LABEL_KEY[stage]]}</dt>
+              <dd className="text-sm leading-relaxed text-muted">{detail.process[stage]}</dd>
             </div>
+          ))}
+        </dl>
 
-            <button
-              type="button"
-              onClick={() => onSelect({ kind: 'domain', domain: detail.domain })}
-              className="mt-4 min-h-10 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-dim transition-colors hover:text-ink"
-            >
-              {copy.reset}
-            </button>
-          </>
-        )}
+        <div className="tmapHumanBlock">
+          <p className="tmapLadderKey">{copy.stepHuman}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-success">{detail.process.human}</p>
+        </div>
       </div>
     </aside>
-  );
-}
-
-function DrawerStep({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="grid gap-1">
-      <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dim">
-        {label}
-      </dt>
-      <dd className="text-sm leading-relaxed text-muted">{value}</dd>
-    </div>
   );
 }
 

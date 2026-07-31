@@ -63,24 +63,47 @@ and stops entirely under `prefers-reduced-motion`.
 
 ## The operating map
 
+Rebuilt 2026-07-31 to the **"OPTIMAL ENGINE"** operator-console reel AFA
+supplied. It is now TWO drawings, because the reference has two, and the whole
+design depends on the move between them:
+
+- **RADIAL** — the whole system at once. A particle core inside a thin ring,
+  then three orbits outward: six domain badges, twenty-four process rings, and
+  a crowd of seventy-two stage nodes. Reading outward is reading down the
+  hierarchy, and the crowd is the point — it is what makes the drawing look
+  like a company rather than a diagram.
+- **FAN** — one domain, opened. The domain drops to the foot of the stage over
+  its own particle seed, dotted rays climb to the four HUMAN CHECKPOINTS
+  (squares, green — the only status colour on the map), one plumb line runs
+  from each up to its PROCESS, and the processes splay wide into the twelve
+  machine stages across the top. Stages are grouped by stage, not by process,
+  so the branches cross: that crossing is the reference's texture.
+
+Rules that hold across both:
+
 - `src/lib/capability-map.ts` — structure and geometry. Pure, no React, no
-  strings. Landscape stage (1200×900); domains on an ellipse at 30°…330° (the
-  30° offset keeps top-centre clear for the headline overlay); each domain
-  grows THREE branches — chains that step along an outward ray and zigzag
-  around it. **All scatter comes from a hash of each node's id, never
-  `Math.random()`** — the map renders on the server and again in the browser,
-  and two different pictures is a hydration error.
+  strings; `layoutMandala()` and `layoutFan()` are closed-form, so every fan is
+  built once at module scope. **All scatter comes from a hash of each node's
+  id, never `Math.random()`** — the map renders on the server and again in the
+  browser, and two different pictures is a hydration error. `unit()` runs the
+  lowbias32 finaliser over FNV: raw FNV on sequential keys scatters in visible
+  spokes, not a cloud. `COUNTS` is read off the structure, so the legend can
+  never drift from the drawing.
 - `src/components/tools/capability-map.tsx` — the client component. Holds no
-  arithmetic. Domain labels sit on the INWARD ray (compass-rose around the
-  burst) because outward is where the chains live.
-- `src/styles/capability-map.css` — all visuals. The chains are IVORY and
-  quiet; colour appears only at the badge ring, its satellites, and the centre
-  burst — that restraint is what makes it a star chart, not a dashboard.
-  State via `data-*` attributes; animation delays are CSS phase buckets, never
-  inline styles. Entrance stagger runs once via `.cmapEnter`.
+  arithmetic. Domain labels sit directly under the badge in the domain's own
+  colour, the one place a label is not ivory.
+- Selecting a DOMAIN opens the fan and nothing else; only a PROCESS opens the
+  detail window. The fan already carries the domain's name, tags and summary
+  across its head, and a panel over the drawing you just asked to see is the
+  one thing the reference never does.
+- `src/styles/capability-map.css` — all visuals. Colour is rationed: it burns
+  at the domain badge, the process ring and the core; the outer crowd and the
+  connectors stay ivory-quiet. State via `data-*` attributes; animation delays
+  are CSS phase buckets, never inline styles.
 - `test/capability-map.test.ts` — determinism, bounds, collision, outward
-  monotonicity, and that both catalogs describe every node in full (including
-  each domain's `tags` descriptor line).
+  monotonicity, row order in the fan, the no-two-adjacent-stages-share-a-process
+  rule, and that both catalogs describe every node in full (including each
+  domain's `tags` descriptor line).
 
 Strings are resolved **on the server** in `sections/map-hero.tsx` and passed
 as props. Do not move them into a client namespace: `Map` is the largest thing
