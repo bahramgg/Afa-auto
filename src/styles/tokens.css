@@ -38,32 +38,43 @@
    *
    * Contrast only improves (darker ground, same ink) — the contrast tests
    * resolve these very hexes and hold the floor. */
-  --bg-950: #05060d;
-  --bg-900: #070912;
-  --bg-850: #0a0d19;
+  /* REPALETTED 2026-08, by direct request («رنگ و دیزاین کلاً تغییر کنه»):
+   * the ground is now a WARM black and the accent a single ember-amber, in
+   * the register of the operator-console references AFA keeps sending. The
+   * cool navy family values stay in afa-tokens.css untouched; this alias
+   * layer simply points elsewhere, which is exactly what it is for. The
+   * token NAMES do not change — `--blue` now paints amber so that zero
+   * components churn; the name is a slot, not a hue. All six values below
+   * were run through test/contrast.test.ts, not eyeballed. */
+  --bg-950: #080604;
+  --bg-900: #0b0806;
+  --bg-850: #0e0b08;
 
-  /* Surfaces — one step above the new ground, same hue. */
-  --surface: #0d1120;
-  --surface-2: #111629;
+  /* Surfaces — one step above the ground, same warmth. */
+  --surface: #14100b;
+  --surface-2: #191410;
 
-  /* Borders — dimmed to match; the old family values glowed on pure black. */
-  --border: #1c2138;
-  --border-glass: #262c48;
+  /* Borders — warm greys, quiet on the warm black. */
+  --border: #292219;
+  --border-glass: #3a2f21;
 
-  /* Ink / text */
-  --ink: var(--afa-ink-050);
-  --muted: var(--afa-ink-200);
-  --dim: var(--afa-ink-300);
+  /* Ink / text — warm ivory instead of the family's cool one, so the page
+   * reads as one temperature. Muted clears AA on every surface (tested). */
+  --ink: #f5efe6;
+  --muted: #c9bfae;
+  --dim: #99907f;
 
-  /* Brand accents — the only "exciting" color on the page */
-  --blue: var(--afa-blue-400);
-  --violet: var(--afa-violet-400);
-  --lilac: var(--afa-violet-300);
+  /* The accent pair. Deep ember (#d97416) keeps white readable on top of it
+   * — it is the gradient's bright end and the interactive accent — and the
+   * pale amber carries focus rings and small accent text at AA-normal. */
+  --blue: #d97416;
+  --violet: #b45309;
+  --lilac: #ffc46b;
   --success: var(--afa-green-400);
 
-  /* The single brand gradient. Resolves to the deep-ground variant because
-     <html> carries data-theme="dark" — this site has no light ground. */
-  --grad-brand: var(--afa-gradient-brand);
+  /* The single brand gradient — ember, dark end to bright end. Still the
+     ONLY gradient on the page, still the primary action only. */
+  --grad-brand: linear-gradient(120deg, #b45309, #d97416);
 
   /* Radii */
   --radius-pill: var(--afa-radius-pill);
@@ -71,9 +82,9 @@
   --radius-button: var(--afa-radius-button);
   --radius-field: var(--afa-radius-field);
 
-  /* Elevation */
-  --shadow-brand: var(--afa-shadow-brand);
-  --shadow-brand-hover: var(--afa-shadow-brand-hover);
+  /* Elevation — the ember glow under the one gradient button. */
+  --shadow-brand: 0 8px 28px rgba(217, 116, 22, 0.28);
+  --shadow-brand-hover: 0 10px 36px rgba(217, 116, 22, 0.4);
 
   /* Glass surface (floating header + tool cards only) */
   --glass-bg: var(--afa-glass-bg);
@@ -122,13 +133,15 @@
    * the page rather than tinted panels. The three dots are the one place the
    * status hues appear decoratively — muted via color-mix so they read as
    * chrome, not as alerts. */
-  --win-bg: #0a0a11;
-  --win-bar: #050508;
+  --win-bg: #0b0906;
+  --win-bar: #060503;
   --win-dot-close: color-mix(in srgb, var(--afa-red-400) 75%, var(--bg-950));
   --win-dot-min: color-mix(in srgb, var(--afa-amber-400) 75%, var(--bg-950));
   --win-dot-max: color-mix(in srgb, var(--afa-green-400) 75%, var(--bg-950));
 
-  /* The mark reads its two stops from the shared semantic layer. */
+  /* The mark reads its two stops from the shared semantic layer. (The mark
+   * itself is a raster master render and keeps its own neon — a recoloured
+   * logo is a different logo; see AfaMark.tsx.) */
   --mark-from: var(--afa-mark-from);
   --mark-to: var(--afa-mark-to);
 
@@ -162,13 +175,13 @@
    * LIGHT at size, zero tracking — joined script must never be letter-spaced,
    * so lightness carries what tracking carries in Latin. Components read only
    * the three generic names; html[lang] swaps them below. */
-  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-display: 'Manrope', 'Inter', system-ui, sans-serif;
   /* Pinned Latin display for the few places that set the LOGOTYPE rather than
    * a word being read (the footer's ghost mark) — html[lang] must not swap it. */
-  --font-display-latin: 'Cormorant Garamond', 'Times New Roman', serif;
-  --display-map-weight: 500;
-  --display-map-tracking: 0.26em;
-  --display-hero-tracking: 0.08em;
+  --font-display-latin: 'Manrope', 'Inter', system-ui, sans-serif;
+  --display-map-weight: 800;
+  --display-map-tracking: 0.18em;
+  --display-hero-tracking: 0.01em;
 }
 
 html[lang='fa'] {

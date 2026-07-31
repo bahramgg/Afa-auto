@@ -18,15 +18,19 @@ mono console). One page, the RAS spine:
    its realism from that tag; removing it turns the section into a fabricated
    metric.
 3. **Services** (01) — the heart. Four offers (assistant, operations
-   automation, website/store, reports), each in three beats: the SCENE (a
+   automation, website/store, reports), each in three beats. The assistant's
+   demo card is PLAYABLE (`tools/assistant-demo.tsx` — visitor picks a
+   customer message, watches the scripted answer + filing); copy arrives as
+   props, the client ships no catalog. Each offer: the SCENE (a
    moment the visitor recognises, present tense), the SYSTEM (what gets
    deployed, no adjectives), the OUTCOME (one bold line). A console card
    beside each shows the thing itself — chat exchange, run with its human
    checkpoint, receipt, morning brief — every card tagged «نمونه نمایشی».
    The four services are the four things the case studies prove were shipped.
-4. **Work** (02) — proof as before → what was deployed → after.
-5. **Impact** (03) — the calculator, an ask under the result.
-6. **Start** (04) — four steps + «چرا ما» differentiators (absorbed the old
+4. **Impact** (02, «تجربه کنید») — the calculator, straight after the offer;
+   the interactive moments ARE the argument, so they come early.
+6. **Work** (03) — proof as before → what was deployed → after.
+7. **Start** (04) — four steps + «چرا ما» differentiators (absorbed the old
    Manifesto and the checkmark notes; one home for those claims, not three).
 7. **Contact** (05) — reframed as the FREE ASSESSMENT («ارزیابی رایگان
    فرایندها») — the RAS conversion device; every CTA on the page converges
@@ -38,7 +42,9 @@ read).
 
 ## Copy voice
 
-Scenario first, outcome last, zero adjectives in between. The scene is second
+SHORT. Headlines ≤ 12 words, descriptions ≤ 2 sentences (the Lindy/Make
+discipline); no metaphors a shop owner wouldn't use — «خلبان خودکار» died for
+this. Scenario first, outcome last, zero adjectives in between. The scene is second
 person, present tense («ساعت ۱۱ شب است. مشتری در دایرکت قیمت می‌پرسد…») —
 recognition is what "feeling real" means. Claims may only restate what the
 case studies and FAQ already establish; performance numbers (RAS shows «25hrs
@@ -63,9 +69,20 @@ afa-site, afa-pay and this site. Three moves carry it:
    needs index arithmetic and the rules stay correct across breakpoints.
 2. **The tracked eyebrow.** Every section opens with `.eyebrow` above the
    heading, plus a running index (`01`…`06`).
-3. **Rationed light.** Deep navy stays deep. The brand gradient appears on the
-   primary action only — no gradient headlines. Glow at most three times per
-   page.
+3. **Rationed light.** The ground stays deep. The brand gradient appears on
+   the primary action only — no gradient headlines. Glow at most three times
+   per page.
+
+**REPALETTED 2026-08** by direct request: warm black ground + a single
+ember-amber accent (`#b45309 → #d97416`, pale `#ffc46b` for focus/accent
+text), warm ivory ink. The change lives ENTIRELY in tokens.css — the alias
+layer repoints, afa-tokens.css stays vendored and untouched, and `--blue`
+now paints amber because the token name is a slot, not a hue. Every value
+went through test/contrast.test.ts. Latin display switched Cormorant → 
+**Manrope 800** (the console voice is a geometric sans, not a garalde);
+Persian display unchanged. The dotted hero background is gone by direct
+request. The raster logo keeps its own neon — a recoloured logo is a
+different logo (AfaMark.tsx).
 
 **Bilingual display type is not one mechanism.** Latin gets uppercase + open
 tracking; Persian gets weight 800 and a tighter block, and **zero tracking** —

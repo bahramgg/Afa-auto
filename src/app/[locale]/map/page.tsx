@@ -123,8 +123,6 @@ function MapPageBody() {
           on the far side rather than centred under it — so the drawing starts
           as high on the screen as it can. */}
       <section className="relative overflow-hidden border-b border-border">
-        <span aria-hidden className="dot-field dot-fade absolute inset-0" />
-
         <div className="relative z-10 mx-auto w-full max-w-[90rem] px-3 pb-16 pt-20 sm:px-6">
           <header className="mb-8 grid items-end gap-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
             <div>

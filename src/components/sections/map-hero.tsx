@@ -92,8 +92,6 @@ export function MapHero() {
 
   return (
     <section id="top" className="relative overflow-hidden border-b border-border">
-      <span aria-hidden className="dot-field dot-fade absolute inset-0" />
-
       <div className="relative mx-auto flex w-full max-w-[92rem] flex-col justify-center px-4 py-12 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:py-10">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] lg:gap-12">
           <div>

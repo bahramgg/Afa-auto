@@ -26,7 +26,7 @@ export function Work() {
   return (
     <section id="work" className="scroll-mt-24 border-t border-border py-16 sm:py-24">
       <Container>
-        <SectionHead index="02" eyebrow={t('eyebrow')} title={t('title')} lede={t('subtitle')} />
+        <SectionHead index="03" eyebrow={t('eyebrow')} title={t('title')} lede={t('subtitle')} />
 
         <RuledPanel columns={3} className="mt-12">
           {items.map((id) => (

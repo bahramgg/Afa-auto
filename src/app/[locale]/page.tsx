@@ -14,8 +14,8 @@ import { Contact } from '@/components/sections/contact';
  *                 honestly tagged «نمونهٔ نمایشی»
  *   Services 01   four offers, each opened by a scene the visitor recognises
  *                 and closed by an outcome line, with a console card beside it
- *   Work     02   proof: before → what was deployed → after
- *   Impact   03   the calculator, with an ask under the result
+ *   Impact   02   the calculator — «تجربه کنید», straight after the offer
+ *   Work     03   proof: before → what was deployed → after
  *   Start    04   process + «چرا ما» differentiators (absorbed the Manifesto)
  *   Contact  05   the free assessment form, remaining questions beside it
  */
@@ -30,8 +30,8 @@ export default async function HomePage(props: {
       <MapHero />
       <Pulse />
       <Services />
-      <Work />
       <Impact />
+      <Work />
       <Start />
       <Contact />
     </>

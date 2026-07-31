@@ -33,7 +33,7 @@ export function Impact() {
   return (
     <section id="impact" className="scroll-mt-24 border-t border-border py-16 sm:py-24">
       <Container>
-        <SectionHead index="03" eyebrow={t('eyebrow')} title={t('title')} lede={t('subtitle')} />
+        <SectionHead index="02" eyebrow={t('eyebrow')} title={t('title')} lede={t('subtitle')} />
 
         <Window title={t('windowTitle')} className="mt-12">
           <ImpactCalculator />

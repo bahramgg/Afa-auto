@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { AssistantDemo, type AssistantPlayCopy } from '@/components/tools/assistant-demo';
 import { Container } from '@/components/ui/container';
 import { SectionHead } from '@/components/ui/editorial';
 import { cn } from '@/lib/cn';
@@ -122,22 +123,22 @@ function Demo({ id }: { id: ServiceId }) {
   const t = useTranslations('Services');
 
   if (id === 'assistant') {
+    /* The one demo the visitor can OPERATE — every reference site's strongest
+       move. Strings resolve here on the server and travel as props; the
+       client component ships no catalog. */
+    const play: AssistantPlayCopy = {
+      prompt: t('play.prompt'),
+      q1: t('play.q1'),
+      a1: t('play.a1'),
+      b1: t('play.b1'),
+      q2: t('play.q2'),
+      a2: t('play.a2'),
+      b2: t('play.b2'),
+      replay: t('play.replay'),
+    };
     return (
       <DemoCard id={id}>
-        <div className="grid gap-2.5 text-sm leading-relaxed">
-          <p className="me-8 w-fit rounded-card rounded-ss-[4px] border border-border bg-surface px-3.5 py-2 text-muted">
-            {t('demos.assistant.in')}
-          </p>
-          <p className="ms-8 w-fit justify-self-end rounded-card rounded-se-[4px] border border-[color-mix(in_srgb,var(--tone)_45%,transparent)] bg-[color-mix(in_srgb,var(--tone)_12%,transparent)] px-3.5 py-2 text-ink">
-            {t('demos.assistant.out')}
-          </p>
-          <p className="me-8 w-fit rounded-card rounded-ss-[4px] border border-border bg-surface px-3.5 py-2 text-muted">
-            {t('demos.assistant.in2')}
-          </p>
-        </div>
-        <p className="meta mt-3 border-t border-border pt-3 text-[10.5px] leading-relaxed text-success">
-          {t('demos.assistant.badge')}
-        </p>
+        <AssistantDemo copy={play} />
       </DemoCard>
     );
   }
