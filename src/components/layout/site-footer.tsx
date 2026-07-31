@@ -6,7 +6,7 @@ import { family } from '@/lib/family';
 
 /* Same list as the header, in the same order — a footer that disagrees with
    the nav is a footer that makes the visitor wonder what they missed. */
-const sections = ['approach', 'work', 'impact', 'contact'] as const;
+const sections = ['services', 'work', 'impact', 'start', 'contact'] as const;
 
 /* Tightened 2026-07-31. Three columns on one strict grid, every list on the
  * same baseline and the same 36px row rhythm; one hairline; one bottom row.
@@ -72,6 +72,13 @@ export function SiteFooter() {
           <p>{t('note')}</p>
         </div>
       </Container>
+
+      {/* The ghost mark — the page signs off the way the reference does,
+          with the logotype as architecture. Cropped to its upper half so it
+          reads as ground, not as one more heading; hidden from AT. */}
+      <div aria-hidden className="ghost-word h-[0.5em] overflow-hidden text-center">
+        AFA
+      </div>
     </footer>
   );
 }

@@ -7,31 +7,43 @@ this file wins.
 
 ## What the site is
 
-RESTRUCTURED 2026-08 around one question: what does a stranger need, in what
-order, before they will pick up the phone? One page, SIX stops:
+REBUILT 2026-08 on the rasai.ca structure («ras را الگو قرار بدیم اما به سبک
+خودمون»): scenario-led services, shown-not-described product, proof as
+before/deployed/after — carried in this site's own voice (navy, the map, the
+mono console). One page, the RAS spine:
 
-1. **MapHero** — the WORKING map fills the first viewport, the claim beside it.
-   Until now the homepage showed a decorative six-dot mini map and the real one
-   lived a click away on `/map`; the only thing on this site nobody else has
-   was the one thing behind a navigation step. `sections/map-hero.tsx` resolves
-   every string server-side and renders `<CapabilityMap variant="hero">`.
-2. **Manifesto** (01) — one display statement + the four constraints as a
-   ruled row. What we will and will not do with someone's business.
-3. **Work** (02) — three before/after examples. Proof before effort. No
-   metrics we cannot source.
-4. **Impact** (03) — four sliders from the visitor's own business, and an ask
-   under the result. It used to be section two, which asked a stranger for
-   effort before they knew what we do, and it used to be a dead end.
-5. **Start** (04) — how long, how it is priced, what happens after the form.
-   Those were the first two questions anyone asks and they were closed rows in
-   an accordion at the bottom of the page. Every line restates a claim the FAQ
-   already made; nothing here is new.
-6. **Contact** (05) — the form, with the four remaining questions beside it.
+1. **MapHero** — the working map + «کسب‌وکار شما، روی خلبان خودکار».
+2. **Pulse** — the operations-console strip: four telemetry lines, one per
+   service, ALWAYS tagged «نمونهٔ نمایشی · داده واقعی نیست». The strip earns
+   its realism from that tag; removing it turns the section into a fabricated
+   metric.
+3. **Services** (01) — the heart. Four offers (assistant, operations
+   automation, website/store, reports), each in three beats: the SCENE (a
+   moment the visitor recognises, present tense), the SYSTEM (what gets
+   deployed, no adjectives), the OUTCOME (one bold line). A console card
+   beside each shows the thing itself — chat exchange, run with its human
+   checkpoint, receipt, morning brief — every card tagged «نمونه نمایشی».
+   The four services are the four things the case studies prove were shipped.
+4. **Work** (02) — proof as before → what was deployed → after.
+5. **Impact** (03) — the calculator, an ask under the result.
+6. **Start** (04) — four steps + «چرا ما» differentiators (absorbed the old
+   Manifesto and the checkmark notes; one home for those claims, not three).
+7. **Contact** (05) — reframed as the FREE ASSESSMENT («ارزیابی رایگان
+   فرایندها») — the RAS conversion device; every CTA on the page converges
+   here or on /map.
 
-`/map` is the only other route: the same map with its reading rails, plus all
-twenty-four processes written out. Don't add sections back without being asked
-— the old ProcessIndex was a table of contents for a map that is now the first
-thing on the page, and that is the definition of a section repeating itself.
+`/map` is the only other route. The footer signs off with the ghost wordmark
+(`.ghost-word` — Latin display always; it is the logotype, not a word being
+read).
+
+## Copy voice
+
+Scenario first, outcome last, zero adjectives in between. The scene is second
+person, present tense («ساعت ۱۱ شب است. مشتری در دایرکت قیمت می‌پرسد…») —
+recognition is what "feeling real" means. Claims may only restate what the
+case studies and FAQ already establish; performance numbers (RAS shows «25hrs
+saved») are exactly what we may NOT invent — structural counts and the
+visitor's own calculator output carry that load instead.
 
 ## Tone
 

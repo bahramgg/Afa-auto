@@ -1,29 +1,23 @@
 import { setRequestLocale } from 'next-intl/server';
 import { MapHero } from '@/components/sections/map-hero';
-import { Manifesto } from '@/components/sections/manifesto';
+import { Pulse } from '@/components/sections/pulse';
+import { Services } from '@/components/sections/services';
 import { Work } from '@/components/sections/work';
 import { Impact } from '@/components/sections/impact';
 import { Start } from '@/components/sections/start';
 import { Contact } from '@/components/sections/contact';
 
-/* Fourth draft, 2026-08 — reordered around one question: what does a stranger
- * need, in what order, before they will pick up the phone?
+/* Fifth draft, 2026-08 — rebuilt on the rasai.ca structure, our style:
  *
- *   MapHero       the working map, first screen. The claim sits beside it,
- *                 not in front of it. This is the thing nobody else has, and
- *                 it used to be a click away behind a decorative stand-in.
- *   Approach 01   what we will and will not do with your business
- *   Work     02   three systems in production — proof before effort
- *   Impact   03   THEN the calculator. Asking a visitor to move four sliders
- *                 before they know what you do is asking for effort before
- *                 value; it used to be the second thing on the page.
- *   Start    04   how much, how long, and what happens after you send the form
- *   Contact  05   the form, with the remaining questions beside it
- *
- * The old ProcessIndex section is gone. It was a table of contents for the
- * map, and the map is now the first thing on the page — a list of what the
- * drawing above already shows is the definition of a section that repeats
- * itself.
+ *   MapHero       the working map + the claim («روی خلبان خودکار»)
+ *   Pulse         the operations console strip — four telemetry lines,
+ *                 honestly tagged «نمونهٔ نمایشی»
+ *   Services 01   four offers, each opened by a scene the visitor recognises
+ *                 and closed by an outcome line, with a console card beside it
+ *   Work     02   proof: before → what was deployed → after
+ *   Impact   03   the calculator, with an ask under the result
+ *   Start    04   process + «چرا ما» differentiators (absorbed the Manifesto)
+ *   Contact  05   the free assessment form, remaining questions beside it
  */
 export default async function HomePage(props: {
   params: Promise<{ locale: string }>;
@@ -34,7 +28,8 @@ export default async function HomePage(props: {
   return (
     <>
       <MapHero />
-      <Manifesto />
+      <Pulse />
+      <Services />
       <Work />
       <Impact />
       <Start />

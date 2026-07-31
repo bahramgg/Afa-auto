@@ -3,7 +3,7 @@ import { Container } from '@/components/ui/container';
 import { RuledCell, RuledPanel, SectionHead } from '@/components/ui/editorial';
 
 const steps = ['call', 'review', 'proposal', 'build'] as const;
-const notes = ['ownership', 'tools', 'exit'] as const;
+const why = ['fast', 'tools', 'ownership', 'human'] as const;
 
 /* -----------------------------------------------------------------------------
    New section, 2026-08 — «how long, how much, what happens next».
@@ -45,13 +45,18 @@ export function Start() {
           ))}
         </RuledPanel>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <ul className="grid gap-2.5">
-            {notes.map((id) => (
-              <li key={id} className="flex items-start gap-3 text-sm leading-relaxed text-muted">
+        {/* Why us over doing it yourself — the reference closes its process
+            with exactly this row, and every line here is a claim the FAQ and
+            the manifesto already made. Consolidated from both; the old
+            three-checkmark list and the Manifesto section died into it. */}
+        <h3 className="mt-14 text-base font-bold text-ink">{t('whyTitle')}</h3>
+        <RuledPanel columns={4} className="mt-5">
+          {why.map((id) => (
+            <RuledCell key={id} className="!p-5">
+              <p className="flex items-center gap-2.5 text-sm font-semibold text-ink">
                 <span
                   aria-hidden
-                  className="mt-1 grid size-4 shrink-0 place-items-center rounded-[3px] border border-success/50 text-success"
+                  className="grid size-4 shrink-0 place-items-center rounded-[3px] border border-success/50 text-success"
                 >
                   <svg width="9" height="9" viewBox="0 0 10 10">
                     <path
@@ -64,11 +69,14 @@ export function Start() {
                     />
                   </svg>
                 </span>
-                {t(`notes.${id}`)}
-              </li>
-            ))}
-          </ul>
+                {t(`why.${id}.title`)}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{t(`why.${id}.body`)}</p>
+            </RuledCell>
+          ))}
+        </RuledPanel>
 
+        <div className="mt-8 flex justify-center">
           <a
             href="#contact"
             className="inline-flex min-h-12 items-center justify-center rounded-button bg-brand px-7 text-sm font-semibold text-white shadow-brand"
@@ -76,6 +84,7 @@ export function Start() {
             {t('cta')}
           </a>
         </div>
+
       </Container>
     </section>
   );

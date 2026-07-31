@@ -120,8 +120,8 @@
     font-weight: var(--display-map-weight);
     letter-spacing: var(--display-hero-tracking);
     text-transform: uppercase;
-    font-size: clamp(1.9rem, 4.6vw, 3.4rem);
-    line-height: 1.16;
+    font-size: clamp(2.15rem, 5vw, 4rem);
+    line-height: 1.12;
     text-wrap: balance;
   }
   html[lang='fa'] .display-hero {
@@ -168,6 +168,41 @@
   html[lang='fa'] .meta {
     font-family: var(--font-fa);
     letter-spacing: 0;
+  }
+
+  /* The console strip's live dot. The pulse is the only motion the strip has,
+   * and prefers-reduced-motion stills it below. */
+  .pulseDot {
+    display: block;
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: var(--radius-pill);
+    background: var(--success);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 45%, transparent);
+    animation: pulseDot 2.6s var(--ease-ambient) infinite;
+  }
+  @keyframes pulseDot {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 45%, transparent); }
+    70%  { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulseDot { animation: none; }
+  }
+
+  /* The ghost wordmark at the foot of the page — outline-only display type,
+   * cropped by its container so it reads as architecture, not as a heading.
+   * Always the Latin mark: it is the logotype, not a word being read. */
+  .ghost-word {
+    font-family: var(--font-display-latin);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-size: clamp(6rem, 22vw, 19rem);
+    line-height: 0.72;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 14%, transparent);
+    user-select: none;
   }
 
   /* The dotted ground. A gradient, not an image: the token file forbids url()

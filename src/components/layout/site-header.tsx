@@ -22,7 +22,7 @@ import { LocaleSwitch } from './locale-switch';
    doubt they have seen everything.
    -------------------------------------------------------------------------- */
 
-const sections = ['approach', 'work', 'impact'] as const;
+const sections = ['services', 'work', 'start'] as const;
 
 export function SiteHeader() {
   const t = useTranslations('Nav');

@@ -1,15 +1,16 @@
 {
   "Meta": {
-    "title": "AFA · Business process automation",
-    "description": "AFA hands your business's repetitive work to a system: customer replies, order capture, follow-up and reporting. The decisions that matter stay yours."
+    "title": "AFA · Intelligent business automation",
+    "description": "An AI assistant, operations automation, an online storefront and a daily report — a system that runs your repetitive work and leaves every decision that matters to you."
   },
   "Nav": {
     "home": "Home",
-    "approach": "Approach",
+    "services": "Services",
     "work": "Work",
     "impact": "Calculator",
+    "start": "Process",
     "mapPage": "Full map",
-    "contact": "Get in touch",
+    "contact": "Free assessment",
     "menu": "Menu",
     "close": "Close"
   },
@@ -20,12 +21,96 @@
     "switchTo": "Switch to {locale}"
   },
   "Hero": {
-    "eyebrow": "AFA · Business process automation",
-    "title": "Your repetitive work, mapped",
-    "sub": "Six domains, twenty-four processes a system can run. Click any one to see exactly what it does — and where it stops for you.",
-    "ctaPrimary": "Book a call",
-    "ctaSecondary": "Read every process",
+    "eyebrow": "AFA · Intelligent business automation",
+    "title": "Your business, on autopilot",
+    "sub": "An assistant that never leaves a message unanswered. Workflows that run themselves. A report ready every morning. Every decision that matters — still yours.",
+    "ctaPrimary": "Get a free assessment",
+    "ctaSecondary": "See the full map",
     "mapHint": "Click a domain to open it; click a process for the detail."
+  },
+  "Pulse": {
+    "label": "operations console",
+    "demo": "simulated preview · not live data",
+    "items": {
+      "assistant": {
+        "text": "DM answered; consultation booked for Tuesday 10:30",
+        "time": "2m ago"
+      },
+      "order": {
+        "text": "New order queued; stock confirmed, warehouse notified",
+        "time": "9m ago"
+      },
+      "invoice": {
+        "text": "Bank transfer matched to invoice #218",
+        "time": "21m ago"
+      },
+      "brief": {
+        "text": "Daily brief delivered to the owner",
+        "time": "07:30"
+      }
+    }
+  },
+  "Services": {
+    "eyebrow": "Services",
+    "title": "Four things we take off your plate",
+    "lede": "Each one starts with a scene you probably recognise.",
+    "scenarioLabel": "The scene",
+    "solutionLabel": "What the system does",
+    "demoTag": "simulated",
+    "mapCta": "All 24 processes, on the map",
+    "items": {
+      "assistant": {
+        "title": "AI assistant",
+        "scenario": "It’s 11 PM. A customer asks for a price in your DMs. By the time you reply in the morning, they’ve bought elsewhere.",
+        "solution": "The assistant answers on WhatsApp, Instagram and your site, collects the details and opens a file per customer. Anything it can’t answer goes straight to you.",
+        "outcome": "Every message answered. Every lead captured. Even at 2 AM."
+      },
+      "automation": {
+        "title": "Operations automation",
+        "scenario": "A new order lands. You type it in, check stock, message the warehouse, issue the invoice. Fifteen minutes per order — dozens of times a week.",
+        "solution": "The chain runs itself from intake to customer notification, logs every step, and stops for your approval wherever a decision matters.",
+        "outcome": "The busywork runs itself. You do the work that’s worth your time."
+      },
+      "store": {
+        "title": "Website & online store",
+        "scenario": "A customer is ready to buy at midnight. But your store is an Instagram page, and whoever answers it is asleep.",
+        "solution": "Catalog and payment go online; repeat questions get automatic answers, and every purchase lands in the customer’s file.",
+        "outcome": "Sales stop waiting for someone to wake up."
+      },
+      "reports": {
+        "title": "Reports & alerts",
+        "scenario": "It’s the end of the month and nobody knows exactly how it went; the numbers are spread across two ledgers and three phones.",
+        "solution": "A short brief lands every morning where you actually read; any unusual number raises a same-day alert, with its context.",
+        "outcome": "Decisions from numbers, not guesses."
+      }
+    },
+    "demos": {
+      "assistant": {
+        "in": "Hi — any slots free on Saturday?",
+        "out": "Hi! Saturday 10:30 or 16:00 are open. Which works for you?",
+        "in2": "10:30 is perfect.",
+        "badge": "Booked · customer file created · reminders armed"
+      },
+      "automation": {
+        "s1": "Order intake",
+        "s2": "Stock check",
+        "s3": "Notify warehouse",
+        "s4": "Issue invoice",
+        "hold": "waiting for your approval"
+      },
+      "store": {
+        "order": "Order #1042",
+        "paid": "Paid online",
+        "sms": "Receipt texted to customer",
+        "crm": "Logged to customer file"
+      },
+      "reports": {
+        "title": "Today’s brief",
+        "l1": "Yesterday’s sales ran above the weekly average",
+        "l2": "Three invoices are awaiting settlement",
+        "l3": "Top seller is running low on stock"
+      }
+    }
   },
   "Map": {
     "hub": "AFA",
@@ -244,64 +329,46 @@
       }
     }
   },
-  "Manifesto": {
-    "eyebrow": "How we think",
-    "statement": "Systems do the repetitive work; people make the decisions.",
-    "principles": {
-      "human": {
-        "title": "You decide",
-        "body": "Nothing important happens without your sign-off."
-      },
-      "ownership": {
-        "title": "Your ownership",
-        "body": "Code, domain and data are registered in your name from day one."
-      },
-      "auditable": {
-        "title": "Your own dashboard",
-        "body": "Everything the system does is logged and visible in a panel built for you."
-      },
-      "reversible": {
-        "title": "Easy to deactivate",
-        "body": "Any part can be deactivated without stopping the work."
-      }
-    }
-  },
   "Work": {
-    "eyebrow": "Work",
-    "title": "Three systems running right now",
-    "subtitle": "Built for businesses like yours.",
+    "eyebrow": "Proof",
+    "title": "What changes when the system goes live",
+    "subtitle": "Three real businesses. No invented numbers — before, what was deployed, after.",
     "labels": {
       "before": "Before",
+      "deployed": "What was deployed",
       "after": "Now"
     },
     "items": {
       "restaurant": {
         "sector": "Restaurant",
         "title": "Every order in one queue",
-        "before": "Orders came by phone, Instagram and WhatsApp and went onto paper. On busy nights, messages got lost.",
-        "after": "Every order from every channel records itself, and the kitchen and the till watch one list.",
-        "scope": "Order capture · Replies · Reports"
+        "before": "Orders came in by phone, Instagram and WhatsApp and went onto paper. On busy nights, messages got lost.",
+        "deployed": "Multichannel order intake · one kitchen queue · nightly report",
+        "after": "Every order from every channel registers itself; kitchen and register see a single list.",
+        "scope": "Order intake · replies · reporting"
       },
       "retail": {
-        "sector": "Clothing store",
-        "title": "From DMs to a real online store",
-        "before": "Every sale took a thread of messages, and after the sale no customer record survived.",
-        "after": "Catalogue and payment moved online; recurring questions answer themselves and every purchase lands in the customer's file.",
-        "scope": "Online store · Customer files"
+        "sector": "Clothing retailer",
+        "title": "From DMs to an online store",
+        "before": "Every sale took a thread of messages, and after the sale there was no record of the customer.",
+        "deployed": "Online store · automatic answers to repeat questions · customer files",
+        "after": "Catalog and payment went online; repeat questions answer themselves and every purchase lands in the customer’s file.",
+        "scope": "Online store · customer files"
       },
       "services": {
         "sector": "Technical services",
         "title": "Dispatch without the notebook",
-        "before": "Requests were taken by phone and written in a notebook; follow-ups slipped.",
-        "after": "Requests record and schedule themselves; customer and technician both get reminders.",
-        "scope": "Requests · Scheduling · Reminders"
+        "before": "Requests were taken by phone and written in a notebook; follow-ups were forgotten.",
+        "deployed": "Automatic request intake · dispatch scheduling · two-way reminders",
+        "after": "Requests register and schedule themselves; customer and technician both get reminders.",
+        "scope": "Request intake · scheduling · reminders"
       }
     }
   },
   "Impact": {
-    "eyebrow": "The calculator",
-    "title": "How much time comes back to your team?",
-    "subtitle": "Enter your business's details; the result is computed on the spot.",
+    "eyebrow": "Calculator",
+    "title": "See how much time comes back to your team",
+    "subtitle": "Four numbers from your own business; the answer is instant, right here.",
     "windowTitle": "calc.afa",
     "inputs": {
       "staff": {
@@ -333,13 +400,13 @@
       }
     },
     "disclaimer": "An estimate from your own inputs, not a delivery promise. It assumes roughly 60% of repetitive work can be handed to a system and roughly 70% of missed requests can be rescued; the exact figures follow a review of your processes.",
-    "ctaNote": "That figure is an estimate off your own numbers. Which part of it is actually recoverable takes a look at your processes.",
+    "ctaNote": "That figure comes from your own numbers, but it is still an estimate. Which part is actually recoverable is what the free assessment establishes.",
     "cta": "Go through the number with us"
   },
   "Start": {
-    "eyebrow": "Getting started",
-    "title": "How long it takes, and how it is priced",
-    "lede": "Four steps to the first process that runs itself. No figure is quoted before the review meeting, because before that it is a guess.",
+    "eyebrow": "Process",
+    "title": "From first call to a live system",
+    "lede": "Four steps — and no figure is quoted before the review meeting, because before that it is a guess.",
     "steps": {
       "call": {
         "title": "The call",
@@ -359,12 +426,26 @@
       }
     },
     "buildWindow": "Two to four weeks, depending on the tool count",
-    "notes": {
-      "ownership": "Code, domain and data are registered in your name from day one.",
-      "tools": "You keep your current tools; the work starts by connecting them.",
-      "exit": "If you stop, the system keeps running and you get the documentation."
-    },
-    "cta": "Book a call"
+    "cta": "Request the free assessment",
+    "whyTitle": "Why us — instead of wrestling with it yourself",
+    "why": {
+      "fast": {
+        "title": "Live in weeks, not months",
+        "body": "The first process is live two to four weeks in. Scale comes after."
+      },
+      "tools": {
+        "title": "On your existing tools",
+        "body": "Nothing new to learn; the system plugs into the WhatsApp, spreadsheets and tools you already run."
+      },
+      "ownership": {
+        "title": "You own it",
+        "body": "Code, domain and data registered in your name from day one. If you stop, the system is yours and keeps working."
+      },
+      "human": {
+        "title": "You decide",
+        "body": "Nothing important runs without your sign-off. A design constraint, not a setting."
+      }
+    }
   },
   "Faq": {
     "eyebrow": "Before the call",
@@ -396,10 +477,10 @@
     }
   },
   "Contact": {
-    "eyebrow": "Contact",
-    "title": "Walk us through your processes",
-    "subtitle": "Leave a number; we will call and talk through the repetitive work in your business.",
-    "formTitle": "Contact form",
+    "eyebrow": "Free assessment",
+    "title": "A free assessment of your processes",
+    "subtitle": "Leave a number. We call, walk your repetitive work with you, and tell you on that call which parts a system can take — no commitment.",
+    "formTitle": "Request an assessment",
     "fields": {
       "name": {
         "label": "Name",
@@ -425,7 +506,7 @@
       "other": "Other"
     },
     "sectorPlaceholder": "Choose one",
-    "submit": "Send request",
+    "submit": "Request the free assessment",
     "sending": "Sending…",
     "successTitle": "Request received",
     "successBody": "We will be in touch shortly.",
@@ -467,7 +548,7 @@
     "home": "Back to home"
   },
   "Footer": {
-    "tagline": "AFA automates the repetitive work in businesses, from customer replies to management reporting.",
+    "tagline": "AFA hands a business’s repetitive work to a system — replies, operations, online sales and reporting — with a human checkpoint on every decision that matters.",
     "rights": "© {year} AFA. All rights reserved.",
     "note": "Each project is priced after a review of your processes.",
     "familyLabel": "The AFA family",

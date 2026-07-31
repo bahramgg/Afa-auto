@@ -38,8 +38,9 @@ export function Work() {
                 </h3>
               </div>
 
-              {/* Before and after as one ruled pair: the rule between them is
-                  the change, which is the whole point of the section. */}
+              {/* Before → what was deployed → after. The middle row is the
+                  reference's move: the transformation stops being magic the
+                  moment you can read what was actually installed. */}
               <dl className="flex flex-1 flex-col">
                 <div className="border-t border-border py-4">
                   <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-dim">
@@ -47,6 +48,14 @@ export function Work() {
                   </dt>
                   <dd className="mt-1.5 text-sm leading-relaxed text-dim">
                     {t(`items.${id}.before`)}
+                  </dd>
+                </div>
+                <div className="border-t border-border py-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-dim">
+                    {t('labels.deployed')}
+                  </dt>
+                  <dd className="meta mt-1.5 text-xs leading-relaxed text-muted">
+                    {t(`items.${id}.deployed`)}
                   </dd>
                 </div>
                 <div className="flex-1 border-t border-border py-4">

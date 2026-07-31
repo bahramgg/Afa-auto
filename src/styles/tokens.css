@@ -163,6 +163,9 @@
    * so lightness carries what tracking carries in Latin. Components read only
    * the three generic names; html[lang] swaps them below. */
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  /* Pinned Latin display for the few places that set the LOGOTYPE rather than
+   * a word being read (the footer's ghost mark) — html[lang] must not swap it. */
+  --font-display-latin: 'Cormorant Garamond', 'Times New Roman', serif;
   --display-map-weight: 500;
   --display-map-tracking: 0.26em;
   --display-hero-tracking: 0.08em;
