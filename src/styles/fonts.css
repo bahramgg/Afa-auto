@@ -1,0 +1,219 @@
+/* Self-hosted @font-face declarations (plan §2, §10). No CDN, no Google Fonts.
+ * Files are synced into public/fonts by scripts/sync-fonts.mjs.
+ *
+ * ESTEDAD is the Persian UI face as of 2026-07-31, replacing Vazirmatn for
+ * body and interface text. The reason is register, not quality: Iranian
+ * exchanges — Wallex, Nobitex, Ramzinex — are set in the IRANYekan/Dana
+ * family, which is tighter, more geometric and has a higher x-height than
+ * Vazirmatn. Next to those, Vazirmatn reads soft and generic. IRANYekan and
+ * Dana are commercially licensed and cannot ship in an open product; Estedad
+ * is SIL OFL and is the closest open face in that register.
+ *
+ * Vazirmatn is NOT removed. Its 300 weight below is the editorial display
+ * voice this site was built around — a light Persian face at display size is
+ * what carries the tone, and Estedad has no equivalent. So: Estedad for
+ * anything a visitor reads as interface, Vazirmatn 300 for display.
+ *
+ * Five weights, Arabic subset only (~134 KB). The Latin subset is deliberately
+ * not loaded — Inter and Manrope already cover Latin, and Estedad's Latin
+ * would only add a fourth Latin face nobody asked for. */
+
+/* --- IRANYekan, ACTIVE (2026-07-31) -------------------------------------------
+ * The Persian UI face, by the owner's explicit decision. IRANYekan is a
+ * commercial font licensed by fontiran.com; the licensing risk of shipping
+ * these mirror-sourced files was stated to the owner on 2026-07-31 and
+ * accepted by them the same day. When a purchased WebFonts package arrives,
+ * overwrite these three files (and add -500/-800 plus their @font-face rules)
+ * and the swap is done.
+ *
+ * Three weights (light/regular/bold). Requests for 500 resolve to 400 and for
+ * 600/800 to 700 by standard CSS font matching. */
+@font-face {
+  font-family: 'IRANYekan';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/iranyekan-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IRANYekan';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/iranyekan-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IRANYekan';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/iranyekan-700.woff2') format('woff2');
+}
+
+/* Sahel — the shipping FA UI face until the IRANYekan licence lands. The
+ * closest OPEN face to the Yekan register: rounded-geometric, high x-height
+ * (SIL OFL, rastikerdar/sahel-font v3.4.0, self-hosted). Three real weights;
+ * 500/600 requests resolve to the nearest of 400/700. */
+@font-face {
+  font-family: 'Sahel';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/sahel-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Sahel';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/sahel-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Sahel';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/sahel-900.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Estedad';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/estedad-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Estedad';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/estedad-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Estedad';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/estedad-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Estedad';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/estedad-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Estedad';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/estedad-800.woff2') format('woff2');
+}
+
+/* Vazirmatn — FA UI. Latin subset first so it wins for ASCII, then Arabic. */
+/* 300 is display-only: the Persian counterpart of the Latin serif's tracked
+ * caps. Joined script cannot be letter-spaced, so lightness at size is what
+ * carries the editorial voice. */
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-latin-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2074, U+20AC;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-latin-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2074, U+20AC;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/vazirmatn-800.woff2') format('woff2');
+}
+
+/* Manrope — EN headings (400/600/800). */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/manrope-800.woff2') format('woff2');
+}
+
+/* Cormorant Garamond — EN display serif. The operating map's Latin labels and
+ * the hero line, in caps with wide tracking. Never used for body text: at text
+ * sizes a garalde this light disappears on a dark ground. */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/cormorant-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/cormorant-600.woff2') format('woff2');
+}
+
+/* Inter — EN body (400/600). */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-600.woff2') format('woff2');
+}

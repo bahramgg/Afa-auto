@@ -1,0 +1,482 @@
+/* =============================================================================
+   AFA — shared design tokens. THE single source of truth for color, type,
+   spacing, radius, elevation and motion across afa-site, afa-pay and
+   afa-automation.
+
+   SECURITY CONTRACT — read before changing anything here.
+     · This file is DATA. It contains no selectors that execute, no @import,
+       no url() to a remote host, no font fetch. That is deliberate: it is
+       vendored into three repositories, one of which moves money, and it must
+       stay reviewable in under a minute.
+     · It is NOT published to npm and NOT a git submodule. It is copied, and
+       each repo records its SHA256 in `afa-tokens.sha256`. Updating it is a
+       manual PR whose diff is a list of hex values.
+     · Never add @import (external CSS is a script-injection vector under a
+       permissive CSP) and never add url() (that is a network request the CSP
+       must then allow).
+     · Fonts are referenced by family name only. Each app @font-face's its own
+       self-hosted files. No Google Fonts, no CDN — an origin AFA does not
+       control must never be able to change what renders on the checkout page.
+
+   Palette provenance: afa-site and afa-pay already agreed on these values in
+   production. afa-automation had drifted (#4d69ff / #916dff / #070a20); it is
+   migrated onto these. Nothing here is a new brand decision — it is the
+   existing brand, written down once.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   LAYER 1 — PRIMITIVES
+   Raw values with no meaning attached. Never reference these in a component;
+   reference the semantic layer below. A primitive changes only when the brand
+   changes.
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Brand ramp — navy → electric blue → violet */
+  --afa-navy-900: #0b0c5c;
+  --afa-navy-800: #14158c;
+  --afa-blue-700: #2a3bff;   /* gradient origin on deep ground */
+  --afa-blue-600: #2a48f0;   /* accent on light ground */
+  --afa-blue-500: #1f3ae0;   /* pressed / hover on light ground */
+  --afa-blue-400: #5a7bff;   /* accent on deep ground */
+  --afa-blue-350: #7d97ff;   /* focus ring + hairline glow on deep ground */
+  --afa-blue-300: #8ea6ff;   /* icon tint on deep ground */
+  --afa-violet-600: #6a2cf5; /* gradient terminus, light ground */
+  --afa-violet-400: #9a6bff; /* gradient terminus, deep ground */
+  --afa-violet-300: #a78bfa; /* focus ring on deep ground */
+
+  /* The brand gradient, one per ground. These are primitives rather than only
+     a semantic pair because afa-site needs BOTH on the same page: its plain
+     sections and its deep sections are authored side by side, so it cannot
+     rely on a single cascading `--afa-gradient-brand`. */
+  --afa-gradient-plain: linear-gradient(
+    120deg,
+    var(--afa-navy-800) 0%,
+    var(--afa-blue-600) 55%,
+    var(--afa-violet-600) 100%
+  );
+  --afa-gradient-deep: linear-gradient(
+    120deg,
+    var(--afa-blue-700) 0%,
+    var(--afa-blue-400) 50%,
+    var(--afa-violet-400) 100%
+  );
+
+  /* Deep ramp — the navy ground. A designed surface, not a "dark mode".
+     Seven steps, because afa-automation genuinely needs that many: page →
+     elevated page → card → raised card → hairline → glass hairline. Values are
+     the merge of afa-pay's production ramp and afa-automation's; where the two
+     differed by less than a perceptible amount (#101538 vs #10163a,
+     #0c1030 vs #0d1230) the afa-pay value won, because it is the one already
+     rendering on a page where people spend money. */
+  --afa-ink-950: #070a1f; /* page ground */
+  --afa-ink-920: #0a0d2b; /* elevated page band */
+  --afa-ink-900: #0d1230; /* elevated ground */
+  --afa-ink-850: #10163a; /* card / surface */
+  --afa-ink-820: #131a43; /* raised card */
+  --afa-ink-800: #232a52; /* hairline */
+  --afa-ink-780: #2b3058; /* glass hairline */
+  --afa-ink-300: #8b96c8;
+  --afa-ink-200: #aeb8e6;
+  --afa-ink-050: #eef1ff;
+
+  /* Plain ramp — the light ground. */
+  --afa-slate-950: #0a0d29;
+  --afa-slate-500: #58627e;
+  --afa-slate-200: #cfd6ec;
+  --afa-slate-100: #e4e8f5;
+  --afa-slate-050: #f4f6ff;
+  --afa-white: #ffffff;
+
+  /* Status — each has a light-ground and a deep-ground value, because the same
+     hex does not clear 4.5:1 on both. */
+  --afa-green-600: #18a957;
+  --afa-green-400: #2ec27e;
+  --afa-green-200: #9fe8c0; /* "live" label text on deep ground */
+  --afa-amber-600: #d98a00;
+  --afa-amber-400: #f0b13b;
+  --afa-red-600: #d23a3a;
+  --afa-red-400: #ff6b6b;
+
+  /* Alpha primitives for glass surfaces on deep ground. */
+  --afa-alpha-card: rgba(255, 255, 255, 0.045);
+  --afa-alpha-card-2: rgba(255, 255, 255, 0.09);
+  --afa-alpha-line: rgba(255, 255, 255, 0.1);
+  --afa-alpha-line-2: rgba(255, 255, 255, 0.18);
+
+  /* --- CATEGORICAL MAP RAMP -------------------------------------------------
+     Added 2026-07-30. This is the first genuinely NEW colour decision in this
+     file — everything above was the existing brand written down. It is called
+     out rather than slipped in.
+
+     Why it had to exist: afa-automation's capability map shows six independent
+     domains of a business at once. Six domains cannot be told apart by the
+     brand ramp alone (navy → blue → violet is one hue family; six steps of it
+     read as one blurred gradient at 8px node size, which is the size these
+     render at).
+
+     Constraints these six values were chosen under:
+       · Every one clears 4.5:1 against --afa-ink-950, so a node LABEL is
+         readable, not merely a dot that is visible. Measured, not eyeballed —
+         afa-automation/test/contrast.test.ts asserts it.
+       · They are CATEGORICAL, never STATUS. --afa-ok / --afa-warn / --afa-danger
+         keep their own values above and are deliberately NOT reused here: a
+         green node on a capability map must not read as "this one is healthy".
+         map-6 is a mint, not the --afa-green-400 success token; map-4 is a
+         warmer amber than --afa-amber-400. The gap is intentional.
+       · Hue is never the only channel. Each domain also carries a distinct
+         node GLYPH (circle, square, diamond, triangle, hexagon, cross), so the
+         map survives monochrome print and red/green colour deficiency
+         (WCAG 2.1 §1.4.1 Use of Colour).
+       · Marketing surfaces only. A money surface uses none of these. */
+  --afa-map-1: #5a7bff; /* blue   — same value as blue-400, on purpose */
+  --afa-map-2: #37d3bd; /* teal   */
+  --afa-map-3: #a78bfa; /* violet — same value as violet-300, on purpose */
+  --afa-map-4: #ffb347; /* amber  */
+  --afa-map-5: #ff8fb1; /* rose   */
+  --afa-map-6: #7de88f; /* mint   */
+}
+
+/* -----------------------------------------------------------------------------
+   LAYER 2 — SEMANTIC
+   What a value is FOR. Components reference only this layer.
+
+   AFA has two independent axes and they are not the same thing:
+
+     surface  — a design decision. `.afa-deep` is the navy ground AFA sells on;
+                the plain ground is where AFA talks. Both exist on every page
+                regardless of the visitor's preference.
+     theme    — the visitor's preference (afa-pay's toggle). Marketing pages
+                may ignore it; the dashboard must honour it.
+
+   Precedence, deliberate: an explicit `.afa-deep` wins over `[data-theme]`,
+   because a deep section is authored, not preferred.
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-theme='light'] {
+  --afa-bg: var(--afa-white);
+  --afa-bg-elev: var(--afa-slate-050);
+  --afa-card: var(--afa-white);
+  --afa-card-2: var(--afa-slate-050);
+  --afa-line: var(--afa-slate-100);
+  --afa-line-strong: var(--afa-slate-200);
+
+  --afa-text: var(--afa-slate-950);
+  --afa-text-muted: var(--afa-slate-500);
+  --afa-text-faint: var(--afa-slate-500);
+
+  --afa-accent: var(--afa-blue-600);
+  --afa-accent-hover: var(--afa-blue-500);
+  --afa-accent-quiet: var(--afa-blue-600);
+  --afa-on-accent: var(--afa-white);
+
+  --afa-ok: var(--afa-green-600);
+  --afa-warn: var(--afa-amber-600);
+  --afa-danger: var(--afa-red-600);
+
+  --afa-focus-ring: var(--afa-blue-600);
+  --afa-shadow: 0 12px 34px rgba(20, 30, 90, 0.1);
+  --afa-gradient-brand: var(--afa-gradient-plain);
+
+  /* The AFA mark reads its two stops from here, so one component serves both
+     grounds without knowing which it is on. See afa-brand/AfaMark.tsx. */
+  --afa-mark-from: var(--afa-blue-600);
+  --afa-mark-to: var(--afa-violet-600);
+}
+
+[data-theme='dark'],
+.afa-deep,
+[data-surface='deep'] {
+  --afa-bg: var(--afa-ink-950);
+  --afa-bg-elev: var(--afa-ink-900);
+  --afa-card: var(--afa-alpha-card);
+  --afa-card-2: var(--afa-alpha-card-2);
+  --afa-line: var(--afa-alpha-line);
+  --afa-line-strong: var(--afa-alpha-line-2);
+
+  --afa-text: var(--afa-ink-050);
+  --afa-text-muted: var(--afa-ink-200);
+  --afa-text-faint: var(--afa-ink-300);
+
+  --afa-accent: var(--afa-blue-400);
+  --afa-accent-hover: var(--afa-blue-300);
+  --afa-accent-quiet: var(--afa-blue-300);
+  --afa-on-accent: var(--afa-ink-950);
+
+  --afa-ok: var(--afa-green-400);
+  --afa-warn: var(--afa-amber-400);
+  --afa-danger: var(--afa-red-400);
+
+  --afa-focus-ring: var(--afa-blue-350);
+  --afa-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+  --afa-gradient-brand: var(--afa-gradient-deep);
+
+  --afa-mark-from: var(--afa-blue-400);
+  --afa-mark-to: var(--afa-violet-400);
+}
+
+/* Opaque card on deep ground. The alpha card above only reads correctly over
+   the dotted brand field; a dashboard table needs a solid fill. */
+[data-theme='dark'] {
+  --afa-card: var(--afa-ink-850);
+  --afa-card-2: var(--afa-ink-900);
+  --afa-line: var(--afa-ink-800);
+  --afa-line-strong: var(--afa-ink-800);
+}
+
+/* -----------------------------------------------------------------------------
+   LAYER 3 — TYPE, SPACE, SHAPE, MOTION
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Families are NAMES ONLY. Each app self-hosts the files and writes its own
+     @font-face. Vazirmatn carries Persian; IBM Plex Sans carries the Latin
+     fintech voice and the tabular figures money is set in.
+     RTL is the default reading direction across all three apps. */
+  /* Estedad as of 2026-07-31, replacing Vazirmatn across all three properties.
+     Register, not quality: Iranian exchanges — Wallex, Nobitex, Ramzinex — are
+     set in the IRANYekan/Dana family, which is tighter and more geometric with
+     a higher x-height. Vazirmatn next to those reads soft and web-generic,
+     which is the wrong voice for a product that moves money. IRANYekan and Dana
+     are commercially licensed and cannot ship in an open product; Estedad is
+     SIL OFL and is the closest open face in that register.
+
+     Name only, as with every family here — each app @font-face's its own
+     self-hosted files. */
+  --afa-font-fa: 'Estedad', system-ui, 'Segoe UI', Tahoma, sans-serif;
+  --afa-font-en: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --afa-font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  /* Type scale. Fluid, so one scale serves 375px → 1440px without breakpoints.
+     Body floor is 16px — never smaller, per accessibility priority 6. */
+  /* Hero. One step above `display`, for the single line a product page opens
+     with. Tighter tracking than the scale below it because at this size the
+     default spacing reads as gappy. Reserve it for one element per page. */
+  --afa-text-hero: clamp(2.6rem, 6.4vw, 5rem);
+  --afa-tracking-hero: -0.035em;
+
+  --afa-text-display: clamp(2.1rem, 5.1vw, 3.9rem);
+  --afa-text-h2: clamp(1.65rem, 3.3vw, 2.5rem);
+  --afa-text-h3: clamp(1.1rem, 1.7vw, 1.3rem);
+  --afa-text-lede: clamp(1rem, 1.35vw, 1.12rem);
+  --afa-text-body: 1rem;
+  --afa-text-sm: 0.906rem;   /* 14.5px */
+  --afa-text-xs: 0.781rem;   /* 12.5px — labels and eyebrows only, never prose */
+
+  --afa-leading-tight: 1.18;
+  --afa-leading-heading: 1.26;
+  --afa-leading-body: 1.8;   /* Persian needs more than Latin; 1.8 is the floor */
+  --afa-tracking-display: -0.03em;
+  --afa-tracking-eyebrow: 0.13em;
+
+  /* Space scale — density 6/10 (standard). 4px base. */
+  --afa-space-1: 4px;
+  --afa-space-2: 8px;
+  --afa-space-3: 12px;
+  --afa-space-4: 16px;
+  --afa-space-5: 24px;
+  --afa-space-6: 32px;
+  --afa-space-7: 48px;
+  --afa-space-8: 64px;
+  --afa-space-section: clamp(64px, 9vw, 116px);
+  --afa-space-section-tight: clamp(48px, 6vw, 80px);
+
+  /* Shape */
+  --afa-radius-field: 12px;
+  --afa-radius-button: 12px;
+  --afa-radius-card: 16px;
+  --afa-radius-card-lg: 22px;
+  --afa-radius-pill: 999px;
+
+  /* Glass — the floating header and tool cards only. Blur is the single most
+     expensive effect on these pages and a phone pays for it on every scroll
+     frame, so apps gate it behind a min-width media query. */
+  --afa-glass-bg: rgba(16, 22, 58, 0.6);
+  --afa-glass-blur: 14px;
+
+  /* Brand glow. Reserved for the primary action; never on a money surface.
+     The hover step exists as a token so a component cannot reach for an
+     arbitrary rgba() and pin a colour the palette has since moved off. */
+  --afa-shadow-brand: 0 8px 30px rgba(90, 123, 255, 0.35);
+  --afa-shadow-brand-hover: 0 10px 36px rgba(90, 123, 255, 0.45);
+
+  /* Layout */
+  --afa-container: 1180px;
+  --afa-gutter: 24px;
+  --afa-header-h: 72px;
+
+  /* Motion — 150–300ms band. Anything longer reads as lag on a payment screen. */
+  --afa-t-fast: 150ms;
+  --afa-t-base: 240ms;
+  --afa-t-slow: 300ms;
+  --afa-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Minimum hit target. Enforced on every interactive element. */
+  --afa-target-min: 44px;
+}
+
+/* -----------------------------------------------------------------------------
+   LAYER 4 — COMPONENT TOKENS
+   Only the values a component needs to differ on. Everything else inherits.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --afa-button-bg: var(--afa-accent);
+  --afa-button-fg: var(--afa-on-accent);
+  --afa-button-bg-hover: var(--afa-accent-hover);
+  --afa-button-radius: var(--afa-radius-button);
+  --afa-button-pad-y: 13px;
+  --afa-button-pad-x: 24px;
+
+  --afa-card-bg: var(--afa-card);
+  --afa-card-border: var(--afa-line);
+  --afa-card-radius: var(--afa-radius-card);
+  --afa-card-pad: 26px;
+
+  --afa-field-bg: var(--afa-bg);
+  --afa-field-border: var(--afa-line-strong);
+  --afa-field-radius: var(--afa-radius-field);
+  --afa-field-border-invalid: var(--afa-danger);
+}
+
+/* On deep ground the button hierarchy inverts: a light fill leads, because a
+   blue fill on navy does not carry enough separation to read as primary. */
+.afa-deep,
+[data-surface='deep'] {
+  --afa-button-bg: var(--afa-ink-050);
+  --afa-button-fg: var(--afa-ink-950);
+  --afa-button-bg-hover: var(--afa-white);
+}
+
+/* -----------------------------------------------------------------------------
+   LAYER 5 — EDITORIAL SYSTEM
+   Added 2026-07-30. The layers above answer "what colour". This one answers
+   "what does an AFA page LOOK like", and it is the reason a visitor who lands
+   on the gateway after reading the company site recognises it as the same firm.
+
+   Three moves carry the whole family. They are cheap, they are unusual enough
+   not to read as a template, and they survive being implemented three times in
+   three different styling systems (CSS Modules ×2, Tailwind ×1).
+
+     1. THE RULED PANEL. Sections of related cards are ONE bordered block
+        subdivided by hairlines — not a row of separate floating cards with
+        gaps between them. Gaps say "these are unrelated things". A shared
+        rule says "these are facets of one thing", which is true, and it is the
+        single most recognisable thing about the layout.
+     2. THE TRACKED EYEBROW. Every section opens with a small, wide-tracked
+        label above the heading. Cheap, and it does the job a coloured pill
+        badge is usually hired for without the badge.
+     3. RATIONED LIGHT. The deep ground stays deep. Glow appears at most three
+        times per page and never on a surface showing money.
+
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* --- Bilingual display type ------------------------------------------------
+     The reference look is uppercase Latin with open tracking. Persian has no
+     case, and letter-spacing is actively HARMFUL to it — Arabic-script letters
+     join, and spacing them apart severs the joins and produces text that is
+     both ugly and measurably slower to read.
+
+     So "display voice" is two different mechanisms per script, tokenised here
+     so no app has to rediscover it:
+       Latin   — uppercase, opened tracking, weight 700.
+       Persian — no transform, ZERO tracking, weight 800 and tighter leading.
+                 Weight and density carry the authority that case carried.
+
+     Apps apply these under `html[lang='en']` / `html[lang='fa']`. */
+  --afa-display-transform-latin: uppercase;
+  --afa-display-tracking-latin: 0.005em;
+  --afa-display-weight-latin: 700;
+
+  --afa-display-transform-fa: none;
+  --afa-display-tracking-fa: 0em; /* NEVER raise this. It breaks Arabic joining. */
+  --afa-display-weight-fa: 800;
+  --afa-leading-display-fa: 1.42; /* Persian ascenders/descenders need the room */
+
+  /* --- The ruled panel -------------------------------------------------------
+     A panel is a single bordered rectangle. Its cells are separated by the
+     same hairline as its own border, so the grid reads as one object. Cells
+     carry no radius; only the panel does, and the panel clips them. */
+  --afa-hairline: 1px;
+  --afa-panel-radius: var(--afa-radius-card-lg);
+  --afa-panel-pad: clamp(20px, 2.6vw, 34px);
+  --afa-panel-cell-min: 260px;
+
+  /* --- The tracked eyebrow --------------------------------------------------- */
+  --afa-eyebrow-size: var(--afa-text-xs);
+  --afa-eyebrow-weight: 600;
+  --afa-eyebrow-transform: uppercase; /* Latin only; fa overrides to none */
+
+  /* --- Dot field -------------------------------------------------------------
+     The faint dotted ground shared by all three sites. A gradient, not an
+     image — the security contract forbids url(), and an inline SVG data URI
+     would need `img-src data:` on a page that otherwise needs nothing. */
+  --afa-dot-size: 22px;
+  --afa-dot-color: rgba(142, 166, 255, 0.075);
+
+  /* --- Ambient motion --------------------------------------------------------
+     Distinct from the 150–300ms interaction band above. This is the slow drift
+     of a decorative field: long enough that the eye reads it as "alive" rather
+     than "animating". Anything under ~12s becomes a distraction next to text. */
+  --afa-t-ambient: 26s;
+  --afa-t-ambient-slow: 44s;
+  --afa-ease-ambient: cubic-bezier(0.45, 0, 0.55, 1);
+
+  /* --- Recede state for data views -------------------------------------------
+     When one item in a map or chart is selected, the rest recede to this
+     opacity rather than disappearing. 0.28 is the floor that still shows the
+     shape of the whole while making the selection unambiguous; below ~0.2 the
+     context is gone and the user loses their place.
+
+     Named `fade`, not `dim`: every app already aliases a TEXT COLOUR called
+     `--dim`, and an opacity sharing that name silently overwrote it. The
+     contrast test caught it, which is what that test is for. */
+  --afa-fade: 0.28;
+  --afa-fade-strong: 0.14;
+}
+
+/* Persian drops the uppercase transform everywhere it appears — including the
+   eyebrow, where `uppercase` is a no-op on Arabic script but `letter-spacing`
+   is not. Declared here so every app inherits the correction. */
+html[lang='fa'],
+[lang='fa'] {
+  --afa-eyebrow-transform: none;
+  --afa-tracking-eyebrow: 0em;
+  --afa-tracking-display: 0em;
+  --afa-tracking-hero: 0em;
+}
+
+/* -----------------------------------------------------------------------------
+   GRADIENT RATIONING — a rule, not a token.
+
+   `--afa-gradient-brand` terminates in violet. On a marketing surface that
+   reads as "modern technology company". On a surface where money is visible it
+   reads as "AI startup", which is the opposite of the feeling a payment
+   confirmation needs. The ui-ux-pro-max database flags this exact pattern as
+   an anti-pattern for fintech.
+
+   The brand is not changing. The rule is:
+
+     · Marketing surfaces (afa-site, afa-pay landing, afa-automation):
+       at most ONE gradient moment per page. One headline span, or one CTA
+       band. Never both.
+     · Money surfaces (checkout /pay/*, /receipt/*, /l/*, the whole merchant
+       dashboard and admin panel): ZERO gradient. Navy and blue only. Value,
+       status and amount are carried by type weight and hairline borders.
+
+   Enforced by review, not by CSS — CSS cannot know which surface it is on.
+   -------------------------------------------------------------------------- */
+
+/* -----------------------------------------------------------------------------
+   REDUCED MOTION — a floor every app inherits, so no app can forget it.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --afa-t-fast: 1ms;
+    --afa-t-base: 1ms;
+    --afa-t-slow: 1ms;
+  }
+}

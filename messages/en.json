@@ -1,0 +1,447 @@
+{
+  "Meta": {
+    "title": "AFA · Business process automation",
+    "description": "AFA hands your business's repetitive work to a system: customer replies, order capture, follow-up and reporting. The decisions that matter stay yours."
+  },
+  "Nav": {
+    "home": "Home",
+    "impact": "Calculator",
+    "work": "Work",
+    "processes": "What we automate",
+    "mapPage": "Full map",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "LocaleSwitch": {
+    "label": "Language",
+    "fa": "فارسی",
+    "en": "English",
+    "switchTo": "Switch to {locale}"
+  },
+  "Hero": {
+    "eyebrow": "AFA · Business automation",
+    "titleLead": "Business automation",
+    "titleAccent": "with AI",
+    "sub": "From before the first visit to after the sale.",
+    "ctaPrimary": "Start a conversation",
+    "ctaSecondary": "See the full map"
+  },
+  "Map": {
+    "hub": "AFA",
+    "hubNote": "No process on this map runs without a human checkpoint. That is a design constraint, not a setting.",
+    "viewMap": "Map",
+    "viewList": "List",
+    "viewLabel": "View",
+    "reset": "Back",
+    "close": "Close",
+    "stepTrigger": "Starts with",
+    "stepDecision": "Decides",
+    "stepAction": "Does",
+    "stepHuman": "You approve",
+    "processesLabel": "Processes",
+    "figureLabel": "The AFA operating map: six domains, twenty-four automatable processes",
+    "domains": {
+      "sales": {
+        "title": "Sales",
+        "summary": "From a stranger's first message to the deal landing with a named person.",
+        "tags": "leads · quotes · follow-up"
+      },
+      "operations": {
+        "title": "Operations",
+        "summary": "Everything after the order is taken; the part that usually lives in someone's head.",
+        "tags": "orders · stock · dispatch"
+      },
+      "intelligence": {
+        "title": "Reporting",
+        "summary": "Turning what got recorded into something a decision can rest on.",
+        "tags": "briefs · alerts · forecasts"
+      },
+      "finance": {
+        "title": "Finance",
+        "summary": "Where money comes in, where it gets stuck, and when to chase it.",
+        "tags": "invoices · matching · receivables"
+      },
+      "support": {
+        "title": "Support",
+        "summary": "Every request that arrives after the sale, until it is closed.",
+        "tags": "triage · replies · escalation"
+      },
+      "marketing": {
+        "title": "Marketing",
+        "summary": "Getting the right message to someone who has bought from you before.",
+        "tags": "segments · campaigns · results"
+      }
+    },
+    "processes": {
+      "lead-capture": {
+        "title": "Lead capture",
+        "trigger": "A message on WhatsApp, Instagram, the site form, or a missed call.",
+        "decision": "New customer or returning? Which product are they asking about?",
+        "action": "One record is created with the channel, the message and the time. Nothing is retyped.",
+        "human": "An unclear source is checked with you before it is assigned."
+      },
+      "quote": {
+        "title": "Quote",
+        "trigger": "A lead with a product and a quantity.",
+        "decision": "Price, discount and validity read from your own rules.",
+        "action": "A numbered quote goes out in the same conversation.",
+        "human": "Any discount past your ceiling reaches you before it goes out."
+      },
+      "deal-followup": {
+        "title": "Stalled-deal follow-up",
+        "trigger": "A deal sitting in one stage longer than you allow.",
+        "decision": "Still thinking, or effectively gone?",
+        "action": "One short nudge on the same channel. Twice at most, then it stops.",
+        "human": "Muting follow-up for any customer is one click."
+      },
+      "handoff": {
+        "title": "Rep handoff",
+        "trigger": "A lead that has become serious.",
+        "decision": "Which rep, by current load and territory, not turn-taking.",
+        "action": "The whole conversation moves with the file; the customer never repeats themselves.",
+        "human": "Handoff is reversible and every change is recorded."
+      },
+      "order-intake": {
+        "title": "Order intake",
+        "trigger": "A confirmed order from any channel.",
+        "decision": "Are the items, address and payment complete?",
+        "action": "The order joins one queue, with an id, where everyone can see it.",
+        "human": "An incomplete order is not rejected; it waits for you in review."
+      },
+      "stock-check": {
+        "title": "Stock check",
+        "trigger": "Every new order, plus one daily sweep.",
+        "decision": "Real stock minus what has been promised; not just the warehouse number.",
+        "action": "A line running low is reported to purchasing before it hits zero.",
+        "human": "A purchase order is never raised automatically. Only proposed."
+      },
+      "dispatch": {
+        "title": "Dispatch scheduling",
+        "trigger": "An order or job that is ready to go.",
+        "decision": "Who, where, and with how much capacity left today?",
+        "action": "The slot reaches the customer and the technician, in both calendars.",
+        "human": "A manual reshuffle always wins."
+      },
+      "sla-watch": {
+        "title": "Response-time watch",
+        "trigger": "Every open case, continuously.",
+        "decision": "How long to the promised deadline, holidays counted?",
+        "action": "A case at risk surfaces before it is late, not after.",
+        "human": "You set the deadlines; the system just guards them."
+      },
+      "daily-brief": {
+        "title": "Daily brief",
+        "trigger": "One fixed hour, every working day.",
+        "decision": "What actually changed since yesterday?",
+        "action": "A short summary lands where the team already reads.",
+        "human": "You define what it covers and who gets it."
+      },
+      "anomaly": {
+        "title": "Deviation alert",
+        "trigger": "Any number the system tracks continuously.",
+        "decision": "Is this normal for this weekday, this season?",
+        "action": "The odd one out is reported with context: what, how far, since when.",
+        "human": "Nothing is auto-corrected. You get the news; you decide."
+      },
+      "forecast": {
+        "title": "Demand forecast",
+        "trigger": "The close of any period you define.",
+        "decision": "Past trend, season and calendar events read together.",
+        "action": "A range with its margin of error; never one confident number.",
+        "human": "Every forecast is labelled an estimate, source data in view."
+      },
+      "board-pack": {
+        "title": "Management pack",
+        "trigger": "Month end, or whatever period you run.",
+        "decision": "Which handful of numbers matter this period?",
+        "action": "A presentable document, every figure traceable.",
+        "human": "It reaches you before anyone else."
+      },
+      "invoice": {
+        "title": "Invoice issue",
+        "trigger": "An order delivered or a job done.",
+        "decision": "Tax, discount and terms per the contract.",
+        "action": "Numbered, sent, and written to the books.",
+        "human": "An unusual invoice is approved before it leaves."
+      },
+      "reconcile": {
+        "title": "Payment matching",
+        "trigger": "Any bank or gateway entry.",
+        "decision": "Which open invoice do the amount, date and reference fit?",
+        "action": "Matches settle; misfits wait on a review list rather than being forced.",
+        "human": "No financial record closes without a definite match."
+      },
+      "dunning": {
+        "title": "Receivables follow-up",
+        "trigger": "An invoice past its due date.",
+        "decision": "What tone, what interval? This customer's history says.",
+        "action": "Reminders step up gradually; every reply sticks to the file.",
+        "human": "One word from you stops it; anything serious reaches you first."
+      },
+      "payout": {
+        "title": "Supplier payout",
+        "trigger": "An approved supplier invoice.",
+        "decision": "Do the purchase order, goods receipt and invoice agree?",
+        "action": "The payment queues with all its paperwork attached.",
+        "human": "A payment never executes on its own. Final approval always rests with a person."
+      },
+      "triage": {
+        "title": "Ticket triage",
+        "trigger": "Any message reaching support.",
+        "decision": "What is it, how urgent, do we have an approved answer?",
+        "action": "The request enters the right queue, tagged and prioritised.",
+        "human": "A wrong call is fixed in one click, and the system learns."
+      },
+      "first-reply": {
+        "title": "First reply",
+        "trigger": "A request whose subject is known.",
+        "decision": "The answer comes from your approved material, not thin air.",
+        "action": "Sent on the same channel, any hour of the day.",
+        "human": "An answer the system is unsure of is not sent at all."
+      },
+      "escalation": {
+        "title": "Escalation",
+        "trigger": "A request the automatic answer did not solve, or a sensitive one.",
+        "decision": "Which specialist, by subject and who is actually there.",
+        "action": "The full history moves along; the customer never retells the story.",
+        "human": "The customer is informed their case has reached a specialist."
+      },
+      "csat": {
+        "title": "Post-resolution survey",
+        "trigger": "A support case being closed.",
+        "decision": "Only genuinely resolved cases are asked.",
+        "action": "One short question; the answer sticks to the case.",
+        "human": "A low score reaches you that moment, not month-end."
+      },
+      "segment": {
+        "title": "Customer segments",
+        "trigger": "Any change in buying behaviour or status.",
+        "decision": "Groups computed from real behaviour, not a hand-kept list.",
+        "action": "Segments stay current, ready for any campaign.",
+        "human": "Every group can be reviewed and edited before use."
+      },
+      "campaign": {
+        "title": "Campaign send",
+        "trigger": "A scheduled slot, or an event like a birthday or repeat purchase.",
+        "decision": "How many messages has this person had lately? Nobody gets worn out.",
+        "action": "Sent on the channel that person actually answers.",
+        "human": "No campaign reaches a list without your approval."
+      },
+      "content-queue": {
+        "title": "Publishing queue",
+        "trigger": "Content marked ready.",
+        "decision": "The best hour, from when your audience is really active.",
+        "action": "Published to the set channels; each post's result recorded.",
+        "human": "Writing and sign-off stay yours; the system only publishes."
+      },
+      "attribution": {
+        "title": "Channel results",
+        "trigger": "Any sale whose path can be traced.",
+        "decision": "Credit follows the customer's real journey, not the last click.",
+        "action": "Cost and result per channel, side by side.",
+        "human": "A channel without enough data reads unknown, never zero."
+      }
+    }
+  },
+  "Manifesto": {
+    "eyebrow": "How we think",
+    "statement": "Systems do the repetitive work; people make the decisions.",
+    "principles": {
+      "human": {
+        "title": "You decide",
+        "body": "Nothing important happens without your sign-off."
+      },
+      "ownership": {
+        "title": "Your ownership",
+        "body": "Code, domain and data are registered in your name from day one."
+      },
+      "auditable": {
+        "title": "Your own dashboard",
+        "body": "Everything the system does is logged and visible in a panel built for you."
+      },
+      "reversible": {
+        "title": "Easy to deactivate",
+        "body": "Any part can be deactivated without stopping the work."
+      }
+    }
+  },
+  "Work": {
+    "eyebrow": "Work",
+    "title": "Three systems running right now",
+    "subtitle": "Built for businesses like yours.",
+    "labels": {
+      "before": "Before",
+      "after": "Now"
+    },
+    "items": {
+      "restaurant": {
+        "sector": "Restaurant",
+        "title": "Every order in one queue",
+        "before": "Orders came by phone, Instagram and WhatsApp and went onto paper. On busy nights, messages got lost.",
+        "after": "Every order from every channel records itself, and the kitchen and the till watch one list.",
+        "scope": "Order capture · Replies · Reports"
+      },
+      "retail": {
+        "sector": "Clothing store",
+        "title": "From DMs to a real online store",
+        "before": "Every sale took a thread of messages, and after the sale no customer record survived.",
+        "after": "Catalogue and payment moved online; recurring questions answer themselves and every purchase lands in the customer's file.",
+        "scope": "Online store · Customer files"
+      },
+      "services": {
+        "sector": "Technical services",
+        "title": "Dispatch without the notebook",
+        "before": "Requests were taken by phone and written in a notebook; follow-ups slipped.",
+        "after": "Requests record and schedule themselves; customer and technician both get reminders.",
+        "scope": "Requests · Scheduling · Reminders"
+      }
+    }
+  },
+  "Impact": {
+    "eyebrow": "The calculator",
+    "title": "How much time comes back to your team?",
+    "subtitle": "Enter your business's details; the result is computed on the spot.",
+    "windowTitle": "calc.afa",
+    "inputs": {
+      "staff": {
+        "label": "How many people do repetitive work?",
+        "unit": "people"
+      },
+      "hours": {
+        "label": "How many hours each, per day?",
+        "unit": "hours"
+      },
+      "requests": {
+        "label": "Requests or orders per month?",
+        "unit": "requests"
+      },
+      "missed": {
+        "label": "What share goes unanswered or unfollowed?"
+      }
+    },
+    "results": {
+      "hours": {
+        "label": "Working hours freed per month",
+        "unit": "hours"
+      },
+      "workdays": {
+        "label": "Equivalent working days per month"
+      },
+      "requests": {
+        "label": "Requests answered per month"
+      }
+    },
+    "disclaimer": "An estimate from your own inputs, not a delivery promise. It assumes roughly 60% of repetitive work can be handed to a system and roughly 70% of missed requests can be rescued; the exact figures follow a review of your processes."
+  },
+  "Faq": {
+    "eyebrow": "Before the call",
+    "windowTitle": "faq.afa",
+    "items": {
+      "timeline": {
+        "q": "How long until the first part is running?",
+        "a": "Usually two to four weeks for one complete process, depending on how many tools need connecting. The first call gives a tighter range."
+      },
+      "wrong": {
+        "q": "What happens when it gets something wrong?",
+        "a": "Every process has a human checkpoint and everything the system does is recorded. A mistake is either stopped before it runs, or traceable and reversible after."
+      },
+      "data": {
+        "q": "Where does our data live?",
+        "a": "On infrastructure registered to your own company. We hold access only as long as you want us to, and removing it is simple admin."
+      },
+      "tools": {
+        "q": "Do we have to replace our current tools?",
+        "a": "No. We start by connecting the tools you already use. A swap is only suggested when the tool itself is the obstacle."
+      },
+      "pricing": {
+        "q": "How is it priced?",
+        "a": "After the review call, based on how many processes and tools are involved. Any number before that is a guess."
+      },
+      "exit": {
+        "q": "What if we stop working together?",
+        "a": "The system keeps running; the code and access were yours from the start. We hand over the docs and nothing stays tied to us."
+      }
+    }
+  },
+  "Contact": {
+    "eyebrow": "Contact",
+    "title": "Walk us through your processes",
+    "subtitle": "Leave a number; we will call and talk through the repetitive work in your business.",
+    "formTitle": "Contact form",
+    "windowTitle": "form.afa",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Your full name"
+      },
+      "phone": {
+        "label": "Mobile or WhatsApp",
+        "placeholder": "09121234567"
+      },
+      "sector": {
+        "label": "Sector"
+      },
+      "link": {
+        "label": "Site or profile link (optional)",
+        "placeholder": "instagram.com/yourshop"
+      }
+    },
+    "sectors": {
+      "retail": "Retail & apparel",
+      "restaurant": "Restaurant & café",
+      "salon": "Salon & beauty",
+      "services": "Technical services",
+      "other": "Other"
+    },
+    "sectorPlaceholder": "Choose one",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "successTitle": "Request received",
+    "successBody": "We will be in touch shortly.",
+    "errors": {
+      "name": "Enter your name (at least two characters).",
+      "phone": "That mobile number isn't valid.",
+      "sector": "Select a sector.",
+      "link": "That address isn't valid.",
+      "general": "Couldn't send. Please try again in a moment.",
+      "rateLimited": "Too many submissions today. Please try again tomorrow."
+    },
+    "privacyNote": "Used only to contact you about this request.",
+    "noEndpointNote": "The form isn't connected to a delivery service yet; please use another contact route for now."
+  },
+  "ProcessIndex": {
+    "eyebrow": "The list",
+    "title": "What can be handed to a system?",
+    "lede": "Six parts of a business, twenty-four repetitive jobs. The titles are here; the full story of each lives on the map page.",
+    "cta": "See the full map and details"
+  },
+  "MapPage": {
+    "eyebrow": "The full map",
+    "title": "The AFA operating map",
+    "lede": "Click any domain or node to open it; below, all twenty-four processes are written out step by step.",
+    "detailsEyebrow": "Details",
+    "directory": "process directory",
+    "legend": "domains",
+    "statusline": "6 domains · 24 processes · human checkpoint on all",
+    "prevDomain": "Previous domain",
+    "nextDomain": "Next domain",
+    "detailsTitle": "Every process, step by step",
+    "back": "Back to the homepage"
+  },
+  "NotFound": {
+    "title": "This page wasn't found",
+    "body": "The address may have changed or been entered incorrectly.",
+    "home": "Back to home"
+  },
+  "Footer": {
+    "tagline": "AFA automates the repetitive work in businesses, from customer replies to management reporting.",
+    "rights": "© {year} AFA. All rights reserved.",
+    "note": "Each project is priced after a review of your processes.",
+    "familyLabel": "The AFA family",
+    "family": {
+      "company": "Company site",
+      "pay": "AFA Pay, the crypto payment gateway"
+    },
+    "sectionsLabel": "On this page"
+  }
+}

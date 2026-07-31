@@ -1,0 +1,189 @@
+/* AFA site tokens — now an ALIAS LAYER over the shared brand tokens.
+ *
+ * `afa-tokens.css` is vendored from afa-brand/tokens and is the source of
+ * truth for every colour, radius and gradient in the AFA family. Its integrity
+ * is pinned in `afa-tokens.sha256`; do not edit the vendored file in place —
+ * change it in afa-brand, re-vendor, and update the hash in one PR.
+ *
+ * This file exists so the migration costs zero component churn: every local
+ * name (`--bg-950`, `--ink`, `--blue`, `--radius-card`, …) still resolves, and
+ * the Tailwind `@theme inline` map in globals.css is untouched. Components go
+ * on using `bg-bg-950`, `text-ink`, `rounded-card` exactly as before — they
+ * simply now render the family palette instead of this site's private one.
+ *
+ * WHAT CHANGED VISUALLY (the drift this migration corrects):
+ *   --blue     #4d69ff → #5a7bff
+ *   --violet   #916dff → #9a6bff
+ *   --bg-950   #070a20 → #070a1f
+ *   --border   #1e2652 → #232a52
+ *   --grad-brand  100deg from #4d69ff → 120deg from #2a3bff
+ *   --radius-card   20px → 16px
+ *   --radius-button 14px → 12px
+ * Every one of those moves this site onto values already live in afa-pay,
+ * where a merchant sees them next to their own money. This site was the
+ * outlier, so this site moves.
+ */
+
+@import './afa-tokens.css';
+
+:root {
+  /* Background ramp — BLACK-NAVY as of 2026-07-31, by direct request.
+   *
+   * The family's shared ground (--afa-ink-950, #070a1f) is a navy; this site
+   * now sits a step darker — black with the navy still in it, so the brand
+   * blues and the map's ivory constellations get more air. This is a LOCAL
+   * override of the alias layer, not an edit to the vendored file: the other
+   * two properties keep the family navy, and the hue here stays in the same
+   * blue family so the sites still read as siblings.
+   *
+   * Contrast only improves (darker ground, same ink) — the contrast tests
+   * resolve these very hexes and hold the floor. */
+  --bg-950: #05060d;
+  --bg-900: #070912;
+  --bg-850: #0a0d19;
+
+  /* Surfaces — one step above the new ground, same hue. */
+  --surface: #0d1120;
+  --surface-2: #111629;
+
+  /* Borders — dimmed to match; the old family values glowed on pure black. */
+  --border: #1c2138;
+  --border-glass: #262c48;
+
+  /* Ink / text */
+  --ink: var(--afa-ink-050);
+  --muted: var(--afa-ink-200);
+  --dim: var(--afa-ink-300);
+
+  /* Brand accents — the only "exciting" color on the page */
+  --blue: var(--afa-blue-400);
+  --violet: var(--afa-violet-400);
+  --lilac: var(--afa-violet-300);
+  --success: var(--afa-green-400);
+
+  /* The single brand gradient. Resolves to the deep-ground variant because
+     <html> carries data-theme="dark" — this site has no light ground. */
+  --grad-brand: var(--afa-gradient-brand);
+
+  /* Radii */
+  --radius-pill: var(--afa-radius-pill);
+  --radius-card: var(--afa-radius-card);
+  --radius-button: var(--afa-radius-button);
+  --radius-field: var(--afa-radius-field);
+
+  /* Elevation */
+  --shadow-brand: var(--afa-shadow-brand);
+  --shadow-brand-hover: var(--afa-shadow-brand-hover);
+
+  /* Glass surface (floating header + tool cards only) */
+  --glass-bg: var(--afa-glass-bg);
+  --glass-blur: var(--afa-glass-blur);
+
+  /* Capability map — six categorical domain accents.
+   *
+   * CATEGORICAL, NOT STATUS: --success stays its own value above and is never
+   * one of these, so a domain node cannot be misread as a health signal. Hue
+   * is also never alone — each domain carries a distinct SVG glyph. See the
+   * rationale block in afa-tokens.css. */
+  --map-1: var(--afa-map-1);
+  --map-2: var(--afa-map-2);
+  --map-3: var(--afa-map-3);
+  --map-4: var(--afa-map-4);
+  --map-5: var(--afa-map-5);
+  --map-6: var(--afa-map-6);
+
+  /* Editorial system — the layout language shared with afa-site and afa-pay.
+   *
+   * The display-type pair is the one place this file carries TYPE rather than
+   * colour, and it earns the exception: the Latin and Persian mechanisms for
+   * "display voice" are different (case + tracking vs. weight + density), and
+   * a component that had to know which script it was rendering would get it
+   * wrong. See the rationale in afa-tokens.css LAYER 5. */
+  --display-transform: var(--afa-display-transform-latin);
+  --display-tracking: var(--afa-display-tracking-latin);
+  --display-weight: var(--afa-display-weight-latin);
+  --display-leading: var(--afa-leading-tight);
+  --eyebrow-transform: var(--afa-eyebrow-transform);
+  --eyebrow-tracking: var(--afa-tracking-eyebrow);
+
+  --hairline: var(--afa-hairline);
+  --panel-radius: var(--afa-panel-radius);
+  --panel-pad: var(--afa-panel-pad);
+  --dot-color: var(--afa-dot-color);
+  --dot-size: var(--afa-dot-size);
+  --t-ambient: var(--afa-t-ambient);
+  --t-ambient-slow: var(--afa-t-ambient-slow);
+  --ease-ambient: var(--afa-ease-ambient);
+  --fade: var(--afa-fade);
+  --fade-strong: var(--afa-fade-strong);
+
+  /* Window-frame chrome (the mac-style cards). Black by direct request:
+   * darker than every other surface, so the frames read as solid objects on
+   * the page rather than tinted panels. The three dots are the one place the
+   * status hues appear decoratively — muted via color-mix so they read as
+   * chrome, not as alerts. */
+  --win-bg: #0a0a11;
+  --win-bar: #050508;
+  --win-dot-close: color-mix(in srgb, var(--afa-red-400) 75%, var(--bg-950));
+  --win-dot-min: color-mix(in srgb, var(--afa-amber-400) 75%, var(--bg-950));
+  --win-dot-max: color-mix(in srgb, var(--afa-green-400) 75%, var(--bg-950));
+
+  /* The mark reads its two stops from the shared semantic layer. */
+  --mark-from: var(--afa-mark-from);
+  --mark-to: var(--afa-mark-to);
+
+  /* Type.
+   *
+   * `--font-fa` is Estedad as of 2026-07-31 — the register Iranian exchanges
+   * are set in, and the same face afa-pay now uses, so the two properties read
+   * as one company. Its @font-face rules are in fonts.css; five weights, Arabic
+   * subset. See that file for why Estedad and not IRANYekan.
+   *
+   * The Latin faces stay local: Manrope and Inter are this site's editorial
+   * voice and afa-pay's Plex is a fintech voice. They are deliberately NOT
+   * unified — a capability map and a payment terminal should not sound the
+   * same in Latin. The Persian face is unified because a visitor reading
+   * Persian moves between the two sites and would notice. */
+  /* FA: IRANYekan leads the stack and activates the moment its licensed files
+   * land in public/fonts (see fonts.css). Until then Sahel ships: the closest
+   * OPEN face to the Yekan register. Estedad stays as the deeper fallback.
+   * EN: Manrope for BODY as well as headings, replacing Inter (2026-07-31) —
+   * rounded-geometric reads friendlier, and one Latin face is one less file. */
+  --font-fa: 'IRANYekanX', 'IRANYekan', 'Sahel', 'Estedad', system-ui, sans-serif;
+  --font-en-head: 'Manrope', system-ui, sans-serif;
+  --font-en-body: 'Manrope', system-ui, sans-serif;
+  /* Terminal voice for the operating map's Latin labels and numerals. System
+   * stack on purpose: zero bytes, and every OS ships a good one. */
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Consolas', 'Menlo', monospace;
+
+  /* The editorial display voice of the operating map — per script, because the
+   * mechanisms are opposites. Latin: a garalde serif in caps, tracked wide
+   * (the reference's OPERATIONS / INTELLIGENCE lettering). Persian: Vazirmatn
+   * LIGHT at size, zero tracking — joined script must never be letter-spaced,
+   * so lightness carries what tracking carries in Latin. Components read only
+   * the three generic names; html[lang] swaps them below. */
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --display-map-weight: 500;
+  --display-map-tracking: 0.26em;
+  --display-hero-tracking: 0.08em;
+}
+
+html[lang='fa'] {
+  /* IRANYekan carries the display voice too, since the owner wants it across
+   * the whole site. Bold, not light: Yekan's authority is its heavy weights,
+   * where Vazirmatn's was its light ones. Zero tracking, always. */
+  --font-display: 'IRANYekan', 'Sahel', 'Estedad', system-ui, sans-serif;
+  --display-map-weight: 700;
+  --display-map-tracking: 0em;
+  --display-hero-tracking: 0em;
+}
+
+/* Persian swaps the mechanism, not the intent. Case and tracking do nothing
+ * for Arabic script — tracking actively severs the joins — so the authority a
+ * display line needs comes from weight and a tighter block instead. */
+html[lang='fa'] {
+  --display-transform: var(--afa-display-transform-fa);
+  --display-tracking: var(--afa-display-tracking-fa);
+  --display-weight: var(--afa-display-weight-fa);
+  --display-leading: var(--afa-leading-display-fa);
+}

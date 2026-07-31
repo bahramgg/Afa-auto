@@ -1,0 +1,264 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import './fonts.css';
+@import './capability-map.css';
+
+/* Map design tokens into Tailwind v4's theme so utilities (bg-bg-950,
+ * text-ink, border-glass, rounded-card, shadow-brand, font-fa …) resolve to
+ * the single source of truth in tokens.css. */
+@theme inline {
+  --color-bg-950: var(--bg-950);
+  --color-bg-900: var(--bg-900);
+  --color-bg-850: var(--bg-850);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-glass: var(--border-glass);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-blue: var(--blue);
+  --color-violet: var(--violet);
+  --color-lilac: var(--lilac);
+  --color-success: var(--success);
+
+  /* Capability-map domain accents. Categorical, never status — see tokens.css. */
+  --color-map-1: var(--map-1);
+  --color-map-2: var(--map-2);
+  --color-map-3: var(--map-3);
+  --color-map-4: var(--map-4);
+  --color-map-5: var(--map-5);
+  --color-map-6: var(--map-6);
+
+  --radius-pill: var(--radius-pill);
+  --radius-card: var(--radius-card);
+  --radius-button: var(--radius-button);
+  --radius-field: var(--radius-field);
+
+  --shadow-brand: var(--shadow-brand);
+  --shadow-brand-hover: var(--shadow-brand-hover);
+
+  --font-fa: var(--font-fa);
+  --font-en-head: var(--font-en-head);
+  --font-en-body: var(--font-en-body);
+}
+
+/* Base page: deep navy with a very faint violet radial halo at the top and a
+ * 2% SVG noise layer. The page gradient never gets more colorful (plan §2). */
+@layer base {
+  html {
+    background-color: var(--bg-950);
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100dvh;
+    color: var(--ink);
+    background-color: var(--bg-950);
+    /* color-mix keeps the halo tied to --violet. The literal rgba this
+     * replaced was the pre-migration violet (#916dff) and would have quietly
+     * kept the old hue alive after the token moved to #9a6bff. */
+    background-image:
+      radial-gradient(
+        60rem 40rem at 50% -10rem,
+        color-mix(in srgb, var(--violet) 14%, transparent),
+        transparent 60%
+      );
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Per-locale font (plan §9). Switched by <html lang>, no inline styles. */
+  html[lang='fa'] body {
+    font-family: var(--font-fa);
+  }
+  html[lang='en'] body {
+    font-family: var(--font-en-body);
+  }
+  html[lang='en'] h1,
+  html[lang='en'] h2,
+  html[lang='en'] h3 {
+    font-family: var(--font-en-head);
+  }
+
+  /* Visible keyboard focus everywhere (plan §14 a11y). */
+  :focus-visible {
+    outline: 2px solid var(--lilac);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--blue) 35%, transparent);
+    color: var(--ink);
+  }
+}
+
+@layer utilities {
+  /* --- EDITORIAL SYSTEM ------------------------------------------------------
+   * Three classes carry the family look. They are utilities rather than
+   * components because afa-site and afa-pay implement the same three in CSS
+   * Modules — keeping them this small is what makes three implementations
+   * stay in agreement (afa-brand/ARCHITECTURE.md, D3).
+   */
+
+  /* Display voice. The mechanism differs by script and the tokens already know
+   * which — a component never has to ask what language it is rendering. */
+  .display {
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    text-transform: var(--display-transform);
+    line-height: var(--display-leading);
+  }
+
+  /* The hero caption over the operating map. Latin: Cormorant caps, tracked.
+   * Persian: Vazirmatn light — joined script is never letter-spaced, so
+   * lightness at size carries the same editorial voice. Both come off the
+   * --font-display / --display-* tokens, which html[lang] swaps. */
+  .display-hero {
+    font-family: var(--font-display);
+    font-weight: var(--display-map-weight);
+    letter-spacing: var(--display-hero-tracking);
+    text-transform: uppercase;
+    font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+  html[lang='fa'] .display-hero {
+    text-transform: none;
+    line-height: 1.5;
+  }
+
+  /* The manifesto statement — same voice, reading size, sentence case. */
+  .display-statement {
+    font-family: var(--font-display);
+    font-weight: var(--display-map-weight);
+    letter-spacing: 0.015em;
+    font-size: clamp(1.6rem, 3.6vw, 2.7rem);
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+  html[lang='fa'] .display-statement {
+    letter-spacing: 0;
+    line-height: 1.65;
+  }
+
+  /* The tracked label above every section heading. Does the job a coloured
+   * badge is usually hired for, without the badge. */
+  .eyebrow {
+    font-size: var(--afa-text-xs);
+    font-weight: var(--afa-eyebrow-weight);
+    letter-spacing: var(--eyebrow-tracking);
+    text-transform: var(--eyebrow-transform);
+    color: var(--dim);
+  }
+
+  /* The dotted ground. A gradient, not an image: the token file forbids url()
+   * and a data-URI would need `img-src data:` on pages that need nothing. */
+  .dot-field {
+    background-image:
+      radial-gradient(var(--dot-color) 1px, transparent 1px);
+    background-size: var(--dot-size) var(--dot-size);
+  }
+
+  /* Mask the dot field so it fades out rather than ending on a hard edge. */
+  .dot-fade {
+    mask-image: radial-gradient(60% 55% at 50% 40%, #000 0%, transparent 100%);
+  }
+
+  /* The single brand gradient, as a fill and as a text clip. */
+  .bg-brand {
+    background-image: var(--grad-brand);
+  }
+  /* Gradient text — used on exactly ONE key phrase per page (plan §2). */
+  .text-gradient {
+    background-image: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Glass surface — floating header + tool cards only. */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-glass);
+  }
+  /* Numbers in tools use tabular figures (plan §2). */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Range slider — brand accent from tokens, comfortable hit target. Colors
+   * live here, never hardcoded in components. */
+  .range-brand {
+    accent-color: var(--blue);
+    height: 1.5rem;
+    cursor: pointer;
+  }
+  /* Faint brand halo used behind closing CTAs — colors stay in this layer,
+   * never hardcoded in components. */
+  .brand-halo {
+    background: radial-gradient(
+      40rem 12rem at 50% -4rem,
+      color-mix(in srgb, var(--blue) 28%, transparent),
+      transparent 70%
+    );
+  }
+}
+
+/* Respect reduced motion globally (plan §2, §14). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print / "Download PDF" for the scope configurator (plan §5.4). The PDF is
+ * this page rendered to paper — no PDF library ships to the browser. Chrome
+ * and Safari need color-adjust to keep the dark surfaces. */
+@media print {
+  @page {
+    margin: 16mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  /* Chrome hides site chrome; keep only the scope summary readable. */
+  header,
+  footer,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  /* Flatten the dark glass surfaces so ink stays legible on paper. */
+  .glass,
+  [class*='bg-surface'],
+  [class*='bg-bg-'] {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    border-color: #ccc !important;
+  }
+  [class*='text-ink'],
+  [class*='text-muted'],
+  [class*='text-dim'] {
+    color: #111 !important;
+  }
+  .text-gradient {
+    -webkit-text-fill-color: #111 !important;
+    color: #111 !important;
+    background: none !important;
+  }
+  a[href]::after {
+    content: '';
+  }
+}

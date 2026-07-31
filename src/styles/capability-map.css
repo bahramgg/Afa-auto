@@ -1,0 +1,498 @@
+/* =============================================================================
+   The operating map — terminal styling, rebuilt 2026-07-31 to the operator-OS
+   reel AFA supplied ("Bennett OS").
+
+   What the reference does and this file now does:
+     · a BLUEPRINT stage: fine line grid + dot grid on near-black, vignetted;
+     · monospace, uppercase, comment-style labels ("// DIRECTORY");
+     · ring-badge nodes: a circle outline with a glyph or numeral inside,
+       coloured by domain tone;
+     · dashed guide circles for the orbits, dashed spokes hub → core, thin
+       solid spokes process → hub;
+     · a multicoloured particle core;
+     · when a domain opens, the whole stage tints toward its tone (the root
+       carries data-tone, so --tone cascades into guides and pulses).
+
+   `.cmap [data-tone]` stays as the shared tone-mapping block — the process
+   index and the map page's detail sections select tones through it.
+   No hardcoded colour: every value resolves to tokens.css.
+   ========================================================================== */
+
+.cmap,
+.tmap {
+  --tone: var(--map-1);
+}
+
+.cmap [data-tone='1'], .cmap[data-tone='1'], .tmap [data-tone='1'], .tmap[data-tone='1'] { --tone: var(--map-1); }
+.cmap [data-tone='2'], .cmap[data-tone='2'], .tmap [data-tone='2'], .tmap[data-tone='2'] { --tone: var(--map-2); }
+.cmap [data-tone='3'], .cmap[data-tone='3'], .tmap [data-tone='3'], .tmap[data-tone='3'] { --tone: var(--map-3); }
+.cmap [data-tone='4'], .cmap[data-tone='4'], .tmap [data-tone='4'], .tmap[data-tone='4'] { --tone: var(--map-4); }
+.cmap [data-tone='5'], .cmap[data-tone='5'], .tmap [data-tone='5'], .tmap[data-tone='5'] { --tone: var(--map-5); }
+.cmap [data-tone='6'], .cmap[data-tone='6'], .tmap [data-tone='6'], .tmap[data-tone='6'] { --tone: var(--map-6); }
+
+/* ---------------------------------------------------------------- the stage */
+
+/* Blueprint ground: a 48px line grid over a 24px dot grid, faded at the
+   edges. Gradients, never images — the token contract forbids url(). */
+.tmapStage {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--win-bg);
+  overflow: hidden;
+}
+
+.tmapStage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px),
+    radial-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px, 24px 24px;
+  mask-image: radial-gradient(75% 75% at 50% 50%, #000 30%, transparent 100%);
+  pointer-events: none;
+}
+
+.tmap {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: manipulation;
+}
+
+/* Ambient sway, barely there — an instrument, not a mobile. */
+.tmapScene {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tmapSway var(--t-ambient-slow) var(--ease-ambient) infinite;
+}
+
+@keyframes tmapSway {
+  0%, 100% { transform: rotate(-0.25deg); }
+  50%      { transform: rotate(0.25deg); }
+}
+
+/* Entrance: the rings assemble once, phase bucket by phase bucket. */
+.tmapIn {
+  opacity: 0;
+  animation: tmapIn 0.8s var(--afa-ease) forwards;
+}
+.tmap [data-phase='0'] .tmapIn, .tmap [data-phase='0'].tmapIn { animation-delay: 0.1s; }
+.tmap [data-phase='1'] .tmapIn, .tmap [data-phase='1'].tmapIn { animation-delay: 0.22s; }
+.tmap [data-phase='2'] .tmapIn, .tmap [data-phase='2'].tmapIn { animation-delay: 0.34s; }
+.tmap [data-phase='3'] .tmapIn, .tmap [data-phase='3'].tmapIn { animation-delay: 0.46s; }
+.tmap [data-phase='4'] .tmapIn, .tmap [data-phase='4'].tmapIn { animation-delay: 0.58s; }
+.tmap [data-phase='5'] .tmapIn, .tmap [data-phase='5'].tmapIn { animation-delay: 0.7s; }
+.tmap [data-phase='6'] .tmapIn, .tmap [data-phase='6'].tmapIn { animation-delay: 0.82s; }
+.tmap [data-phase='7'] .tmapIn, .tmap [data-phase='7'].tmapIn { animation-delay: 0.94s; }
+
+@keyframes tmapIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------- guides */
+
+.tmapGuide {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 10%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+  vector-effect: non-scaling-stroke;
+  transition: stroke var(--afa-t-slow) var(--afa-ease);
+}
+
+/* Focus tint: with a domain open, the instrument itself leans its colour. */
+.tmap[data-focus] .tmapGuide {
+  stroke: color-mix(in srgb, var(--tone) 22%, transparent);
+}
+
+/* Hub → core: dashed, like the reference's converging spokes. */
+.tmapSpokeHub {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 13%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Process → hub: thin and solid. */
+.tmapSpokeProc {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 14%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke var(--afa-t-base) var(--afa-ease);
+}
+
+/* A bead of the domain's tone travelling the hub spoke. */
+.tmapPulse {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 2.5 97.5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.8;
+  animation: tmapFlow 9s linear infinite;
+}
+
+@keyframes tmapFlow {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.tmap [data-phase='0'] { --tmap-delay: 0s; }
+.tmap [data-phase='1'] { --tmap-delay: -1.5s; }
+.tmap [data-phase='2'] { --tmap-delay: -3s; }
+.tmap [data-phase='3'] { --tmap-delay: -4.5s; }
+.tmap [data-phase='4'] { --tmap-delay: -6s; }
+.tmap [data-phase='5'] { --tmap-delay: -7.5s; }
+.tmap [data-phase='6'] { --tmap-delay: -9s; }
+.tmap [data-phase='7'] { --tmap-delay: -10.5s; }
+.tmapPulse, .tmapMote, .tmapAura { animation-delay: var(--tmap-delay, 0s); }
+
+/* ------------------------------------------------------------------ core */
+
+.tmapMote { animation: tmapTwinkle 6s var(--ease-ambient) infinite; }
+.tmapMote[data-mote='0'] { fill: var(--ink); }
+.tmapMote[data-mote='1'] { fill: var(--map-1); }
+.tmapMote[data-mote='2'] { fill: var(--map-2); }
+.tmapMote[data-mote='3'] { fill: var(--map-3); }
+.tmapMote[data-mote='4'] { fill: var(--map-4); }
+.tmapMote[data-mote='5'] { fill: var(--map-5); }
+.tmapMote[data-mote='6'] { fill: var(--map-6); }
+
+@keyframes tmapTwinkle {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.9; }
+}
+
+/* ------------------------------------------------------------------- nodes */
+
+.tmapHit { fill: transparent; stroke: none; }
+
+.tmapNode { cursor: pointer; outline: none; }
+
+/* Hub: ring + glyph, the domain's flag. */
+.tmapHubRing {
+  fill: color-mix(in srgb, var(--win-bg) 88%, var(--tone) 6%);
+  stroke: var(--tone);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--afa-t-base) var(--afa-ease), stroke-width var(--afa-t-base) var(--afa-ease);
+}
+
+.tmapHubGlyph {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.tmapAura {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1;
+  opacity: 0.3;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tmapBreathe 7s var(--ease-ambient) infinite;
+}
+
+@keyframes tmapBreathe {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50%      { transform: scale(1.16); opacity: 0.08; }
+}
+
+.tmapNode:hover .tmapHubRing,
+.tmapNode[aria-pressed='true'] .tmapHubRing {
+  fill: color-mix(in srgb, var(--win-bg) 55%, var(--tone) 26%);
+  stroke-width: 2.2;
+}
+
+/* Hub label: mono caps under the ring. */
+.tmapHubLabel {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 16.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  pointer-events: none;
+  transition: fill var(--afa-t-base) var(--afa-ease);
+}
+html[lang='fa'] .tmapHubLabel {
+  font-family: var(--font-fa);
+  letter-spacing: 0;
+  font-size: 17.5px;
+}
+.tmapNode:hover .tmapHubLabel,
+.tmapNode[aria-pressed='true'] .tmapHubLabel { fill: var(--ink); }
+
+/* Process: small ring with a mono numeral. */
+.tmapProcRing {
+  fill: var(--win-bg);
+  stroke: color-mix(in srgb, var(--tone) 75%, transparent);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--afa-t-base) var(--afa-ease), stroke var(--afa-t-base) var(--afa-ease);
+}
+
+.tmapProcNum {
+  fill: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  transition: fill var(--afa-t-base) var(--afa-ease);
+}
+
+.tmapNode:hover .tmapProcRing,
+.tmapNode:focus-visible .tmapProcRing,
+.tmapNode[aria-pressed='true'] .tmapProcRing {
+  fill: var(--tone);
+  stroke: var(--tone);
+}
+.tmapNode:hover .tmapProcNum,
+.tmapNode:focus-visible .tmapProcNum,
+.tmapNode[aria-pressed='true'] .tmapProcNum {
+  fill: var(--win-bg);
+}
+
+.tmapFocusRing {
+  fill: none;
+  stroke: none;
+  opacity: 0;
+  vector-effect: non-scaling-stroke;
+}
+.tmapNode:focus-visible .tmapFocusRing {
+  stroke: var(--lilac);
+  stroke-width: 2;
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------- focusing */
+
+.tmap[data-focus] .tmapDomain {
+  opacity: var(--fade);
+  transition: opacity var(--afa-t-slow) var(--afa-ease);
+}
+.tmap[data-focus] .tmapDomain[data-active='true'] { opacity: 1; }
+.tmap[data-focus] .tmapMote { opacity: var(--fade-strong); animation: none; }
+.tmapDomain[data-active='true'] .tmapPulse { opacity: 1; stroke-width: 2.2; }
+.tmapDomain[data-active='true'] .tmapSpokeProc {
+  stroke: color-mix(in srgb, var(--tone) 45%, transparent);
+}
+
+/* ----------------------------------------------------------------- chrome */
+
+/* Panels: mono, bordered, on the window-black. */
+.tmapPanel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--win-bg);
+  overflow: hidden;
+}
+
+.tmapPanelHead {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--win-bar);
+}
+
+/* The reference's comment-style prefix. Decoration, so it lives in CSS where
+   screen readers leave it alone. */
+.tmapPanelHead::before {
+  content: '// ';
+  opacity: 0.55;
+}
+html[lang='fa'] .tmapPanelHead { font-family: var(--font-fa); letter-spacing: 0; }
+
+/* The status strip under the stage. */
+.tmapStatus {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+html[lang='fa'] .tmapStatus { font-family: var(--font-fa); letter-spacing: 0; }
+
+/* ---------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .tmapScene,
+  .tmapPulse,
+  .tmapAura,
+  .tmapMote,
+  .tmapIn {
+    animation: none !important;
+  }
+  .tmapIn { opacity: 1; }
+  .tmapPulse { opacity: 0.4; }
+  .tmapMote { opacity: 0.5; }
+  .tmapAura { opacity: 0.25; }
+}
+
+/* -------------------------------------------------------------------- print */
+
+@media print {
+  /* On paper the list view IS the argument. */
+  .tmapCanvas { display: none !important; }
+  .tmapList { display: block !important; }
+}
+
+/* =============================================================================
+   The MINI map — the hero's companion (ui/mini-map.tsx). Unchanged by the
+   operating-map rebuild; the homepage keeps its light drawing.
+   ========================================================================== */
+
+.mini [data-tone='1'] { --tone: var(--map-1); }
+.mini [data-tone='2'] { --tone: var(--map-2); }
+.mini [data-tone='3'] { --tone: var(--map-3); }
+.mini [data-tone='4'] { --tone: var(--map-4); }
+.mini [data-tone='5'] { --tone: var(--map-5); }
+.mini [data-tone='6'] { --tone: var(--map-6); }
+
+.mini [data-phase='0'] { --mini-delay: 0s; }
+.mini [data-phase='1'] { --mini-delay: -1.4s; }
+.mini [data-phase='2'] { --mini-delay: -2.8s; }
+.mini [data-phase='3'] { --mini-delay: -4.2s; }
+.mini [data-phase='4'] { --mini-delay: -5.6s; }
+.mini [data-phase='5'] { --mini-delay: -7s; }
+
+.miniDomain {
+  outline: none;
+  cursor: default;
+}
+
+.miniHit { fill: transparent; }
+
+.miniOrbit {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 11%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 0.5 2.1;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  animation: miniMarch 60s linear infinite;
+}
+.miniOrbitReverse { animation-direction: reverse; opacity: 0.8; }
+
+@keyframes miniMarch {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 100; }
+}
+
+.miniSpoke {
+  stroke: color-mix(in srgb, var(--ink) 14%, transparent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke var(--afa-t-base) var(--afa-ease);
+}
+
+.miniPulse {
+  stroke: var(--tone);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 3 97;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.9;
+  animation: miniFlow 8.4s linear infinite;
+  animation-delay: var(--mini-delay, 0s);
+}
+
+@keyframes miniFlow {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.miniSat {
+  fill: var(--tone);
+  opacity: 0.75;
+  animation: miniTwinkle 5.6s var(--ease-ambient) infinite;
+  animation-delay: var(--mini-delay, 0s);
+}
+
+@keyframes miniTwinkle {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.9; }
+}
+
+.miniNode {
+  fill: var(--ink);
+  transition: fill var(--afa-t-base) var(--afa-ease);
+}
+
+.miniHalo {
+  fill: var(--tone);
+  opacity: 0.07;
+  transition: opacity var(--afa-t-base) var(--afa-ease);
+}
+
+.miniLabel {
+  fill: var(--muted);
+  font-size: 16.5px;
+  font-weight: 500;
+  text-anchor: middle;
+  transition: fill var(--afa-t-base) var(--afa-ease);
+}
+
+.miniDomain:hover .miniNode,
+.miniDomain:focus-visible .miniNode,
+.miniDomain:active .miniNode { fill: var(--tone); }
+
+.miniDomain:hover .miniSpoke,
+.miniDomain:focus-visible .miniSpoke,
+.miniDomain:active .miniSpoke { stroke: color-mix(in srgb, var(--tone) 55%, transparent); }
+
+.miniDomain:hover .miniHalo,
+.miniDomain:focus-visible .miniHalo,
+.miniDomain:active .miniHalo { opacity: 0.2; }
+
+.miniDomain:hover .miniLabel,
+.miniDomain:focus-visible .miniLabel,
+.miniDomain:active .miniLabel { fill: var(--ink); font-weight: 700; }
+
+.miniHub { position: relative; display: inline-block; }
+.miniHub::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--blue) 50%, transparent);
+  animation: miniBreathe 4.8s var(--ease-ambient) infinite;
+  pointer-events: none;
+}
+
+@keyframes miniBreathe {
+  0%   { transform: scale(0.94); opacity: 0.7; }
+  70%  { transform: scale(1.22); opacity: 0; }
+  100% { transform: scale(1.22); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .miniOrbit,
+  .miniPulse,
+  .miniSat,
+  .miniHub::after {
+    animation: none !important;
+  }
+  .miniPulse { opacity: 0.35; }
+  .miniSat { opacity: 0.7; }
+  .miniHub::after { opacity: 0.4; }
+}
