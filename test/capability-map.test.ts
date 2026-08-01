@@ -54,10 +54,10 @@ describe('operating map — structure', () => {
   });
 
   it('gives every domain a tone the stylesheet can actually paint', () => {
-    // --map-1…9 exist; a tenth domain would render untoned.
+    // --map-1…10 exist; an eleventh domain would render untoned.
     for (const domain of DOMAINS) {
       expect(domain.tone).toBeGreaterThanOrEqual(1);
-      expect(domain.tone).toBeLessThanOrEqual(9);
+      expect(domain.tone).toBeLessThanOrEqual(10);
     }
   });
 
@@ -92,8 +92,14 @@ describe('operating map — radial geometry', () => {
     }
   });
 
-  it('spaces the domains evenly at 40°, leaving 180° free for the stepper', () => {
-    expect(layout.hubs.map((h) => h.angle)).toEqual([0, 40, 80, 120, 160, 200, 240, 280, 320]);
+  it('spaces the domains evenly at 36°, off every clock hand', () => {
+    // The half-step start is what keeps 180° free for the stepper pill, and
+    // 0/90/270 free besides. Ten domains on a whole-step offset would sit on
+    // all four.
+    expect(layout.hubs.map((h) => h.angle)).toEqual([
+      18, 54, 90, 126, 162, 198, 234, 270, 306, 342,
+    ]);
+    expect(layout.hubs.map((h) => h.angle)).not.toContain(180);
   });
 
   it('rides exactly the two declared rings', () => {
@@ -148,12 +154,14 @@ describe('operating map — radial geometry', () => {
       expect(r).toBeGreaterThan(R_CORE + 40);
       expect(r).toBeLessThan(R_DOMAIN - 20);
     }
-    // Six labels on one ring must not run into each other.
+    // Ten labels on one ring must not run into each other. The names sit in
+    // boxes now, so the floor is the widest box rather than the widest word:
+    // ~95 units of chip plus air.
     for (let i = 0; i < layout.hubs.length; i += 1) {
       for (let j = i + 1; j < layout.hubs.length; j += 1) {
         const a = layout.hubs[i]!;
         const b = layout.hubs[j]!;
-          expect(distance({ x: a.lx, y: a.ly }, { x: b.lx, y: b.ly })).toBeGreaterThan(90);
+        expect(distance({ x: a.lx, y: a.ly }, { x: b.lx, y: b.ly })).toBeGreaterThan(100);
       }
     }
   });
@@ -186,9 +194,9 @@ describe('operating map — radial geometry', () => {
   });
 
   it('colours the core with the full palette', () => {
-    // Ivory plus all nine domain tones.
+    // Ivory plus all ten domain tones.
     const tones = new Set(layout.motes.map((m) => m.tone));
-    expect(tones.size).toBe(10);
+    expect(tones.size).toBe(11);
   });
 
   it('spreads animation phases across the buckets', () => {
@@ -333,16 +341,16 @@ describe('operating map — content', () => {
   });
 
   it('keeps domain names short enough for the label ring', () => {
-    // Nine domains means ~112 viewBox units of arc per label. The component
-    // shrinks anything over ten characters, and past about sixteen even the
-    // shrunk size runs into its neighbour, so the copy has to stay short.
+    // Ten domains means ~110 viewBox units between neighbouring labels, and a
+    // boxed label spends some of that on its own padding. Past about twelve
+    // characters the chips touch, so the copy has to stay short.
     for (const catalog of [fa, en]) {
       const map = (catalog as Record<string, unknown>).Map as {
         domains: Record<string, { title: string }>;
       };
       for (const domain of DOMAINS) {
         const title = map.domains[domain.id]!.title;
-        expect(title.length, `Map.domains.${domain.id}.title is too long`).toBeLessThanOrEqual(16);
+        expect(title.length, `Map.domains.${domain.id}.title is too long`).toBeLessThanOrEqual(12);
       }
     }
   });

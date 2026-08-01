@@ -40,23 +40,34 @@ export const R_CORE = 52;
 export const R_DOMAIN = 240;
 export const R_PROCESS = 370;
 
-/* Where a domain's name sits: inward, in the empty annulus. The inset has to
-   clear HALF A LABEL plus the badge, or the two domains at 3 and 9 o'clock
-   print their names straight through their own badges — the first draft of
-   this layout did exactly that. */
-const LABEL_INSET = 80;
+/* Where a domain's name sits: inward, in the empty annulus.
+   
+   The inset is a compromise between two collisions that pull opposite ways.
+   Pushing the ring OUTWARD (a smaller inset) spreads the labels apart, since
+   the arc between neighbours grows with the radius; pulling it INWARD keeps a
+   box clear of its OWN badge, which matters most at 3 and 9 o'clock, where
+   the box grows toward the badge by its half-WIDTH rather than its
+   half-height. Ten domains means both constraints are live at once.
 
-/** Process angular offsets inside a domain's 40° sector. */
-const PROCESS_OFFSETS = [-15, -5, 5, 15] as const;
+   70 satisfies both, measured in a real browser rather than eyeballed: the
+   label ring lands at r=170, neighbouring chips sit ~105 units apart (the
+   widest name is ~88 wide), and the radial gap to a domain's own badge is
+   70 minus half a chip minus the badge radius, which stays positive. */
+const LABEL_INSET = 70;
+
+/** Process angular offsets inside a domain's 36° sector. */
+const PROCESS_OFFSETS = [-13, -4.3, 4.3, 13] as const;
 
 /** The bezier's control point: outward of the badge, barely off its ray. */
 const CURVE_RADIUS = 300;
 const CURVE_LEAN = 0.34;
 
-/* Nine domains at 0°, 40°, …, 320°. Zero rather than a half-step offset
-   because 40° × 9 puts NO domain at 180°, which is where the stepper pill
-   floats; a domain there would print its label straight through the control. */
-const ANGLE_OFFSET = 0;
+/* Ten domains at 18°, 54°, …, 342°. The half-step offset is what keeps the
+   wheel off its own axes: 36° × 10 would otherwise seat a domain at 180°,
+   where the stepper pill floats, and one at 0/90/270 besides. Starting on the
+   half-step puts every badge between the clock hands, and the two labels that
+   flank 180° sit at 162° and 198° with the control clear between them. */
+const ANGLE_OFFSET = 18;
 
 export type DomainId =
   | 'sales'
@@ -66,6 +77,7 @@ export type DomainId =
   | 'finance'
   | 'loyalty'
   | 'marketing'
+  | 'seo'
   | 'content'
   | 'intelligence';
 
@@ -91,10 +103,11 @@ export type Glyph =
   | 'cross'
   | 'pentagon'
   | 'chevron'
-  | 'bars';
+  | 'bars'
+  | 'star';
 
-/** Index into `--map-1…9`. A number so CSS can select on it. */
-export type Tone = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+/** Index into `--map-1…10`. A number so CSS can select on it. */
+export type Tone = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 export interface DomainSpec {
   readonly id: DomainId;
@@ -104,9 +117,9 @@ export interface DomainSpec {
   readonly processes: readonly string[];
 }
 
-/* The structure itself. NINE domains as of 2026-08, four real processes each:
-   the phone operator, the loyalty club and content production were added by
-   direct request, alongside everything that already ran without a person in
+/* The structure itself. TEN domains as of 2026-08, four real processes each:
+   the phone operator, the loyalty club, content production and SEO were added
+   by direct request, alongside everything that already ran without a person in
    the loop. The content contract with messages/ is otherwise unchanged.
 
    Order is the reading order round the wheel, clockwise from the top. */
@@ -152,6 +165,12 @@ export const DOMAINS: readonly DomainSpec[] = [
     tone: 6,
     glyph: 'hexagon',
     processes: ['segment', 'campaign', 'content-queue', 'attribution'],
+  },
+  {
+    id: 'seo',
+    tone: 10,
+    glyph: 'star',
+    processes: ['seo-audit', 'seo-keywords', 'seo-pages', 'seo-rank'],
   },
   {
     id: 'content',
@@ -289,8 +308,10 @@ function buildMotes(count: number, spread: number, seed: string, cx = C, cy = C)
       r: 0.7 + unit(`${key}s`) * 1.5,
       phase: hash(key) % 8,
       /* Half the field is ivory. An evenly-mixed core reads as confetti; a
-         brain is a pale mass with colour running through it. */
-      tone: Math.max(0, (hash(`${key}t`) % 18) - 8),
+         brain is a pale mass with colour running through it. The modulus is
+         twice the tone count so the ivory half stays a half as tones are
+         added. */
+      tone: Math.max(0, (hash(`${key}t`) % 20) - 9),
     };
   });
 }

@@ -92,12 +92,12 @@ describe('contrast on the dark background', () => {
   });
 });
 
-// The capability map's six domain accents. afa-tokens.css states in prose that
+// The capability map's ten domain accents. afa-tokens.css states in prose that
 // every one of them was measured rather than eyeballed — this is the
 // measurement. A node label is real text at ~15px effective size, so the bar is
 // AA normal, not the large-text exemption a coloured dot could have claimed.
 describe('capability map palette', () => {
-  const tones = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
+  const tones = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 
   it.each(tones)('--map-%i clears AA as a label on the page background', (n) => {
     expect(contrast(token(`map-${n}`), token('bg-950'))).toBeGreaterThanOrEqual(AA_NORMAL);
@@ -107,8 +107,8 @@ describe('capability map palette', () => {
     expect(contrast(token(`map-${n}`), token('surface'))).toBeGreaterThanOrEqual(AA_LARGE);
   });
 
-  it('keeps all six distinguishable from each other', () => {
-    // Six hues that only differ by a hair would defeat the point. This is a
+  it('keeps all ten distinguishable from each other', () => {
+    // Ten hues that only differ by a hair would defeat the point. This is a
     // coarse guard — the real separation is carried by the per-domain glyph —
     // but it catches the failure where two tokens drift onto the same value.
     const values = tones.map((n) => token(`map-${n}`));

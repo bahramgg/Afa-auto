@@ -183,6 +183,7 @@ export function CapabilityMap({
       copy={copy}
       titleId={titleId}
       hidden={view === 'list'}
+      interactive={variant === 'full'}
       fit={variant === 'hero' ? 'height' : 'width'}
       activeDomain={activeDomain}
       activeTone={activeTone}
@@ -194,18 +195,8 @@ export function CapabilityMap({
     />
   );
 
-  if (variant === 'hero') {
-    return (
-      <div
-        className="tmapShell"
-        onKeyDown={(event) => {
-          if (event.key === 'Escape') setSelection(null);
-        }}
-      >
-        {stage}
-      </div>
-    );
-  }
+  /* The hero: the drawing, on the bare ground, and nothing to press. */
+  if (variant === 'hero') return <div className="tmapShell">{stage}</div>;
 
   return (
     <div
@@ -330,6 +321,7 @@ function Stage({
   copy,
   titleId,
   hidden,
+  interactive,
   fit,
   activeDomain,
   activeTone,
@@ -342,6 +334,8 @@ function Stage({
   copy: CapabilityMapCopy;
   titleId: string;
   hidden: boolean;
+  /** False on the hero, where the wheel is a picture rather than a control. */
+  interactive: boolean;
   /** `height` bounds the stage by the viewport; `width` lets the column set it. */
   fit: 'width' | 'height';
   activeDomain: DomainId | null;
@@ -382,7 +376,12 @@ function Stage({
       data-tone={activeTone}
     >
       {/* Stage toolbar — ⟵ all domains on the start edge, ⤢ on the end. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-3">
+      <div
+        className={cn(
+          'pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-3',
+          !interactive && 'hidden',
+        )}
+      >
         <button
           type="button"
           onClick={onClear}
@@ -439,7 +438,13 @@ function Stage({
           onSelect={onSelect}
         />
       ) : (
-        <RadialView copy={copy} titleId={titleId} selection={selection} onSelect={onSelect} />
+        <RadialView
+          copy={copy}
+          titleId={titleId}
+          interactive={interactive}
+          selection={selection}
+          onSelect={onSelect}
+        />
       )}
 
       {/* The detail window, over the stage on desktop, reference-style. */}
@@ -461,8 +466,16 @@ function Stage({
         )}
       </div>
 
-      {/* The ‹ domain › stepper, bottom-centre. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center">
+      {/* The ‹ domain › stepper, bottom-centre. Gone from the hero, by direct
+          request («اون کادر AFA زیر نمودار صفحه اول پاک بشه»): with the wheel
+          no longer selectable there it controlled nothing, and it sat on the
+          drawing it was supposed to serve. */}
+      <div
+        className={cn(
+          'pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center',
+          !interactive && 'hidden',
+        )}
+      >
         <div className="tmapStepper pointer-events-auto">
           <StepButton
             label={copy.prevDomain}
@@ -488,11 +501,13 @@ function Stage({
 function RadialView({
   copy,
   titleId,
+  interactive,
   selection,
   onSelect,
 }: {
   copy: CapabilityMapCopy;
   titleId: string;
+  interactive: boolean;
   selection: Selection;
   onSelect: (next: Selection) => void;
 }) {
@@ -520,6 +535,7 @@ function RadialView({
             key={hub.id}
             hub={hub}
             copy={copy}
+            interactive={interactive}
             selection={selection}
             onSelect={onSelect}
           />
@@ -566,15 +582,36 @@ function MoteField({
 function DomainVolume({
   hub,
   copy,
+  interactive,
   selection,
   onSelect,
 }: {
   hub: HubNode;
   copy: CapabilityMapCopy;
+  interactive: boolean;
   selection: Selection;
   onSelect: (next: Selection) => void;
 }) {
   const domainCopy = copy.domains[hub.id];
+
+  /* On the hero every node is scenery: no role, no tab stop, no handler. A
+     button that does nothing is worse than a drawing that never claimed to
+     be one, and a screen reader should not be offered ten of them. */
+  const nodeProps = interactive
+    ? ({
+        role: 'button',
+        tabIndex: 0,
+        'aria-pressed': selection?.domain === hub.id,
+        'aria-label': domainCopy.title,
+        onClick: () => onSelect({ kind: 'domain', domain: hub.id }),
+        onKeyDown: (event: React.KeyboardEvent) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onSelect({ kind: 'domain', domain: hub.id });
+          }
+        },
+      } as const)
+    : ({ 'aria-hidden': true } as const);
 
   return (
     <g className="tmapDomain" data-tone={hub.tone}>
@@ -596,46 +633,25 @@ function DomainVolume({
           key={process.id}
           node={process}
           title={copy.processes[process.id]?.title ?? process.id}
+          interactive={interactive}
           selected={selection?.kind === 'process' && selection.process === process.id}
           onSelect={() => onSelect({ kind: 'process', domain: hub.id, process: process.id })}
         />
       ))}
 
-      <g
-        className="tmapNode"
-        data-phase={hub.phase}
-        role="button"
-        tabIndex={0}
-        aria-pressed={selection?.domain === hub.id}
-        aria-label={domainCopy.title}
-        onClick={() => onSelect({ kind: 'domain', domain: hub.id })}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            onSelect({ kind: 'domain', domain: hub.id });
-          }
-        }}
-      >
-        <circle className="tmapHit" cx={hub.x} cy={hub.y} r={HIT_R + 10} />
+      <g className="tmapNode" data-static={!interactive || undefined} data-phase={hub.phase} {...nodeProps}>
+        {interactive ? <circle className="tmapHit" cx={hub.x} cy={hub.y} r={HIT_R + 10} /> : null}
         <g className="tmapIn">
           <circle className="tmapAura" cx={hub.x} cy={hub.y} r={HUB_R + 9} />
           <circle className="tmapHubRing" cx={hub.x} cy={hub.y} r={HUB_R} />
           <HubGlyph glyph={hub.glyph} x={hub.x} y={hub.y} r={HUB_R * 0.4} />
           {/* Inward, into the empty annulus — the one place nothing else
-              wants, so the name never fights a node or a curve.
-
-              At nine domains the label arc is ~112 units wide, which is about
-              nine Latin capitals. `data-long` drops the size a step for
-              anything over that, so a long name shrinks instead of printing
-              into its neighbour (which is exactly what «Loyalty club» did). */}
-          <text
-            className="tmapHubLabel"
-            data-long={domainCopy.title.length > 10 || undefined}
-            x={hub.lx}
-            y={hub.ly + 5}
-          >
+              wants, so the name never fights a node or a curve. Ten domains
+              leave ~110 units between neighbouring chips, which the twelve
+              character ceiling on domain titles keeps them inside. */}
+          <LabelChip kind="domain" x={hub.lx} y={hub.ly} w={150} h={40}>
             {domainCopy.title}
-          </text>
+          </LabelChip>
         </g>
         <circle className="tmapFocusRing" cx={hub.x} cy={hub.y} r={HUB_R + 6} />
       </g>
@@ -646,30 +662,35 @@ function DomainVolume({
 function ProcessRing({
   node,
   title,
+  interactive,
   selected,
   onSelect,
 }: {
   node: ProcessNode;
   title: string;
+  interactive: boolean;
   selected: boolean;
   onSelect: () => void;
 }) {
+  const nodeProps = interactive
+    ? ({
+        role: 'button',
+        tabIndex: 0,
+        'aria-pressed': selected,
+        'aria-label': title,
+        onClick: onSelect,
+        onKeyDown: (event: React.KeyboardEvent) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onSelect();
+          }
+        },
+      } as const)
+    : ({ 'aria-hidden': true } as const);
+
   return (
-    <g
-      className="tmapNode"
-      role="button"
-      tabIndex={0}
-      aria-pressed={selected}
-      aria-label={title}
-      onClick={onSelect}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          onSelect();
-        }
-      }}
-    >
-      <circle className="tmapHit" cx={node.x} cy={node.y} r={HIT_R} />
+    <g className="tmapNode" data-static={!interactive || undefined} {...nodeProps}>
+      {interactive ? <circle className="tmapHit" cx={node.x} cy={node.y} r={HIT_R} /> : null}
       <g className="tmapIn" data-phase={node.phase}>
         <circle className="tmapProcRing" cx={node.x} cy={node.y} r={PROC_R} />
         <text className="tmapProcNum" x={node.x} y={node.y}>
@@ -761,9 +782,9 @@ function FanView({
             <g key={stage.id} className="tmapIn" data-phase={stage.phase}>
               <circle className="tmapStageRing" cx={stage.x} cy={stage.y} r={STAGE_R} />
               <StageGlyph stage={stage.stage} x={stage.x} y={stage.y} />
-              <text className="tmapFanStageLabel" x={stage.x} y={stage.ly}>
+              <LabelChip kind="stage" x={stage.x} y={stage.ly} w={116} h={30}>
                 {copy[STAGE_LABEL_KEY[stage.stage]]}
-              </text>
+              </LabelChip>
             </g>
           )),
         )}
@@ -790,9 +811,9 @@ function FanView({
         <circle className="tmapAura" cx={fan.hub.x} cy={fan.hub.y} r={HUB_R + 10} />
         <circle className="tmapHubRing" cx={fan.hub.x} cy={fan.hub.y} r={HUB_R} />
         <HubGlyph glyph={fan.glyph} x={fan.hub.x} y={fan.hub.y} r={HUB_R * 0.42} />
-        <text className="tmapHubLabel" x={fan.hub.x} y={fan.hub.y + 42}>
+        <LabelChip kind="domain" x={fan.hub.x} y={fan.hub.y + 44} w={200} h={40}>
           {domainCopy.title}
-        </text>
+        </LabelChip>
       </g>
     </svg>
   );
@@ -843,9 +864,9 @@ function FanNode({
         <text className="tmapProcNum" x={process.x} y={process.y}>
           {process.index}
         </text>
-        <text className="tmapFanProcLabel" x={process.x} y={process.y + 40}>
+        <LabelChip kind="process" x={process.x} y={process.y + 42} w={200} h={38}>
           {title}
-        </text>
+        </LabelChip>
 
         {/* The human checkpoint — a square, never a ring: on this map the
             human is a different kind of node, not one more machine step. */}
@@ -861,9 +882,9 @@ function FanNode({
           className="tmapHumanTick"
           d={`M${process.hx - 4.4} ${process.hy}l3 3.2 5.6-6`}
         />
-        <text className="tmapFanHumanLabel" x={process.hx} y={process.hy + 26}>
+        <LabelChip kind="human" x={process.hx} y={process.hy + 28} w={140} h={28}>
           {copy.stepHuman}
-        </text>
+        </LabelChip>
       </g>
 
       <circle className="tmapFocusRing" cx={process.x} cy={process.y} r={PROC_R + 6} />
@@ -1004,6 +1025,15 @@ function HubGlyph({ glyph, x, y, r }: { glyph: Glyph; x: number; y: number; r: n
         />
       );
     }
+    case 'star': {
+      const s = r * 1.3;
+      const points = Array.from({ length: 10 }, (_, i) => {
+        const a = (Math.PI / 5) * i - Math.PI / 2;
+        const rad = i % 2 === 0 ? s : s * 0.44;
+        return `${(x + Math.cos(a) * rad).toFixed(2)} ${(y + Math.sin(a) * rad).toFixed(2)}`;
+      });
+      return <path className={cls} d={`M${points.join('L')}Z`} />;
+    }
     case 'bars': {
       const s = r * 1.1;
       return (
@@ -1014,6 +1044,45 @@ function HubGlyph({ glyph, x, y, r }: { glyph: Glyph; x: number; y: number; r: n
       );
     }
   }
+}
+
+/**
+ * A label in a BOX.
+ *
+ * Added 2026-08 on «هر کلمه توی یک کادر مناسب قرار بگیرن»: the names used to
+ * float on the drawing with nothing under them, which read as loose rather
+ * than placed. SVG `<text>` has no box to give — a rect behind it would have
+ * to be sized from a guess at the string's width, and the guess is different
+ * for Latin and for Persian. So the chip is real HTML inside a foreignObject:
+ * the browser measures the string, the box fits it, and the same component
+ * works in both scripts.
+ *
+ * Never interactive — the node under it owns the click.
+ */
+function LabelChip({
+  x,
+  y,
+  w,
+  h,
+  kind,
+  children,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  kind: 'domain' | 'process' | 'stage' | 'human';
+  children: React.ReactNode;
+}) {
+  return (
+    <foreignObject className="tmapChipHost" x={x - w / 2} y={y - h / 2} width={w} height={h}>
+      <div className="tmapChipWrap">
+        <span className="tmapChipLabel" data-kind={kind}>
+          {children}
+        </span>
+      </div>
+    </foreignObject>
+  );
 }
 
 /** Three stage marks, so the outer ring is not read by colour alone either. */

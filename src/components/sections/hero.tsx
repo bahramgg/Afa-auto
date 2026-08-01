@@ -18,6 +18,11 @@ import { DOMAINS, PROCESS_IDS, type DomainId } from '@/lib/capability-map';
    border, no panel fill, no page halo. The wheel is drawn straight onto the
    ground, and nothing behind it competes.
 
+   It is also STILL. Nothing on it opens, steps or selects any more, and the
+   stepper pill that used to float across its foot is gone: «نمودار نیاز به
+   عوض شدن بخش‌های مختلف نداره / فقط همون باشه باقی توی نقشه کامل بیاد».
+   /map is where the drawing becomes an instrument.
+
    The motion is the rotating job line plus the wheel's own marching orbit;
    nothing wobbles.
 

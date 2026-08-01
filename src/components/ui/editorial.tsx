@@ -37,13 +37,21 @@ export function SectionHead({
 }) {
   return (
     <div className={cn('max-w-3xl', className)}>
-      <div className="flex items-center gap-3">
+      {/* The opener sits in a chip, 2026-08, on «بهتره توی کادر بیاد تا طراحی
+          بهتر بشه» — the same raised pill the header rail uses, so a section
+          announces itself in the page's own vocabulary instead of as two loose
+          words on the ground. The numeral keeps its own raised square inside
+          it: the running index is the one bit a reader scans for. */}
+      <div className="inline-flex items-center gap-2.5 rounded-pill border border-border bg-surface/70 p-1.5 pe-4">
         {index ? (
-          <span className="eyebrow tabular-nums text-blue" aria-hidden>
+          <span
+            aria-hidden
+            className="meta grid h-7 min-w-7 place-items-center rounded-pill bg-surface-2 px-2 text-[11px] font-semibold tabular-nums text-blue shadow-raise"
+          >
             {index}
           </span>
         ) : null}
-        <Eyebrow>{eyebrow}</Eyebrow>
+        <Eyebrow className={index ? undefined : 'ps-2.5'}>{eyebrow}</Eyebrow>
       </div>
       <h2 className="display mt-4 text-[clamp(1.75rem,3.4vw,2.6rem)] text-ink">{title}</h2>
       {lede ? <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">{lede}</p> : null}

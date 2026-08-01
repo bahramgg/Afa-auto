@@ -31,53 +31,52 @@
     "rot6": "management reporting",
     "stats": {
       "domains": {
-        "value": "9",
+        "value": "10",
         "label": "areas of the business"
       },
       "processes": {
-        "value": "36",
+        "value": "40",
         "label": "processes"
       },
       "stages": {
-        "value": "108",
+        "value": "120",
         "label": "automated steps"
       }
     },
     "ctaPrimary": "Free assessment",
     "ctaSecondary": "Full map",
-    "mapHint": "Click a domain to open it; click a process for the detail.",
+    "mapHint": "An overview of the operations map. The full, clickable version is on the map page.",
     "statsLead": "What the map shows"
   },
   "Pulse": {
-    "label": "operations console",
-    "demo": "simulated preview · not live data",
+    "label": "One working day",
     "items": {
       "assistant": {
         "text": "DM answered; consultation booked for Tuesday 10:30",
-        "time": "2m ago"
+        "time": "09:12"
       },
       "order": {
         "text": "New order queued; stock confirmed, warehouse notified",
-        "time": "9m ago"
+        "time": "11:05"
       },
       "invoice": {
         "text": "Bank transfer matched to invoice #218",
-        "time": "21m ago"
+        "time": "14:40"
       },
       "brief": {
         "text": "Daily brief delivered to the owner",
         "time": "07:30"
       }
-    }
+    },
+    "lede": "Four things the system does over a single day with nobody driving it."
   },
   "Services": {
     "eyebrow": "Services",
-    "title": "Seven jobs, off your desk",
-    "lede": "Each starts with a scene you know.",
-    "scenarioLabel": "The scene",
-    "solutionLabel": "What the system does",
-    "demoTag": "simulated",
-    "mapCta": "All 36 processes, on the map",
+    "title": "Ten domains of automation",
+    "lede": "The full list, from answering the phone to the management report. Open an entry for its detail and a sample run.",
+    "scenarioLabel": "The situation",
+    "solutionLabel": "What gets deployed",
+    "mapCta": "Forty processes, on the operations map",
     "items": {
       "voice": {
         "title": "Phone operator",
@@ -89,7 +88,13 @@
         "title": "AI assistant",
         "scenario": "11 PM. A customer asks for a price in your DMs. By morning, they’ve bought elsewhere.",
         "solution": "Answers on WhatsApp, Instagram and your site, collects details, opens a file. Anything it can’t answer goes to you.",
-        "outcome": "Every message answered. Every lead captured. Even at 2 AM."
+        "outcome": "Every message gets an answer and every lead is logged, at any hour."
+      },
+      "support": {
+        "title": "Customer support",
+        "scenario": "After-sales requests are spread across channels, and each one depends on a person remembering it.",
+        "solution": "Every request is logged, classified and routed to its owner; repeat answers go out automatically.",
+        "outcome": "No request goes unanswered."
       },
       "automation": {
         "title": "Operations automation",
@@ -99,9 +104,21 @@
       },
       "store": {
         "title": "Website & online store",
-        "scenario": "A customer is ready to buy at midnight; your store is an Instagram page.",
+        "scenario": "A customer is ready to buy at midnight and the shop is an Instagram page.",
         "solution": "Catalog and payment go online; repeat questions answer themselves and every purchase lands in the customer’s file.",
         "outcome": "Sales stop waiting for someone to wake up."
+      },
+      "seo": {
+        "title": "SEO and visibility",
+        "scenario": "A search for the product name returns competitors, not this business.",
+        "solution": "Technical faults are monitored, target terms are chosen, and page copy is prepared for those terms.",
+        "outcome": "New customers arrive from search."
+      },
+      "content": {
+        "title": "Content production",
+        "scenario": "The page has not been updated in two weeks. Nobody has time and nobody knows what to post.",
+        "solution": "A calendar gets built, drafts get written, and after your approval they publish on schedule.",
+        "outcome": "The page stays alive without anyone spending two hours a week."
       },
       "loyalty": {
         "title": "Loyalty club",
@@ -109,11 +126,11 @@
         "solution": "Every buyer joins automatically, earns points, and if they go quiet gets one message tied to their last purchase.",
         "outcome": "Old customers come back without anyone remembering to chase them."
       },
-      "content": {
-        "title": "Content production",
-        "scenario": "The page has not been updated in two weeks. Nobody has time and nobody knows what to post.",
-        "solution": "A calendar gets built, drafts get written, and after your approval they publish on schedule.",
-        "outcome": "The page stays alive without anyone spending two hours a week."
+      "finance": {
+        "title": "Finance and invoicing",
+        "scenario": "Invoices are issued by hand, and matching payments takes hours at the end of every month.",
+        "solution": "Invoices are issued with the order, bank credits are matched against them, and overdue balances are chased automatically.",
+        "outcome": "The books close daily, not monthly."
       },
       "reports": {
         "title": "Reports & alerts",
@@ -124,7 +141,6 @@
     },
     "demos": {
       "voice": {
-        "live": "On a call",
         "caller": "Call from 0912 123 4567",
         "t1": "Hi, do you have anything free tomorrow?",
         "t2": "Yes, tomorrow 10:30 or 16:00 are open.",
@@ -157,6 +173,24 @@
         "l1": "Yesterday’s sales ran above the weekly average",
         "l2": "Three invoices are awaiting settlement",
         "l3": "Top seller is running low on stock"
+      },
+      "support": {
+        "queue": "Support queue · today",
+        "r1": "Ticket #312 routed to engineering",
+        "r2": "Saved answer sent for a repeat question",
+        "r3": "Satisfaction survey sent after closing"
+      },
+      "seo": {
+        "title": "Target term rankings",
+        "r1": "wholesale parts · rank 9 to 4",
+        "r2": "today's price · rank 14 to 11",
+        "r3": "Three technical faults fixed on product pages"
+      },
+      "finance": {
+        "title": "Today's ledger",
+        "r1": "Invoice #218 matched to a bank credit",
+        "r2": "Two overdue invoices chased",
+        "r3": "Balances brought up to date"
       }
     },
     "play": {
@@ -166,8 +200,6 @@
       "q2": "Any slots on Saturday?",
       "a2": "Yes; Saturday 10:30 or 16:00 are open. Which works for you?",
       "replay": "Replay",
-      "online": "Online",
-      "replies": "Replies instantly",
       "actionsLabel": "Actions triggered",
       "acts1": {
         "a": "Lead captured",
@@ -181,8 +213,6 @@
       }
     },
     "flow": {
-      "title": "Order workflow",
-      "active": "Active",
       "n1": "New order",
       "n1k": "Trigger",
       "n2": "Smart check",
@@ -196,7 +226,9 @@
       "e3": "Warehouse notified",
       "e4": "Customer messaged",
       "hold": "Invoice: waiting for your sign-off"
-    }
+    },
+    "outcomeLabel": "Outcome",
+    "more": "Detail and sample"
   },
   "Map": {
     "hub": "AFA",
@@ -211,7 +243,7 @@
     "stepAction": "Does",
     "stepHuman": "You approve",
     "ladderLabel": "the ladder",
-    "figureLabel": "The AFA operating map: nine domains, thirty-six processes, one hundred and eight machine stages, and a human checkpoint on every process",
+    "figureLabel": "AFA operations map: ten domains, forty processes, one hundred and twenty machine stages, one human checkpoint on each process",
     "domains": {
       "sales": {
         "title": "Sales",
@@ -247,6 +279,11 @@
         "title": "Marketing",
         "summary": "Getting the right message to someone who has bought from you before.",
         "tags": "segments · campaigns · results"
+      },
+      "seo": {
+        "title": "SEO",
+        "summary": "Being found by the person searching for what you sell, right now.",
+        "tags": "audits · keywords · rankings"
       },
       "content": {
         "title": "Content",
@@ -511,6 +548,34 @@
         "decision": "Which handful of numbers matter this period?",
         "action": "A presentable document, every figure traceable.",
         "human": "It reaches you before anyone else."
+      },
+      "seo-audit": {
+        "title": "Technical audit",
+        "trigger": "Every time a new build of the site ships.",
+        "decision": "Which faults are keeping pages out of the results?",
+        "action": "A ranked list of faults is produced and handed to the fix queue.",
+        "human": "You approve the significant fixes before they ship."
+      },
+      "seo-keywords": {
+        "title": "Keywords and rivals",
+        "trigger": "Monthly, across the categories that actually sell.",
+        "decision": "What words do people use to look for this?",
+        "action": "The term list is refreshed with volume estimates and rival positions.",
+        "human": "You pick the target terms."
+      },
+      "seo-pages": {
+        "title": "Page optimisation",
+        "trigger": "A product page is added or edited.",
+        "decision": "Do the title, description and body match the target term?",
+        "action": "Suggested titles and descriptions are drafted and queued.",
+        "human": "Nothing publishes until you approve the text."
+      },
+      "seo-rank": {
+        "title": "Ranking report",
+        "trigger": "Weekly, at a fixed hour.",
+        "decision": "Which terms moved up, and which slipped?",
+        "action": "A report on rank movement and inbound traffic is sent to you.",
+        "human": "What to do about a slipped page is your call."
       }
     }
   },
@@ -551,9 +616,8 @@
     }
   },
   "Impact": {
-    "eyebrow": "Try it",
+    "eyebrow": "Calculator",
     "title": "How much time comes back?",
-    "subtitle": "Try it here; four numbers are enough.",
     "windowTitle": "calc.afa",
     "inputs": {
       "staff": {
@@ -586,7 +650,7 @@
     },
     "disclaimer": "An estimate from your own inputs, not a delivery promise. It assumes roughly 60% of repetitive work can be handed to a system and roughly 70% of missed requests can be rescued; the exact figures follow a review of your processes.",
     "ctaNote": "An estimate from your own numbers. The real figure comes out of the free assessment.",
-    "cta": "Go through the number with us"
+    "cta": "Free assessment"
   },
   "Start": {
     "eyebrow": "Process",
@@ -732,8 +796,8 @@
   },
   "MapPage": {
     "eyebrow": "The full map",
-    "title": "The AFA operating map",
-    "lede": "The core at the centre, nine domains around it, thirty-six processes on the outer ring. Click a domain to open it.",
+    "title": "Automation operations map",
+    "lede": "The core at the centre, ten domains around it, forty processes on the outer ring. One click opens a domain.",
     "detailsEyebrow": "Details",
     "directory": "process directory",
     "legend": "legend",
@@ -745,11 +809,13 @@
     "backAll": "All domains",
     "fullscreen": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
-    "statusline": "9 domains · 36 processes · 108 machine stages · human checkpoint on all",
+    "statusline": "10 domains · 40 processes · 120 machine stages · human sign-off on all",
     "prevDomain": "Previous domain",
     "nextDomain": "Next domain",
     "detailsTitle": "Every process, step by step",
-    "back": "Back to the homepage"
+    "back": "Back to the homepage",
+    "more": "Show four processes",
+    "less": "Close"
   },
   "NotFound": {
     "title": "This page wasn't found",
@@ -759,7 +825,6 @@
   "Footer": {
     "tagline": "Repetitive work on the system; important decisions with you.",
     "rights": "© {year} AFA. All rights reserved.",
-    "note": "Each project is priced after a review of your processes.",
     "familyLabel": "The AFA family",
     "family": {
       "company": "Company site",

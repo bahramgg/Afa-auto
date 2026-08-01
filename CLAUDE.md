@@ -15,40 +15,50 @@ mono console). One page, the RAS spine:
 1. **Hero** (`sections/hero.tsx`) — the claim on the start side, the working
    wheel on the end side, both on the first screen. What had to go was never
    the diagram, it was the BACKGROUND under it: no grid, no frame, no panel
-   fill, and the body's old violet halo is deleted outright. Typography, the
+   fill, and the body's old violet halo is deleted outright. The wheel here is
+   a PICTURE as of 2026-08: nothing on it selects, steps or opens, and the
+   stepper pill is gone with the eyebrow above the headline. Typography, the
    ROTATING job line (`ui/rotating-words.tsx`, joined-script-safe), the white
    primary button, and the structural counts over one hairline.
-2. **Pulse** — the operations-console strip: four telemetry lines, one per
-   service, ALWAYS tagged «نمونهٔ نمایشی · داده واقعی نیست». The strip earns
-   its realism from that tag; removing it turns the section into a fabricated
-   metric.
-3. **Services** (01) — the heart. SEVEN offers: phone operator, assistant,
-   operations automation, website/store, loyalty club, content production,
-   finance and reporting. Each carries the tone its domain has on the map, so
-   the two drawings agree. The assistant card is PLAYABLE
-   (`tools/assistant-demo.tsx`) and closes with the reference's ACTIONS
-   TRIGGERED check-list; the automation card is a miniature workflow canvas
-   (trigger → decision → actions) with a LAST RUN log that ends on
-   «منتظر تأیید شما» — the pause is the product. Demo cards carry a green
-   ONLINE pill plus the «نمونه نمایشی» honesty tag. Copy arrives as props;
-   the client ships no catalog. Each offer: the SCENE (a
-   moment the visitor recognises, present tense), the SYSTEM (what gets
-   deployed, no adjectives), the OUTCOME (one bold line). A console card
-   beside each shows the thing itself — chat exchange, run with its human
-   checkpoint, receipt, morning brief — every card tagged «نمونه نمایشی».
-   The four services are the four things the case studies prove were shipped.
-4. **Impact** (02, «تجربه کنید») — the calculator, straight after the offer;
+2. **Services** (01) — the heart, and the section directly under the hero.
+   TEN offers, one per domain on the map, in the wheel's own reading order:
+   phone operator, assistant, support, operations automation, website/store,
+   SEO, content, loyalty club, finance, reporting. Each carries the tone its
+   domain has on the map, so the two drawings agree item for item.
+
+   COLLAPSED. Ten full articles is six screens of reading, so the section is a
+   grid of closed cards, two abreast, every one the same size; opening one
+   produces its SCENE (the situation, no adjectives), its SYSTEM (what gets
+   deployed), its OUTCOME (one bold line) and a sample run. The disclosure is a
+   plain `<details>` — no state, no client component, and every card is open in
+   print and in a full-page capture. The assistant card is PLAYABLE
+   (`tools/assistant-demo.tsx`); the automation card is a miniature workflow
+   canvas (trigger → decision → actions) with a LAST RUN log that ends on
+   «منتظر تأیید شما» — the pause is the product. Copy arrives as props; the
+   client ships no catalog.
+3. **Pulse** — one working day, four entries, after the offer rather than
+   before it. It was a live-looking telemetry strip carrying an honesty tag;
+   the tag is gone by direct request, so the pretence went with it. Clock times
+   rather than «۲ دقیقه پیش», and a heading that says what the reader is
+   looking at.
+4. **Impact** (02, «محاسبه‌گر») — the calculator, straight after the offer;
    the interactive moments ARE the argument, so they come early.
-6. **Work** (03) — proof as before → what was deployed → after.
-7. **Start** (04) — four steps + «چرا ما» differentiators (absorbed the old
+5. **Work** (03) — proof as before → what was deployed → after.
+6. **Start** (04) — four steps + «چرا ما» differentiators (absorbed the old
    Manifesto and the checkmark notes; one home for those claims, not three).
 7. **Contact** (05) — reframed as the FREE ASSESSMENT («ارزیابی رایگان
    فرایندها») — the RAS conversion device; every CTA on the page converges
    here or on /map.
 
-`/map` is the only other route. The footer signs off with the ghost wordmark
-(`.ghost-word` — Latin display always; it is the logotype, not a word being
-read).
+The HEADER is four section anchors in one raised rail, with the read section
+lit by scroll-spy, and nothing else: /map and the free assessment were both
+removed from it by direct request. The FOOTER is ONE bordered block — mark,
+links, family, rights and the cropped ghost wordmark inside a single card,
+because three stacked bands is what made it read as disorderly.
+
+`/map` is the only other route. The ghost wordmark (`.ghost-word` — Latin
+display always; it is the logotype, not a word being read) signs off inside
+the footer card.
 
 ## Copy voice
 
@@ -56,12 +66,24 @@ SHORT. Headlines ≤ 12 words, descriptions ≤ 2 sentences (the Lindy/Make
 discipline); no metaphors a shop owner wouldn't use («خلبان خودکار» died for
 this) and NO QUESTIONS in the hero — a headline that asks makes the visitor
 do the work. «نمونه‌کار» is out too: the section is
-«اتوماسیون‌های اجراشده», which says what it is. Scenario first, outcome last, zero adjectives in between. The scene is second
-person, present tense («ساعت ۱۱ شب است. مشتری در دایرکت قیمت می‌پرسد…») —
-recognition is what "feeling real" means. Claims may only restate what the
-case studies and FAQ already establish; performance numbers (RAS shows «25hrs
-saved») are exactly what we may NOT invent — structural counts and the
-visitor's own calculator output carry that load instead.
+«اتوماسیون‌های اجراشده», which says what it is. Scenario first, outcome last,
+zero adjectives in between.
+
+The scene is IMPERSONAL, present tense («تلفن زنگ می‌خورد و کسی نیست…»): the
+section describes a situation rather than pointing at the reader, on «مخاطب
+قرار نده کاربر رو». Recognition is what "feeling real" means, and a situation
+is recognisable without a «شما» in it. Second person survives only where the
+copy genuinely addresses the visitor: the form, the calculator, and the human
+checkpoint («به تأیید شما می‌رسد»).
+
+Claims may only restate what the case studies and FAQ already establish;
+performance numbers (RAS shows «25hrs saved») are exactly what we may NOT
+invent — structural counts and the visitor's own calculator output carry that
+load instead. The «نمونه نمایشی · داده واقعی نیست» tags are GONE from the
+whole site by direct request; what keeps the mocks honest now is restraint in
+the mocks themselves — no relative timestamps, no green ONLINE pills on a
+static picture, no counters. A sample run may show the SHAPE of the work and
+never a volume.
 
 ## Tone
 
@@ -125,22 +147,29 @@ pastiche (blueprint grid, four dashed guides, seventy-two stage nodes, a
 hundred crossing hairlines) is gone: dense, but it read as static at any real
 size. Two drawings remain:
 
-- **THE WHEEL** — three rings and nothing else. NINE domains as of 2026-08
-  (the phone operator, the loyalty club and content production joined by
-  direct request), 40° per sector, none at 180° where the stepper floats. A
-  particle core inside one thin circle; nine domain badges on the inner ring, each labelled INWARD into
-  the empty annulus (the one part of the drawing nothing else wants, and the
-  inset must clear half a label plus the badge or 3 and 9 o'clock print
-  through themselves); twenty-four process rings on the outer ring, four per
-  60° sector, reached by a QUADRATIC BEZIER that leaves the badge along its
-  own ray and bows into place. Curves, not spokes — that bow is what makes
-  nine identical sectors look designed rather than generated. One marching
-  orbit is the only ambient motion; the scene itself holds still.
+- **THE WHEEL** — three rings and nothing else. TEN domains as of 2026-08
+  (SEO joined the phone operator, the loyalty club and content production, all
+  by direct request), 36° per sector, started on the HALF-STEP so no badge sits
+  at 180° where the stepper floats, or on any other clock hand. A particle core
+  inside one thin circle; ten domain badges on the inner ring, each labelled
+  INWARD into the empty annulus; forty process rings on the outer ring, four
+  per sector, reached by a QUADRATIC BEZIER that leaves the badge along its own
+  ray and bows into place. Curves, not spokes — that bow is what makes ten
+  identical sectors look designed rather than generated. One marching orbit is
+  the only ambient motion; the scene itself holds still.
 
-  The palette grew with it: `--map-7/8/9` are site-local literals in
+  EVERY LABEL SITS IN A BOX («هر کلمه توی یک کادر مناسب قرار بگیرن»). The chip
+  is real HTML inside a `<foreignObject>`, never an SVG `<text>` with a guessed
+  rect behind it: the browser measures the string, so one rule fits both
+  scripts. The label ring's radius is the compromise between two collisions
+  that pull opposite ways — outward spreads neighbours apart, inward keeps a
+  box off its own badge at 3 and 9 o'clock, where the box grows toward the
+  badge by its half-WIDTH. Both are checked in a real browser, not eyeballed.
+
+  The palette grew with it: `--map-7/8/9/10` are site-local literals in
   tokens.css, because the shared family ships six and afa-tokens.css is
-  vendored under a hash pin. Nine glyphs, nine tones, all through the
-  contrast test.
+  vendored under a hash pin. Ten glyphs, ten tones, all through the contrast
+  test.
 - **THE FAN** — one domain, opened. The domain drops to the foot of the stage
   over its own particle seed, dotted rays climb to the four HUMAN CHECKPOINTS
   (squares, green, the only status colour on the map), a plumb line runs from
@@ -149,8 +178,10 @@ size. Two drawings remain:
 
 **NO GROUND UNDER EITHER.** No grid, no page halo, no panel fill; the hero
 stage is frameless entirely and only /map keeps a hairline, because there it
-sits between two rails. The seventy-two stage nodes live in the fan, where
-they are labelled and readable, and `COUNTS` still counts them for the legend.
+sits between two rails. The hundred and twenty stage nodes live in the fan,
+where they are labelled and readable, and `COUNTS` still counts them for the
+legend. /map's stage reserves dead space at its foot for the stepper pill,
+because at ten domains the wheel's lowest process rings reach into it.
 
 Rules that hold across both:
 
@@ -162,9 +193,11 @@ Rules that hold across both:
   lowbias32 finaliser over FNV: raw FNV on sequential keys scatters in visible
   spokes, not a cloud.
 - `src/components/tools/capability-map.tsx` — the client component, no
-  arithmetic. `variant="hero"` drops the reading rails and the fullscreen
-  chip; a `hidden` utility cannot hide `.tmapChip`, which sets display itself
-  and wins the cascade, so that one is a conditional render.
+  arithmetic. `variant="hero"` drops the reading rails, the fullscreen chip,
+  the stepper AND every interaction: on the landing page the wheel is scenery,
+  so its nodes carry no role, no tab stop and no handler. A `hidden` utility
+  cannot hide `.tmapChip`, which sets display itself and wins the cascade, so
+  that one is a conditional render.
 - Selecting a DOMAIN opens the fan and nothing else; only a PROCESS opens the
   detail window.
 - `src/styles/capability-map.css` — all visuals. State via `data-*`

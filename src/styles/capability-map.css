@@ -36,6 +36,7 @@
 .cmap [data-tone='7'], .cmap[data-tone='7'], .tmap [data-tone='7'], .tmap[data-tone='7'], .tmapStage[data-tone='7'] { --tone: var(--map-7); }
 .cmap [data-tone='8'], .cmap[data-tone='8'], .tmap [data-tone='8'], .tmap[data-tone='8'], .tmapStage[data-tone='8'] { --tone: var(--map-8); }
 .cmap [data-tone='9'], .cmap[data-tone='9'], .tmap [data-tone='9'], .tmap[data-tone='9'], .tmapStage[data-tone='9'] { --tone: var(--map-9); }
+.cmap [data-tone='10'], .cmap[data-tone='10'], .tmap [data-tone='10'], .tmap[data-tone='10'], .tmapStage[data-tone='10'] { --tone: var(--map-10); }
 
 /* ---------------------------------------------------------------- the stage */
 
@@ -53,6 +54,12 @@
 .tmapStage[data-fit='width'] {
   border: 1px solid var(--border);
   background-color: color-mix(in srgb, var(--surface) 45%, transparent);
+  /* Dead space at the foot for the ‹ domain › pill. It is the only stage that
+     still has the pill, and at ten domains the wheel's bottom process rings
+     reach far enough down that the pill printed straight through four of
+     them. Measured, not guessed: the check walks every ring and chip against
+     the pill's box. */
+  padding-block-end: 3.75rem;
 }
 
 /* The pool of colour the reference throws behind an opened domain. Off in the
@@ -86,10 +93,9 @@
   margin-inline: auto;
   block-size: min(58svh, 78vw, 27rem);
   aspect-ratio: 1;
-  /* Room at the foot for the ‹ domain › pill. Border-box means the padding
-     comes out of the drawing, not out of the stage, so the pill sits in dead
-     space instead of printing over the bottom of the wheel. */
-  padding-block-end: 3.5rem;
+  /* No foot padding any more. It existed to keep the ‹ domain › pill off the
+     bottom of the wheel, and the hero has no pill: the space it reserved was
+     showing up as a hole under the drawing. */
 }
 .tmapStage[data-fit='height'][data-view='fan'] { aspect-ratio: 1120 / 840; }
 
@@ -232,6 +238,7 @@
 .tmapMote[data-mote='7'] { fill: var(--map-7); }
 .tmapMote[data-mote='8'] { fill: var(--map-8); }
 .tmapMote[data-mote='9'] { fill: var(--map-9); }
+.tmapMote[data-mote='10'] { fill: var(--map-10); }
 
 @keyframes tmapTwinkle {
   0%, 100% { opacity: 0.45; }
@@ -251,6 +258,9 @@
 .tmapHit { fill: transparent; stroke: none; }
 
 .tmapNode { cursor: pointer; outline: none; }
+/* The hero's wheel is a picture: nothing there is pressable, so nothing there
+   should offer a hand. */
+.tmapNode[data-static] { cursor: default; }
 
 /* Domain: ring + glyph, the domain's flag. */
 .tmapHubRing {
@@ -291,29 +301,82 @@
   stroke-width: 2.2;
 }
 
-/* Domain label: the reference sets it directly under the badge, in the
-   domain's own colour — the one place a label is not ivory. */
-.tmapHubLabel {
-  fill: var(--muted);
+/* EVERY LABEL ON THE MAP SITS IN A BOX, 2026-08.
+   
+   «توی نمودار بخش‌های مختلف که نوشته شده خیلی رها هستن بهتره هر کلمه توی یک
+   کادر مناسب قرار بگیرن.» A word set straight on the drawing has to compete
+   with whatever curve passes behind it; a word on its own plate does not.
+   The chip is HTML inside a foreignObject (see LabelChip) precisely so the
+   box can be measured from the text rather than guessed at, which is the only
+   way one rule serves both scripts. */
+.tmapChipHost { overflow: visible; pointer-events: none; }
+
+.tmapChipWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.tmapChipLabel {
+  display: inline-flex;
+  align-items: center;
+  max-inline-size: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--bg-950) 88%, transparent);
+  color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 16.5px;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-anchor: middle;
-  pointer-events: none;
-  transition: fill var(--afa-t-base) var(--afa-ease);
+  white-space: nowrap;
+  transition:
+    color var(--afa-t-base) var(--afa-ease),
+    border-color var(--afa-t-base) var(--afa-ease);
 }
-html[lang='fa'] .tmapHubLabel {
-  font-family: var(--font-fa);
-  letter-spacing: 0;
-  font-size: 17.5px;
+html[lang='fa'] .tmapChipLabel { font-family: var(--font-fa); letter-spacing: 0; }
+
+.tmapChipLabel[data-kind='domain'] {
+  padding: 4px 10px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
 }
-.tmapHubLabel[data-long] { font-size: 13.5px; letter-spacing: 0.04em; }
-html[lang='fa'] .tmapHubLabel[data-long] { font-size: 15px; letter-spacing: 0; }
-.tmapNode:hover .tmapHubLabel,
-.tmapNode:focus-visible .tmapHubLabel,
-.tmapNode[aria-pressed='true'] .tmapHubLabel { fill: var(--tone); }
+html[lang='fa'] .tmapChipLabel[data-kind='domain'] { font-size: 13.5px; }
+/* NOT uppercase, unlike every other Latin label on this site. Ten boxes on one
+   ring is the tightest type on the page, and caps plus tracking is exactly the
+   combination that makes a ten-letter name too wide for the gap it has. */
+
+.tmapChipLabel[data-kind='process'] {
+  padding: 4px 11px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.tmapChipLabel[data-kind='stage'] {
+  padding: 3px 8px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+}
+html[lang='fa'] .tmapChipLabel[data-kind='stage'] { letter-spacing: 0; }
+
+.tmapChipLabel[data-kind='human'] {
+  padding: 3px 8px;
+  font-size: 10.5px;
+  font-weight: 500;
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+  color: color-mix(in srgb, var(--success) 88%, var(--ink));
+}
+
+/* The domain chip takes the domain's colour when its node is live. */
+.tmapNode:hover .tmapChipLabel[data-kind='domain'],
+.tmapNode:focus-visible .tmapChipLabel[data-kind='domain'],
+.tmapNode[aria-pressed='true'] .tmapChipLabel[data-kind='domain'] {
+  border-color: color-mix(in srgb, var(--tone) 60%, transparent);
+  color: var(--tone);
+}
 
 /* Process: ring with a mono numeral. */
 .tmapProcRing {
@@ -457,27 +520,7 @@ html[lang='fa'] .tmapFanTags { font-family: var(--font-fa); letter-spacing: 0; }
   vector-effect: non-scaling-stroke;
 }
 
-.tmapFanProcLabel {
-  fill: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 600;
-  text-anchor: middle;
-  pointer-events: none;
-}
-html[lang='fa'] .tmapFanProcLabel { font-family: var(--font-fa); }
-
-.tmapFanStageLabel,
-.tmapFanHumanLabel {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  text-anchor: middle;
-  pointer-events: none;
-}
-.tmapFanStageLabel { fill: var(--dim); }
-.tmapFanHumanLabel { fill: color-mix(in srgb, var(--success) 78%, transparent); }
-html[lang='fa'] .tmapFanStageLabel,
-html[lang='fa'] .tmapFanHumanLabel { font-family: var(--font-fa); }
+/* The fan's three label kinds are chips too — see .tmapChipLabel above. */
 
 /* ----------------------------------------------------------------- chrome */
 

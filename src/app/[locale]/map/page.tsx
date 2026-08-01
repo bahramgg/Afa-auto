@@ -124,70 +124,136 @@ function MapPageBody() {
           as high on the screen as it can. */}
       <section className="relative overflow-hidden border-b border-border">
         <div className="relative z-10 mx-auto w-full max-w-[90rem] px-3 pb-16 pt-20 sm:px-6">
-          <header className="mb-8 grid items-end gap-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
-            <div>
-              <Eyebrow className="tmapMasthead">{t('eyebrow')}</Eyebrow>
-              <h1 className="display-hero mt-4 text-ink">
-                {t('title')}
-                <span aria-hidden className="tmapCursor" />
-              </h1>
-            </div>
-            <p className="text-sm leading-relaxed text-muted lg:border-s lg:border-border lg:ps-6">
-              {t('lede')}
-            </p>
+          {/* The lede that used to sit opposite the title is gone, by direct
+              request. The drawing under it says the same thing better, and the
+              string stays in the catalog because the page's meta description
+              is built from it. */}
+          <header className="mb-8">
+            <Eyebrow className="tmapMasthead">{t('eyebrow')}</Eyebrow>
+            <h1 className="display-hero mt-4 text-ink">
+              {t('title')}
+              <span aria-hidden className="tmapCursor" />
+            </h1>
           </header>
 
           <CapabilityMap copy={copy} />
         </div>
       </section>
 
-      {/* The write-ups: one anchored block per domain, four processes each.
-          This is where the homepage index deep-links to. */}
+      {/* The write-ups: one anchored block per domain, CLOSED.
+
+          «قسمت جزئیات خوبه اما شبیه به جزوه و مقاله شده» — ten domains times
+          four processes times four steps is a hundred and sixty paragraphs,
+          and printed all at once that is a booklet, not a page. Each domain is
+          a card that opens, the same disclosure the homepage's offer list
+          uses, so the reader chooses what to read. Deep links still work: a
+          <details> with an id is a valid anchor target, and the browser opens
+          it when it is the fragment. */}
       <section className="py-16 sm:py-24">
         <Container>
           <Eyebrow>{t('detailsEyebrow')}</Eyebrow>
           <h2 className="display-statement mt-4 text-ink">{t('detailsTitle')}</h2>
 
-          <div className="mt-12 space-y-14">
+          <div className="mt-12 grid gap-4">
             {DOMAINS.map((domain) => (
-              <article key={domain.id} id={domain.id} className="cmap scroll-mt-28" data-tone={domain.tone}>
-                <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-border pb-4">
-                  <h3 className="flex items-center gap-3 text-lg font-bold text-ink">
-                    <span aria-hidden className="size-2.5 rounded-pill bg-[var(--tone)]" />
-                    {domains[domain.id].title}
-                  </h3>
-                  <p className="text-sm text-dim">{domains[domain.id].summary}</p>
-                </header>
+              <details
+                key={domain.id}
+                id={domain.id}
+                data-tone={domain.tone}
+                className="cmap group scroll-mt-28 overflow-hidden rounded-card border border-border bg-surface/40 transition-colors open:bg-surface/70 hover:border-border-glass"
+              >
+                <summary className="flex cursor-pointer list-none items-center gap-4 p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
+                  <span
+                    aria-hidden
+                    className="grid size-10 shrink-0 place-items-center rounded-pill border border-[color-mix(in_srgb,var(--tone)_45%,transparent)]"
+                  >
+                    <span className="size-2.5 rounded-pill bg-[var(--tone)]" />
+                  </span>
 
-                <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                  {domain.processes.map((processId) => {
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span className="text-base font-bold text-ink">
+                        {domains[domain.id].title}
+                      </span>
+                      <span className="meta text-[11px] text-[var(--tone)]">
+                        {domains[domain.id].tags}
+                      </span>
+                    </span>
+                    <span className="mt-1 block text-sm leading-relaxed text-dim">
+                      {domains[domain.id].summary}
+                    </span>
+                  </span>
+
+                  <span className="meta hidden shrink-0 items-center gap-2 text-[11px] text-dim sm:flex">
+                    {t('more')}
+                    <svg
+                      aria-hidden
+                      width="11"
+                      height="11"
+                      viewBox="0 0 14 14"
+                      className="transition-transform duration-200 group-open:rotate-180"
+                    >
+                      <path
+                        d="M3 5.5 7 9.5l4-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </summary>
+
+                {/* One hairline grid, not four floating cards. */}
+                <div className="grid gap-px border-t border-border bg-border sm:grid-cols-2">
+                  {domain.processes.map((processId, index) => {
                     const process = processes[processId];
                     if (!process) return null;
                     return (
-                      <div key={processId} className="rounded-card border border-border bg-surface/50 p-5">
-                        <h4 className="text-sm font-semibold text-ink">{process.title}</h4>
-                        <dl className="mt-3 space-y-2.5">
-                          {steps.map((step) => (
-                            <div
-                              key={step}
-                              className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 text-xs leading-relaxed"
-                            >
-                              <dt className="font-semibold text-dim">{copy[step]}</dt>
-                              <dd
+                      <div key={processId} className="bg-bg-950 p-5 sm:p-6">
+                        <h3 className="flex items-baseline gap-3 text-sm font-bold text-ink">
+                          <span aria-hidden className="meta text-[11px] text-[var(--tone)]">
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          {process.title}
+                        </h3>
+
+                        {/* Label above value, not beside it: a fixed label
+                            column forces every line to break at the same
+                            narrow width, which is what made this read like a
+                            printed reference rather than a screen. The human
+                            checkpoint keeps its green rule and closes each
+                            process, because it is the last word on it. */}
+                        <dl className="mt-4 grid gap-3">
+                          {steps.map((step) => {
+                            const human = step === 'stepHuman';
+                            return (
+                              <div
+                                key={step}
                                 className={
-                                  step === 'stepHuman' ? 'text-success' : 'text-muted'
+                                  human ? 'mt-1 border-s-2 border-success ps-3' : undefined
                                 }
                               >
-                                {process[fieldOf[step]]}
-                              </dd>
-                            </div>
-                          ))}
+                                <dt className="meta text-[10px] uppercase text-dim">
+                                  {copy[step]}
+                                </dt>
+                                <dd
+                                  className={`mt-1 text-xs leading-relaxed ${
+                                    human ? 'text-success' : 'text-muted'
+                                  }`}
+                                >
+                                  {process[fieldOf[step]]}
+                                </dd>
+                              </div>
+                            );
+                          })}
                         </dl>
                       </div>
                     );
                   })}
                 </div>
-              </article>
+              </details>
             ))}
           </div>
 

@@ -114,7 +114,10 @@
     font-weight: var(--display-map-weight);
     letter-spacing: var(--display-hero-tracking);
     text-transform: uppercase;
-    font-size: clamp(2.15rem, 5vw, 4rem);
+    /* Stepped down 2026-08 by direct request: the old ceiling (4rem) put the
+       Persian claim on three lines and left it shouting next to a drawing
+       that is doing the actual talking. */
+    font-size: clamp(1.9rem, 3.9vw, 3rem);
     line-height: 1.12;
     text-wrap: balance;
   }

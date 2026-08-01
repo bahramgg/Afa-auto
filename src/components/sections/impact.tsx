@@ -33,7 +33,9 @@ export function Impact() {
   return (
     <section id="impact" className="scroll-mt-24 border-t border-border py-16 sm:py-24">
       <Container>
-        <SectionHead index="02" eyebrow={t('eyebrow')} title={t('title')} lede={t('subtitle')} />
+        {/* No lede: the title already asks the only question the tool
+            answers, and the line under it was restating it. */}
+        <SectionHead index="02" eyebrow={t('eyebrow')} title={t('title')} />
 
         <Window title={t('windowTitle')} className="mt-12">
           <ImpactCalculator />
@@ -44,7 +46,7 @@ export function Impact() {
           <p className="max-w-xl text-sm leading-relaxed text-muted">{t('ctaNote')}</p>
           <a
             href="#contact"
-            className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-button border border-border px-6 text-sm font-semibold text-ink transition-colors hover:border-border-glass"
+            className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-button bg-brand px-6 text-sm font-semibold text-bg-950 shadow-brand transition-shadow hover:shadow-brand-hover"
           >
             {t('cta')}
           </a>

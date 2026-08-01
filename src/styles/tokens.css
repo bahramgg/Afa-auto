@@ -117,9 +117,13 @@
    * literals rather than an edit to the family file. Hues chosen away from
    * the first six and from --success; all three were run through
    * test/contrast.test.ts, which now loops 1..9. */
-  --map-7: #5fd0f0; /* cyan   */
-  --map-8: #ff8f5c; /* orange */
-  --map-9: #ffe27a; /* yellow */
+  --map-7: #5fd0f0; /* cyan    */
+  --map-8: #ff8f5c; /* orange  */
+  --map-9: #ffe27a; /* yellow  */
+  /* And a tenth, when SEO joined the map. Magenta is the one family the other
+     nine leave empty: 47° of hue from the rose and 47° from the violet, which
+     is the widest gap left on the wheel. */
+  --map-10: #ef9be8; /* magenta */
 
   /* Editorial system — the layout language shared with afa-site and afa-pay.
    *

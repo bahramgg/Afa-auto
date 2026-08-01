@@ -9,12 +9,11 @@ import { Contact } from '@/components/sections/contact';
 
 /* Fifth draft, 2026-08 — rebuilt on the rasai.ca structure, our style:
  *
- *   MapHero       the working map + the claim («روی خلبان خودکار»)
- *   Pulse         the operations console strip — four telemetry lines,
- *                 honestly tagged «نمونهٔ نمایشی»
- *   Services 01   four offers, each opened by a scene the visitor recognises
- *                 and closed by an outcome line, with a console card beside it
- *   Impact   02   the calculator — «تجربه کنید», straight after the offer
+ *   Hero          the still wheel + the claim
+ *   Services 01   ten offers, collapsed; each opens onto its scene, its
+ *                 system, its outcome and a sample run
+ *   Pulse         one working day, four entries
+ *   Impact   02   the calculator, straight after the offer
  *   Work     03   proof: before → what was deployed → after
  *   Start    04   process + «چرا ما» differentiators (absorbed the Manifesto)
  *   Contact  05   the free assessment form, remaining questions beside it
@@ -28,8 +27,8 @@ export default async function HomePage(props: {
   return (
     <>
       <Hero />
-      <Pulse />
       <Services />
+      <Pulse />
       <Impact />
       <Work />
       <Start />

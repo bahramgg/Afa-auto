@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
 import { Container } from '@/components/ui/container';
 import { Logo } from '@/components/ui/logo';
 import { cn } from '@/lib/cn';
@@ -26,12 +25,13 @@ import { LocaleSwitch } from './locale-switch';
 
    FORM. The four in-page anchors live in ONE rail: a single pill, hairlined,
    subdivided by nothing. The section you are actually reading is the raised,
-   filled chip inside it, so the bar answers "where am I" without a word. The
-   route to /map is a chip OUTSIDE the rail, because it leaves the page and
-   should not look like a scroll target. The ask is the one coloured thing on
-   the header, ivory like every other primary action on the site — which
-   supersedes the older "no CTA pill on desktop" note: the request now is for
-   the header to carry weight.
+   filled chip inside it, so the bar answers "where am I" without a word.
+
+   The /map chip and the free-assessment pill were BOTH removed a day later,
+   by direct request. The bar is now the four sections and nothing else: /map
+   is reached from the hero's own secondary button, from the services footer
+   and from the site footer, and the ask lives where the visitor is already
+   convinced rather than where they have just arrived.
    -------------------------------------------------------------------------- */
 
 /** In-page anchors, in reading order. These, and only these, get scroll-spy. */
@@ -92,14 +92,6 @@ export function SiteHeader() {
 
   const chip =
     'inline-flex min-h-9 items-center rounded-pill px-3.5 text-sm transition-colors';
-  /* Desktop-only pills. They carry NO display utility of their own: `cn` is a
-     plain joiner, not tailwind-merge, so `inline-flex` next to `hidden` is
-     decided by stylesheet order and `hidden` loses — which put both of these
-     on top of the logo at 390px. The call site owns `display`. */
-  const outline =
-    'hidden min-h-10 items-center gap-2 whitespace-nowrap rounded-pill border border-border px-3.5 text-sm text-muted transition-colors hover:border-border-glass hover:text-ink lg:inline-flex';
-  const cta =
-    'hidden min-h-10 items-center whitespace-nowrap rounded-pill bg-brand px-5 text-sm font-semibold text-bg-950 shadow-brand transition-shadow hover:shadow-brand-hover lg:inline-flex';
   const sheetLink =
     'flex min-h-12 items-center text-sm text-muted transition-colors hover:text-ink';
 
@@ -143,17 +135,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {/* Off the rail on purpose: it leaves the page. */}
-            <Link href="/map" className={outline}>
-              <span aria-hidden className="size-1.5 rounded-pill bg-blue" />
-              {t('mapPage')}
-            </Link>
-
             <LocaleSwitch />
-
-            <a href="#contact" className={cta}>
-              {t('contact')}
-            </a>
 
             <button
               type="button"
@@ -188,8 +170,8 @@ export function SiteHeader() {
         </div>
 
         {/* The sheet. One rule per row, full-width targets — a phone menu is a
-            list of destinations, not a scaled-down desktop bar. The read
-            section is marked here too, by ink rather than by a chip. */}
+            list of destinations, not a scaled-down desktop bar. Same four
+            entries as the rail, and only those. */}
         <nav
           id="site-menu"
           aria-label={t('menu')}
@@ -197,8 +179,8 @@ export function SiteHeader() {
           className="border-t border-border pb-3 lg:hidden"
         >
           <ul>
-            {sections.map((id) => (
-              <li key={id} className="border-b border-border">
+            {sections.map((id, index) => (
+              <li key={id} className={cn(index > 0 && 'border-t border-border')}>
                 <a
                   href={`#${id}`}
                   onClick={() => setOpen(false)}
@@ -209,20 +191,6 @@ export function SiteHeader() {
                 </a>
               </li>
             ))}
-            <li className="border-b border-border">
-              <Link href="/map" onClick={() => setOpen(false)} className={sheetLink}>
-                {t('mapPage')}
-              </Link>
-            </li>
-            <li>
-              <a
-                href="#contact"
-                onClick={() => setOpen(false)}
-                className="mt-3 flex min-h-12 items-center justify-center rounded-pill bg-brand px-5 text-sm font-semibold text-bg-950 shadow-brand"
-              >
-                {t('contact')}
-              </a>
-            </li>
           </ul>
         </nav>
       </Container>
