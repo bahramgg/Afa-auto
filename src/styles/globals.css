@@ -37,6 +37,7 @@
 
   --shadow-brand: var(--shadow-brand);
   --shadow-brand-hover: var(--shadow-brand-hover);
+  --shadow-raise: var(--shadow-raise);
 
   --font-fa: var(--font-fa);
   --font-en-head: var(--font-en-head);

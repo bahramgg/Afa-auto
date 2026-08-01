@@ -6,10 +6,10 @@
   "Nav": {
     "home": "Home",
     "services": "Services",
-    "work": "Automations shipped",
+    "work": "Results",
     "impact": "Calculator",
     "start": "Process",
-    "mapPage": "Full map",
+    "mapPage": "Map",
     "contact": "Free assessment",
     "menu": "Menu",
     "close": "Close"
@@ -21,7 +21,6 @@
     "switchTo": "Switch to {locale}"
   },
   "Hero": {
-    "eyebrow": "AFA",
     "title": "Business process automation",
     "rotPrefix": "From answering calls and messages to",
     "rot1": "order intake",

@@ -85,6 +85,15 @@
   --shadow-brand: 0 6px 24px rgba(238, 240, 248, 0.14);
   --shadow-brand-hover: 0 8px 32px rgba(238, 240, 248, 0.22);
 
+  /* Elevation for a chip that has to read as PRESSED-OUT of its rail: a
+   * one-pixel light edge on top, a soft drop under. Added 2026-08 when the
+   * header nav became a rail of raised chips by direct request («دکمه‌ها
+   * رنگی و یا برجسته بشن»). Cheaper than a border, and it survives on the
+   * navy-black where a border of --border-glass would vanish. */
+  --shadow-raise:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+    0 2px 10px rgba(0, 0, 0, 0.55);
+
   /* Glass surface (floating header + tool cards only) */
   --glass-bg: var(--afa-glass-bg);
   --glass-blur: var(--afa-glass-blur);

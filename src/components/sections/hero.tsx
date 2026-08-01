@@ -1,6 +1,5 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Eyebrow } from '@/components/ui/editorial';
 import { RotatingWords } from '@/components/ui/rotating-words';
 import {
   CapabilityMap,
@@ -95,9 +94,11 @@ export function Hero() {
       <div className="mx-auto w-full max-w-[86rem] px-4 py-12 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:py-8">
         <div className="grid h-full grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14">
           <div>
-            <Eyebrow>{t('eyebrow')}</Eyebrow>
-
-            <h1 className="display-hero mt-5 text-ink">{t('title')}</h1>
+            {/* No eyebrow. «AFA» sat above the headline until 2026-08 and was
+                deleted by direct request: the mark is already in the header,
+                one screen-inch away, and a wordmark repeated over the claim
+                delays the claim without adding a fact. */}
+            <h1 className="display-hero text-ink">{t('title')}</h1>
 
             {/* The moving line. Each word is one block, so joined Persian
                 stays joined; reduced-motion freezes it on the first word. */}
