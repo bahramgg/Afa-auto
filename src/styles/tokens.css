@@ -102,6 +102,16 @@
   --map-5: var(--afa-map-5);
   --map-6: var(--afa-map-6);
 
+  /* Three more, 2026-08, when the map grew from six domains to nine (phone
+   * operator, loyalty club, content). The shared family only ships six, and
+   * afa-tokens.css is vendored under a hash pin, so these are site-local
+   * literals rather than an edit to the family file. Hues chosen away from
+   * the first six and from --success; all three were run through
+   * test/contrast.test.ts, which now loops 1..9. */
+  --map-7: #5fd0f0; /* cyan   */
+  --map-8: #ff8f5c; /* orange */
+  --map-9: #ffe27a; /* yellow */
+
   /* Editorial system — the layout language shared with afa-site and afa-pay.
    *
    * The display-type pair is the one place this file carries TYPE rather than

@@ -22,8 +22,10 @@ mono console). One page, the RAS spine:
    service, ALWAYS tagged «نمونهٔ نمایشی · داده واقعی نیست». The strip earns
    its realism from that tag; removing it turns the section into a fabricated
    metric.
-3. **Services** (01) — the heart. Four offers (assistant, operations
-   automation, website/store, reports). The assistant card is PLAYABLE
+3. **Services** (01) — the heart. SEVEN offers: phone operator, assistant,
+   operations automation, website/store, loyalty club, content production,
+   finance and reporting. Each carries the tone its domain has on the map, so
+   the two drawings agree. The assistant card is PLAYABLE
    (`tools/assistant-demo.tsx`) and closes with the reference's ACTIONS
    TRIGGERED check-list; the automation card is a miniature workflow canvas
    (trigger → decision → actions) with a LAST RUN log that ends on
@@ -51,8 +53,10 @@ read).
 ## Copy voice
 
 SHORT. Headlines ≤ 12 words, descriptions ≤ 2 sentences (the Lindy/Make
-discipline); no metaphors a shop owner wouldn't use — «خلبان خودکار» died for
-this. Scenario first, outcome last, zero adjectives in between. The scene is second
+discipline); no metaphors a shop owner wouldn't use («خلبان خودکار» died for
+this) and NO QUESTIONS in the hero — a headline that asks makes the visitor
+do the work. «نمونه‌کار» is out too: the section is
+«اتوماسیون‌های اجراشده», which says what it is. Scenario first, outcome last, zero adjectives in between. The scene is second
 person, present tense («ساعت ۱۱ شب است. مشتری در دایرکت قیمت می‌پرسد…») —
 recognition is what "feeling real" means. Claims may only restate what the
 case studies and FAQ already establish; performance numbers (RAS shows «25hrs
@@ -121,15 +125,22 @@ pastiche (blueprint grid, four dashed guides, seventy-two stage nodes, a
 hundred crossing hairlines) is gone: dense, but it read as static at any real
 size. Two drawings remain:
 
-- **THE WHEEL** — three rings and nothing else. A particle core inside one
-  thin circle; six domain badges on the inner ring, each labelled INWARD into
+- **THE WHEEL** — three rings and nothing else. NINE domains as of 2026-08
+  (the phone operator, the loyalty club and content production joined by
+  direct request), 40° per sector, none at 180° where the stepper floats. A
+  particle core inside one thin circle; nine domain badges on the inner ring, each labelled INWARD into
   the empty annulus (the one part of the drawing nothing else wants, and the
   inset must clear half a label plus the badge or 3 and 9 o'clock print
   through themselves); twenty-four process rings on the outer ring, four per
   60° sector, reached by a QUADRATIC BEZIER that leaves the badge along its
-  own ray and bows into place. Curves, not spokes — that bow is what makes six
-  identical sectors look designed rather than generated. One marching orbit
-  is the only ambient motion; the scene itself holds still.
+  own ray and bows into place. Curves, not spokes — that bow is what makes
+  nine identical sectors look designed rather than generated. One marching
+  orbit is the only ambient motion; the scene itself holds still.
+
+  The palette grew with it: `--map-7/8/9` are site-local literals in
+  tokens.css, because the shared family ships six and afa-tokens.css is
+  vendored under a hash pin. Nine glyphs, nine tones, all through the
+  contrast test.
 - **THE FAN** — one domain, opened. The domain drops to the foot of the stage
   over its own particle seed, dotted rays climb to the four HUMAN CHECKPOINTS
   (squares, green, the only status colour on the map), a plumb line runs from

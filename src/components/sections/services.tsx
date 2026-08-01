@@ -29,10 +29,16 @@ import { cn } from '@/lib/cn';
    is a new claim.
    -------------------------------------------------------------------------- */
 
+/* Seven offers as of 2026-08. The phone operator, the loyalty club and
+   content production were added by direct request; the tones are the same
+   ones their domains carry on the map, so the two drawings agree. */
 const ITEMS = [
+  { id: 'voice', tone: 7 },
   { id: 'assistant', tone: 1 },
   { id: 'automation', tone: 2 },
   { id: 'store', tone: 6 },
+  { id: 'loyalty', tone: 8 },
+  { id: 'content', tone: 9 },
   { id: 'reports', tone: 3 },
 ] as const;
 
@@ -141,6 +147,27 @@ function DemoCard({
   );
 }
 
+/** The green check every "this happened" row on the page uses. */
+function Tick() {
+  return (
+    <span
+      aria-hidden
+      className="grid size-3.5 shrink-0 place-items-center rounded-pill border border-success/60 text-success"
+    >
+      <svg width="7" height="7" viewBox="0 0 10 10">
+        <path
+          d="M1.6 5.2 3.8 7.4 8.4 2.6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
 function Demo({ id }: { id: ServiceId }) {
   const t = useTranslations('Services');
 
@@ -211,6 +238,77 @@ function Demo({ id }: { id: ServiceId }) {
             </li>
           </ul>
         </div>
+      </DemoCard>
+    );
+  }
+
+  if (id === 'voice') {
+    /* The reference's call dashboard, miniature: who is on the line, two
+       lines of transcript, then what the call actually produced. */
+    return (
+      <DemoCard id={id} live={t('demos.voice.live')}>
+        <p className="meta border-b border-border pb-2.5 text-xs text-ink">
+          {t('demos.voice.caller')}
+        </p>
+        <div className="mt-3 grid gap-2 text-sm leading-relaxed">
+          <p className="me-8 w-fit rounded-card rounded-ss-[4px] border border-border bg-surface px-3.5 py-2 text-muted">
+            {t('demos.voice.t1')}
+          </p>
+          <p className="ms-8 w-fit justify-self-end rounded-card rounded-se-[4px] border border-[color-mix(in_srgb,var(--tone)_45%,transparent)] bg-[color-mix(in_srgb,var(--tone)_12%,transparent)] px-3.5 py-2 text-ink">
+            {t('demos.voice.t2')}
+          </p>
+        </div>
+        <ul className="mt-3 grid gap-1 border-t border-border pt-3">
+          {(['a1', 'a2', 'a3'] as const).map((act) => (
+            <li key={act} className="flex items-center gap-2 text-xs text-muted">
+              <Tick />
+              {t(`demos.voice.${act}`)}
+            </li>
+          ))}
+        </ul>
+      </DemoCard>
+    );
+  }
+
+  if (id === 'loyalty') {
+    return (
+      <DemoCard id={id}>
+        <div className="flex items-baseline justify-between gap-3 border-b border-border pb-2.5">
+          <p className="meta text-xs text-ink">{t('demos.loyalty.member')}</p>
+          <p className="meta text-xs text-[var(--tone)]">{t('demos.loyalty.points')}</p>
+        </div>
+        <ul className="mt-1 grid text-sm">
+          {(['r1', 'r2', 'r3'] as const).map((row) => (
+            <li key={row} className="flex items-center gap-3 py-2 text-muted">
+              <span aria-hidden className="size-1.5 shrink-0 rounded-pill bg-[var(--tone)]" />
+              {t(`demos.loyalty.${row}`)}
+            </li>
+          ))}
+        </ul>
+      </DemoCard>
+    );
+  }
+
+  if (id === 'content') {
+    return (
+      <DemoCard id={id}>
+        <p className="meta text-xs text-ink">{t('demos.content.week')}</p>
+        <ul className="mt-2 grid gap-px overflow-hidden rounded-field bg-border">
+          {(['c1', 'c2', 'c3'] as const).map((row) => (
+            <li
+              key={row}
+              className="flex items-center gap-3 bg-[var(--win-bg)] px-3 py-2.5 text-sm text-muted"
+            >
+              <span aria-hidden className="size-1.5 shrink-0 rounded-pill bg-[var(--tone)]" />
+              {t(`demos.content.${row}`)}
+            </li>
+          ))}
+        </ul>
+        {/* The queue stops at you, same as every other run on this page. */}
+        <p className="mt-3 flex items-center gap-2 border-s-2 border-success ps-2.5 text-xs text-ink">
+          <span aria-hidden className="size-3 shrink-0 rounded-[2px] border-[1.5px] border-success" />
+          {t('demos.content.wait')}
+        </p>
       </DemoCard>
     );
   }

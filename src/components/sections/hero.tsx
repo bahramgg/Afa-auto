@@ -103,7 +103,7 @@ export function Hero() {
                 stays joined; reduced-motion freezes it on the first word. */}
             <p className="mt-6 text-lg leading-relaxed text-muted">
               {t('rotPrefix')}{' '}
-              <RotatingWords words={[t('rot1'), t('rot2'), t('rot3'), t('rot4')]} />
+              <RotatingWords words={[t('rot1'), t('rot2'), t('rot3'), t('rot4'), t('rot5'), t('rot6')]} />
             </p>
 
             <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{t('sub')}</p>

@@ -53,6 +53,14 @@ describe('operating map — structure', () => {
     expect(new Set(DOMAINS.map((d) => d.glyph)).size).toBe(DOMAINS.length);
   });
 
+  it('gives every domain a tone the stylesheet can actually paint', () => {
+    // --map-1…9 exist; a tenth domain would render untoned.
+    for (const domain of DOMAINS) {
+      expect(domain.tone).toBeGreaterThanOrEqual(1);
+      expect(domain.tone).toBeLessThanOrEqual(9);
+    }
+  });
+
   it('numbers each domain volume 1..4 in declared order', () => {
     for (const hub of layout.hubs) {
       expect(hub.processes.map((p) => p.index)).toEqual([1, 2, 3, 4]);
@@ -84,8 +92,8 @@ describe('operating map — radial geometry', () => {
     }
   });
 
-  it('spaces the domains evenly at 60°, avoiding dead top and bottom', () => {
-    expect(layout.hubs.map((h) => h.angle)).toEqual([30, 90, 150, 210, 270, 330]);
+  it('spaces the domains evenly at 40°, leaving 180° free for the stepper', () => {
+    expect(layout.hubs.map((h) => h.angle)).toEqual([0, 40, 80, 120, 160, 200, 240, 280, 320]);
   });
 
   it('rides exactly the two declared rings', () => {
@@ -129,7 +137,7 @@ describe('operating map — radial geometry', () => {
     // A node wandering into the neighbouring arc would visually re-assign it.
     for (const hub of layout.hubs) {
       for (const process of hub.processes) {
-        expect(Math.abs(process.angle - hub.angle)).toBeLessThan(30);
+        expect(Math.abs(process.angle - hub.angle)).toBeLessThan(20);
       }
     }
   });
@@ -145,7 +153,7 @@ describe('operating map — radial geometry', () => {
       for (let j = i + 1; j < layout.hubs.length; j += 1) {
         const a = layout.hubs[i]!;
         const b = layout.hubs[j]!;
-        expect(distance({ x: a.lx, y: a.ly }, { x: b.lx, y: b.ly })).toBeGreaterThan(90);
+          expect(distance({ x: a.lx, y: a.ly }, { x: b.lx, y: b.ly })).toBeGreaterThan(90);
       }
     }
   });
@@ -178,8 +186,9 @@ describe('operating map — radial geometry', () => {
   });
 
   it('colours the core with the full palette', () => {
+    // Ivory plus all nine domain tones.
     const tones = new Set(layout.motes.map((m) => m.tone));
-    expect(tones.size).toBe(7);
+    expect(tones.size).toBe(10);
   });
 
   it('spreads animation phases across the buckets', () => {

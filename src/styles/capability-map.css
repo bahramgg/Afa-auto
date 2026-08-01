@@ -33,6 +33,9 @@
 .cmap [data-tone='4'], .cmap[data-tone='4'], .tmap [data-tone='4'], .tmap[data-tone='4'], .tmapStage[data-tone='4'] { --tone: var(--map-4); }
 .cmap [data-tone='5'], .cmap[data-tone='5'], .tmap [data-tone='5'], .tmap[data-tone='5'], .tmapStage[data-tone='5'] { --tone: var(--map-5); }
 .cmap [data-tone='6'], .cmap[data-tone='6'], .tmap [data-tone='6'], .tmap[data-tone='6'], .tmapStage[data-tone='6'] { --tone: var(--map-6); }
+.cmap [data-tone='7'], .cmap[data-tone='7'], .tmap [data-tone='7'], .tmap[data-tone='7'], .tmapStage[data-tone='7'] { --tone: var(--map-7); }
+.cmap [data-tone='8'], .cmap[data-tone='8'], .tmap [data-tone='8'], .tmap[data-tone='8'], .tmapStage[data-tone='8'] { --tone: var(--map-8); }
+.cmap [data-tone='9'], .cmap[data-tone='9'], .tmap [data-tone='9'], .tmap[data-tone='9'], .tmapStage[data-tone='9'] { --tone: var(--map-9); }
 
 /* ---------------------------------------------------------------- the stage */
 
@@ -223,6 +226,9 @@
 .tmapMote[data-mote='4'] { fill: var(--map-4); }
 .tmapMote[data-mote='5'] { fill: var(--map-5); }
 .tmapMote[data-mote='6'] { fill: var(--map-6); }
+.tmapMote[data-mote='7'] { fill: var(--map-7); }
+.tmapMote[data-mote='8'] { fill: var(--map-8); }
+.tmapMote[data-mote='9'] { fill: var(--map-9); }
 
 @keyframes tmapTwinkle {
   0%, 100% { opacity: 0.45; }
@@ -287,7 +293,7 @@
 .tmapHubLabel {
   fill: var(--muted);
   font-family: var(--font-mono);
-  font-size: 15px;
+  font-size: 16.5px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -298,7 +304,7 @@
 html[lang='fa'] .tmapHubLabel {
   font-family: var(--font-fa);
   letter-spacing: 0;
-  font-size: 16px;
+  font-size: 17.5px;
 }
 .tmapNode:hover .tmapHubLabel,
 .tmapNode:focus-visible .tmapHubLabel,
@@ -316,7 +322,7 @@ html[lang='fa'] .tmapHubLabel {
 .tmapProcNum {
   fill: var(--muted);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
   text-anchor: middle;
   dominant-baseline: central;

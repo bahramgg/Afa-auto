@@ -7,7 +7,18 @@ import { LeadForm } from '@/components/tools/lead-form';
    out of here into the Start section. What is left is the detail: what happens
    if it gets something wrong, where the data lives, whether you have to
    replace your tools, and how to walk away. */
-const faqItems = ['wrong', 'data', 'tools', 'exit'] as const;
+const faqItems = [
+  'voice-real',
+  'wrong',
+  'language',
+  'data',
+  'small',
+  'tools',
+  'learn',
+  'scale',
+  'support',
+  'exit',
+] as const;
 
 /* -----------------------------------------------------------------------------
    The form and the remaining questions, side by side.
@@ -34,7 +45,7 @@ export function Contact() {
             </div>
           </div>
 
-          <div className="tmapPanel h-full">
+          <div className="tmapPanel self-start">
             <p className="tmapPanelHead">{faq('eyebrow')}</p>
             {faqItems.map((id, index) => (
               <details

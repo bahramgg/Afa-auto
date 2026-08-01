@@ -6,7 +6,7 @@
   "Nav": {
     "home": "Home",
     "services": "Services",
-    "work": "Work",
+    "work": "Automations shipped",
     "impact": "Calculator",
     "start": "Process",
     "mapPage": "Full map",
@@ -21,27 +21,27 @@
     "switchTo": "Switch to {locale}"
   },
   "Hero": {
-    "eyebrow": "AFA · Intelligent business automation",
+    "eyebrow": "AFA · Business automation",
     "title": "Hand repetitive work to a system",
+    "rotPrefix": "It takes over:",
+    "rot1": "Answering calls",
+    "rot2": "Answering messages",
+    "rot3": "Order intake",
+    "rot4": "Invoicing",
+    "rot5": "Content production",
+    "rot6": "The daily report",
     "sub": "You only sign off on the decisions that matter.",
-    "ctaPrimary": "Free assessment",
-    "ctaSecondary": "Full map",
-    "rotPrefix": "What does it take over?",
-    "rot1": "Answering DMs",
-    "rot2": "Order intake",
-    "rot3": "Invoicing",
-    "rot4": "The daily report",
     "stats": {
       "domains": {
-        "value": "6",
+        "value": "9",
         "label": "business domains"
       },
       "processes": {
-        "value": "24",
+        "value": "36",
         "label": "processes it can take"
       },
       "stages": {
-        "value": "72",
+        "value": "108",
         "label": "automated stages"
       },
       "human": {
@@ -49,6 +49,8 @@
         "label": "with a human checkpoint"
       }
     },
+    "ctaPrimary": "Free assessment",
+    "ctaSecondary": "Full map",
     "mapHint": "Click a domain to open it; click a process for the detail."
   },
   "Pulse": {
@@ -75,13 +77,19 @@
   },
   "Services": {
     "eyebrow": "Services",
-    "title": "Four jobs, off your desk",
+    "title": "Seven jobs, off your desk",
     "lede": "Each starts with a scene you know.",
     "scenarioLabel": "The scene",
     "solutionLabel": "What the system does",
     "demoTag": "simulated",
-    "mapCta": "All 24 processes, on the map",
+    "mapCta": "All 36 processes, on the map",
     "items": {
+      "voice": {
+        "title": "Phone operator",
+        "scenario": "The phone rings and nobody is there. The caller does not leave a message, they dial the next number.",
+        "solution": "The operator answers, books slots, transfers to the right person, and files a summary of the call.",
+        "outcome": "Every call answered. Even after closing time."
+      },
       "assistant": {
         "title": "AI assistant",
         "scenario": "11 PM. A customer asks for a price in your DMs. By morning, they’ve bought elsewhere.",
@@ -100,6 +108,18 @@
         "solution": "Catalog and payment go online; repeat questions answer themselves and every purchase lands in the customer’s file.",
         "outcome": "Sales stop waiting for someone to wake up."
       },
+      "loyalty": {
+        "title": "Loyalty club",
+        "scenario": "A customer bought once and left. You have the number, but nobody ever had time to follow up.",
+        "solution": "Every buyer joins automatically, earns points, and if they go quiet gets one message tied to their last purchase.",
+        "outcome": "Old customers come back without anyone remembering to chase them."
+      },
+      "content": {
+        "title": "Content production",
+        "scenario": "The page has not been updated in two weeks. Nobody has time and nobody knows what to post.",
+        "solution": "A calendar gets built, drafts get written, and after your approval they publish on schedule.",
+        "outcome": "The page stays alive without anyone spending two hours a week."
+      },
       "reports": {
         "title": "Reports & alerts",
         "scenario": "Month’s end; the numbers live across two ledgers and three phones.",
@@ -108,17 +128,34 @@
       }
     },
     "demos": {
-      "assistant": {
-        "in": "Hi; any slots free on Saturday?",
-        "out": "Hi! Saturday 10:30 or 16:00 are open. Which works for you?",
-        "in2": "10:30 is perfect.",
-        "badge": "Booked · customer file created · reminders armed"
+      "voice": {
+        "live": "On a call",
+        "caller": "Call from 0912 123 4567",
+        "t1": "Hi, do you have anything free tomorrow?",
+        "t2": "Yes, tomorrow 10:30 or 16:00 are open.",
+        "a1": "Booked for 10:30",
+        "a2": "Confirmation SMS sent",
+        "a3": "Call summary filed"
       },
       "store": {
         "order": "Order #1042",
         "paid": "Paid online",
         "sms": "Receipt texted to customer",
         "crm": "Logged to customer file"
+      },
+      "loyalty": {
+        "member": "Club member · since June",
+        "points": "Points: 120",
+        "r1": "Tier two reward unlocked",
+        "r2": "45 quiet days; win-back message ready",
+        "r3": "Offer based on last purchase"
+      },
+      "content": {
+        "week": "This week",
+        "c1": "Sat · new product intro",
+        "c2": "Mon · answer to the frequent question",
+        "c3": "Wed · behind the scenes",
+        "wait": "All three drafts waiting for your approval"
       },
       "reports": {
         "title": "Today’s brief",
@@ -179,37 +216,52 @@
     "stepAction": "Does",
     "stepHuman": "You approve",
     "ladderLabel": "the ladder",
-    "figureLabel": "The AFA operating map: six domains, twenty-four processes, seventy-two machine stages, and a human checkpoint on every process",
+    "figureLabel": "The AFA operating map: nine domains, thirty-six processes, one hundred and eight machine stages, and a human checkpoint on every process",
     "domains": {
       "sales": {
         "title": "Sales",
         "summary": "From a stranger's first message to the deal landing with a named person.",
         "tags": "leads · quotes · follow-up"
       },
-      "operations": {
-        "title": "Operations",
-        "summary": "Everything after the order is taken; the part that usually lives in someone's head.",
-        "tags": "orders · stock · dispatch"
-      },
-      "intelligence": {
-        "title": "Reporting",
-        "summary": "Turning what got recorded into something a decision can rest on.",
-        "tags": "briefs · alerts · forecasts"
-      },
-      "finance": {
-        "title": "Finance",
-        "summary": "Where money comes in, where it gets stuck, and when to chase it.",
-        "tags": "invoices · matching · receivables"
+      "voice": {
+        "title": "Phone",
+        "summary": "The calls that used to go unanswered, or needed someone sitting on them.",
+        "tags": "Phone operator · booking · routing"
       },
       "support": {
         "title": "Support",
         "summary": "Every request that arrives after the sale, until it is closed.",
         "tags": "triage · replies · escalation"
       },
+      "operations": {
+        "title": "Operations",
+        "summary": "Everything after the order is taken; the part that usually lives in someone's head.",
+        "tags": "orders · stock · dispatch"
+      },
+      "finance": {
+        "title": "Finance",
+        "summary": "Where money comes in, where it gets stuck, and when to chase it.",
+        "tags": "invoices · matching · receivables"
+      },
+      "loyalty": {
+        "title": "Loyalty club",
+        "summary": "The customer who bought once and quietly disappeared.",
+        "tags": "Membership · points · win-back"
+      },
       "marketing": {
         "title": "Marketing",
         "summary": "Getting the right message to someone who has bought from you before.",
         "tags": "segments · campaigns · results"
+      },
+      "content": {
+        "title": "Content",
+        "summary": "The page that has to be filled every week and is always behind.",
+        "tags": "Calendar · drafts · publishing"
+      },
+      "intelligence": {
+        "title": "Reporting",
+        "summary": "Turning what got recorded into something a decision can rest on.",
+        "tags": "briefs · alerts · forecasts"
       }
     },
     "processes": {
@@ -241,89 +293,33 @@
         "action": "The whole conversation moves with the file; the customer never repeats themselves.",
         "human": "Handoff is reversible and every change is recorded."
       },
-      "order-intake": {
-        "title": "Order intake",
-        "trigger": "A confirmed order from any channel.",
-        "decision": "Are the items, address and payment complete?",
-        "action": "The order joins one queue, with an id, where everyone can see it.",
-        "human": "An incomplete order is not rejected; it waits for you in review."
+      "call-answer": {
+        "title": "Answering calls",
+        "trigger": "Any call, any hour, including after you close.",
+        "decision": "What does the caller want, and does one plain answer settle it?",
+        "action": "The operator picks up, answers or takes the details, and logs the call.",
+        "human": "Anything it cannot handle is transferred or escalated to you on the spot."
       },
-      "stock-check": {
-        "title": "Stock check",
-        "trigger": "Every new order, plus one daily sweep.",
-        "decision": "Real stock minus what has been promised; not just the warehouse number.",
-        "action": "A line running low is reported to purchasing before it hits zero.",
-        "human": "A purchase order is never raised automatically. Only proposed."
+      "call-book": {
+        "title": "Booking by phone",
+        "trigger": "A caller who wants a slot or an appointment.",
+        "decision": "Which times are genuinely free, allowing for closures and gaps between jobs?",
+        "action": "A slot is offered, booked, and reminders are armed for both sides.",
+        "human": "You set capacity and hours; the system never books outside them."
       },
-      "dispatch": {
-        "title": "Dispatch scheduling",
-        "trigger": "An order or job that is ready to go.",
-        "decision": "Who, where, and with how much capacity left today?",
-        "action": "The slot reaches the customer and the technician, in both calendars.",
-        "human": "A manual reshuffle always wins."
+      "call-route": {
+        "title": "Routing calls",
+        "trigger": "A call meant for one person or one team.",
+        "decision": "What is it about, and who is actually available right now?",
+        "action": "It transfers; if nobody answers, the message and number are logged and flagged.",
+        "human": "You define the routing order and can change it at any time."
       },
-      "sla-watch": {
-        "title": "Response-time watch",
-        "trigger": "Every open case, continuously.",
-        "decision": "How long to the promised deadline, holidays counted?",
-        "action": "A case at risk surfaces before it is late, not after.",
-        "human": "You set the deadlines; the system just guards them."
-      },
-      "daily-brief": {
-        "title": "Daily brief",
-        "trigger": "One fixed hour, every working day.",
-        "decision": "What actually changed since yesterday?",
-        "action": "A short summary lands where the team already reads.",
-        "human": "You define what it covers and who gets it."
-      },
-      "anomaly": {
-        "title": "Deviation alert",
-        "trigger": "Any number the system tracks continuously.",
-        "decision": "Is this normal for this weekday, this season?",
-        "action": "The odd one out is reported with context: what, how far, since when.",
-        "human": "Nothing is auto-corrected. You get the news; you decide."
-      },
-      "forecast": {
-        "title": "Demand forecast",
-        "trigger": "The close of any period you define.",
-        "decision": "Past trend, season and calendar events read together.",
-        "action": "A range with its margin of error; never one confident number.",
-        "human": "Every forecast is labelled an estimate, source data in view."
-      },
-      "board-pack": {
-        "title": "Management pack",
-        "trigger": "Month end, or whatever period you run.",
-        "decision": "Which handful of numbers matter this period?",
-        "action": "A presentable document, every figure traceable.",
-        "human": "It reaches you before anyone else."
-      },
-      "invoice": {
-        "title": "Invoice issue",
-        "trigger": "An order delivered or a job done.",
-        "decision": "Tax, discount and terms per the contract.",
-        "action": "Numbered, sent, and written to the books.",
-        "human": "An unusual invoice is approved before it leaves."
-      },
-      "reconcile": {
-        "title": "Payment matching",
-        "trigger": "Any bank or gateway entry.",
-        "decision": "Which open invoice do the amount, date and reference fit?",
-        "action": "Matches settle; misfits wait on a review list rather than being forced.",
-        "human": "No financial record closes without a definite match."
-      },
-      "dunning": {
-        "title": "Receivables follow-up",
-        "trigger": "An invoice past its due date.",
-        "decision": "What tone, what interval? This customer's history says.",
-        "action": "Reminders step up gradually; every reply sticks to the file.",
-        "human": "One word from you stops it; anything serious reaches you first."
-      },
-      "payout": {
-        "title": "Supplier payout",
-        "trigger": "An approved supplier invoice.",
-        "decision": "Do the purchase order, goods receipt and invoice agree?",
-        "action": "The payment queues with all its paperwork attached.",
-        "human": "A payment never executes on its own. Final approval always rests with a person."
+      "call-log": {
+        "title": "Call notes",
+        "trigger": "The end of every call.",
+        "decision": "What from this call is worth keeping?",
+        "action": "A summary, the number and the outcome land in the customer file, searchable.",
+        "human": "The full transcript stays available to you, not just the summary."
       },
       "triage": {
         "title": "Ticket triage",
@@ -353,6 +349,90 @@
         "action": "One short question; the answer sticks to the case.",
         "human": "A low score reaches you that moment, not month-end."
       },
+      "order-intake": {
+        "title": "Order intake",
+        "trigger": "A confirmed order from any channel.",
+        "decision": "Are the items, address and payment complete?",
+        "action": "The order joins one queue, with an id, where everyone can see it.",
+        "human": "An incomplete order is not rejected; it waits for you in review."
+      },
+      "stock-check": {
+        "title": "Stock check",
+        "trigger": "Every new order, plus one daily sweep.",
+        "decision": "Real stock minus what has been promised; not just the warehouse number.",
+        "action": "A line running low is reported to purchasing before it hits zero.",
+        "human": "A purchase order is never raised automatically. Only proposed."
+      },
+      "dispatch": {
+        "title": "Dispatch scheduling",
+        "trigger": "An order or job that is ready to go.",
+        "decision": "Who, where, and with how much capacity left today?",
+        "action": "The slot reaches the customer and the technician, in both calendars.",
+        "human": "A manual reshuffle always wins."
+      },
+      "sla-watch": {
+        "title": "Response-time watch",
+        "trigger": "Every open case, continuously.",
+        "decision": "How long to the promised deadline, holidays counted?",
+        "action": "A case at risk surfaces before it is late, not after.",
+        "human": "You set the deadlines; the system just guards them."
+      },
+      "invoice": {
+        "title": "Invoice issue",
+        "trigger": "An order delivered or a job done.",
+        "decision": "Tax, discount and terms per the contract.",
+        "action": "Numbered, sent, and written to the books.",
+        "human": "An unusual invoice is approved before it leaves."
+      },
+      "reconcile": {
+        "title": "Payment matching",
+        "trigger": "Any bank or gateway entry.",
+        "decision": "Which open invoice do the amount, date and reference fit?",
+        "action": "Matches settle; misfits wait on a review list rather than being forced.",
+        "human": "No financial record closes without a definite match."
+      },
+      "dunning": {
+        "title": "Receivables follow-up",
+        "trigger": "An invoice past its due date.",
+        "decision": "What tone, what interval? This customer's history says.",
+        "action": "Reminders step up gradually; every reply sticks to the file.",
+        "human": "One word from you stops it; anything serious reaches you first."
+      },
+      "payout": {
+        "title": "Supplier payout",
+        "trigger": "An approved supplier invoice.",
+        "decision": "Do the purchase order, goods receipt and invoice agree?",
+        "action": "The payment queues with all its paperwork attached.",
+        "human": "A payment never executes on its own. Final approval always rests with a person."
+      },
+      "club-join": {
+        "title": "Automatic membership",
+        "trigger": "A new customer’s first purchase or first call.",
+        "decision": "Is this number already in the club, or new?",
+        "action": "A membership record opens and the customer gets the welcome and the terms.",
+        "human": "You write the welcome message and the terms."
+      },
+      "club-points": {
+        "title": "Points and rewards",
+        "trigger": "Every logged purchase.",
+        "decision": "What is this purchase worth, and has the customer reached the next tier?",
+        "action": "Points are added and announced; a reward that has landed waits to be used.",
+        "human": "You set the point rules and the discount ceiling."
+      },
+      "club-winback": {
+        "title": "Winning back quiet customers",
+        "trigger": "A customer who has gone longer than usual without buying.",
+        "decision": "What was this customer’s own pattern; are they late, or always like this?",
+        "action": "One short message tied to their last purchase. Twice at most, then it stops.",
+        "human": "Any customer can be taken off this list with one click."
+      },
+      "club-occasion": {
+        "title": "Occasion offers",
+        "trigger": "Dates you define, from a customer’s birthday to calendar occasions.",
+        "decision": "Does this offer suit this customer, or is it just one more message?",
+        "action": "An occasion message goes out with an offer that fits their buying history.",
+        "human": "No group message is ever sent without your approval."
+      },
       "segment": {
         "title": "Customer segments",
         "trigger": "Any change in buying behaviour or status.",
@@ -380,13 +460,69 @@
         "decision": "Credit follows the customer's real journey, not the last click.",
         "action": "Cost and result per channel, side by side.",
         "human": "A channel without enough data reads unknown, never zero."
+      },
+      "content-plan": {
+        "title": "Content calendar",
+        "trigger": "The start of whatever cycle you have defined.",
+        "decision": "What needs saying this cycle, and on which channel?",
+        "action": "A calendar with a topic and a date per post is built and shared with the team.",
+        "human": "You approve the topics; the calendar does not run unapproved."
+      },
+      "content-draft": {
+        "title": "Drafting",
+        "trigger": "Every approved topic on the calendar.",
+        "decision": "Tone, length and format, from the channel and from what has worked before.",
+        "action": "Copy and an image suggestion are prepared and queued for review.",
+        "human": "Nothing is published without you reading and approving it."
+      },
+      "content-publish": {
+        "title": "Scheduled publishing",
+        "trigger": "Approved content whose slot has arrived.",
+        "decision": "The best hour for this channel, from your own audience’s behaviour.",
+        "action": "The post goes out on the hour and its link is recorded.",
+        "human": "Up to the moment it publishes you can stop it or move the date."
+      },
+      "content-review": {
+        "title": "Performance report",
+        "trigger": "The end of each publishing cycle.",
+        "decision": "Which topics actually got seen, and which did not?",
+        "action": "A short summary per channel, with a suggestion for the next cycle.",
+        "human": "A suggestion, not a decision; you close the next calendar."
+      },
+      "daily-brief": {
+        "title": "Daily brief",
+        "trigger": "One fixed hour, every working day.",
+        "decision": "What actually changed since yesterday?",
+        "action": "A short summary lands where the team already reads.",
+        "human": "You define what it covers and who gets it."
+      },
+      "anomaly": {
+        "title": "Deviation alert",
+        "trigger": "Any number the system tracks continuously.",
+        "decision": "Is this normal for this weekday, this season?",
+        "action": "The odd one out is reported with context: what, how far, since when.",
+        "human": "Nothing is auto-corrected. You get the news; you decide."
+      },
+      "forecast": {
+        "title": "Demand forecast",
+        "trigger": "The close of any period you define.",
+        "decision": "Past trend, season and calendar events read together.",
+        "action": "A range with its margin of error; never one confident number.",
+        "human": "Every forecast is labelled an estimate, source data in view."
+      },
+      "board-pack": {
+        "title": "Management pack",
+        "trigger": "Month end, or whatever period you run.",
+        "decision": "Which handful of numbers matter this period?",
+        "action": "A presentable document, every figure traceable.",
+        "human": "It reaches you before anyone else."
       }
     }
   },
   "Work": {
-    "eyebrow": "Proof",
+    "eyebrow": "Automations shipped",
     "title": "Before and after the system",
-    "subtitle": "Three real businesses. No invented numbers.",
+    "subtitle": "Three automations running right now.",
     "labels": {
       "before": "Before",
       "deployed": "What was deployed",
@@ -527,6 +663,30 @@
       "exit": {
         "q": "What if we stop working together?",
         "a": "The system keeps running; the code and access were yours from the start. We hand over the docs and nothing stays tied to us."
+      },
+      "voice-real": {
+        "q": "Does a bot really answer the calls?",
+        "a": "Yes, and it understands Persian. Anything it cannot handle is transferred or logged and flagged on the spot; no call goes unanswered."
+      },
+      "language": {
+        "q": "Will it understand our language and our terms?",
+        "a": "Your own words and terms are given to the system. The more it runs, the closer its answers get to your tone."
+      },
+      "small": {
+        "q": "Is it worth it for a small business?",
+        "a": "You start with one process, not the whole system. If that one process does not return time or sales, there is no sense continuing, and we stop there."
+      },
+      "learn": {
+        "q": "Does our team have to learn something new?",
+        "a": "No. The work stays in the tools you already use; the separate panel is only for watching and switching things off."
+      },
+      "scale": {
+        "q": "What if our volume multiplies?",
+        "a": "The same system handles it unchanged. What grows with you is usage, not manual work."
+      },
+      "support": {
+        "q": "What happens after handover?",
+        "a": "The system is monitored and every error is reported. Changes and new processes carry on after handover too."
       }
     }
   },
@@ -578,7 +738,7 @@
   "MapPage": {
     "eyebrow": "The full map",
     "title": "The AFA operating map",
-    "lede": "The map opens with everything on it at once: the core, six domains around it, twenty-four processes outside those, and every machine stage in the last ring. Click a domain to open it alone; click a process for the detail.",
+    "lede": "The core at the centre, nine domains around it, thirty-six processes on the outer ring. Click a domain to open it.",
     "detailsEyebrow": "Details",
     "directory": "process directory",
     "legend": "legend",
@@ -590,7 +750,7 @@
     "backAll": "All domains",
     "fullscreen": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
-    "statusline": "6 domains · 24 processes · 72 machine stages · human checkpoint on all",
+    "statusline": "9 domains · 36 processes · 108 machine stages · human checkpoint on all",
     "prevDomain": "Previous domain",
     "nextDomain": "Next domain",
     "detailsTitle": "Every process, step by step",

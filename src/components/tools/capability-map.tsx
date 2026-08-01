@@ -104,7 +104,7 @@ const FANS = Object.fromEntries(DOMAINS.map((d) => [d.id, layoutFan(d.id)])) as 
 >;
 
 const HUB_R = 21;
-const PROC_R = 13;
+const PROC_R = 14;
 const STAGE_R = 8;
 const HUMAN_R = 9;
 const HIT_R = 28;
@@ -976,6 +976,32 @@ function HubGlyph({ glyph, x, y, r }: { glyph: Glyph; x: number; y: number; r: n
     case 'cross': {
       const s = r * 1.15;
       return <path className={cls} d={`M${x - s} ${y}H${x + s}M${x} ${y - s}V${y + s}`} />;
+    }
+    case 'pentagon': {
+      const s = r * 1.18;
+      const points = Array.from({ length: 5 }, (_, i) => {
+        const a = ((Math.PI * 2) / 5) * i - Math.PI / 2;
+        return `${(x + Math.cos(a) * s).toFixed(2)} ${(y + Math.sin(a) * s).toFixed(2)}`;
+      });
+      return <path className={cls} d={`M${points.join('L')}Z`} />;
+    }
+    case 'chevron': {
+      const s = r * 1.15;
+      return (
+        <path
+          className={cls}
+          d={`M${x - s} ${y - s * 0.55}L${x} ${y + s * 0.3}L${x + s} ${y - s * 0.55}`}
+        />
+      );
+    }
+    case 'bars': {
+      const s = r * 1.1;
+      return (
+        <path
+          className={cls}
+          d={`M${x - s * 0.7} ${y + s}V${y - s * 0.1}M${x} ${y + s}V${y - s}M${x + s * 0.7} ${y + s}V${y - s * 0.55}`}
+        />
+      );
     }
   }
 }

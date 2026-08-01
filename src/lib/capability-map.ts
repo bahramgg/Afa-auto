@@ -31,37 +31,42 @@
 /* ------------------------------------------------------------ radial stage */
 
 /** Square stage, sized so the drawing fills it with one clear margin. */
-export const VIEW = 820;
+export const VIEW = 860;
 
 const C = VIEW / 2;
 
 /** Three radii, and only three. The gaps ARE the hierarchy. */
 export const R_CORE = 52;
-export const R_DOMAIN = 196;
-export const R_PROCESS = 330;
+export const R_DOMAIN = 240;
+export const R_PROCESS = 370;
 
 /* Where a domain's name sits: inward, in the empty annulus. The inset has to
    clear HALF A LABEL plus the badge, or the two domains at 3 and 9 o'clock
    print their names straight through their own badges — the first draft of
    this layout did exactly that. */
-const LABEL_INSET = 78;
+const LABEL_INSET = 80;
 
-/** Process angular offsets inside a domain's 60° sector. */
-const PROCESS_OFFSETS = [-21, -7, 7, 21] as const;
+/** Process angular offsets inside a domain's 40° sector. */
+const PROCESS_OFFSETS = [-15, -5, 5, 15] as const;
 
 /** The bezier's control point: outward of the badge, barely off its ray. */
-const CURVE_RADIUS = 258;
+const CURVE_RADIUS = 300;
 const CURVE_LEAN = 0.34;
 
-/** Domains at 30°, 90°, …, 330° — dead top/bottom stay clear for chrome. */
-const ANGLE_OFFSET = 30;
+/* Nine domains at 0°, 40°, …, 320°. Zero rather than a half-step offset
+   because 40° × 9 puts NO domain at 180°, which is where the stepper pill
+   floats; a domain there would print its label straight through the control. */
+const ANGLE_OFFSET = 0;
 
 export type DomainId =
   | 'sales'
-  | 'operations'
+  | 'voice'
   | 'support'
+  | 'operations'
   | 'finance'
+  | 'loyalty'
   | 'marketing'
+  | 'content'
   | 'intelligence';
 
 /**
@@ -77,10 +82,19 @@ export type StageId = (typeof STAGES)[number];
  * The second channel carrying domain identity, so the map is not colour-alone
  * (WCAG 2.1 §1.4.1). Drawn inside the badge ring.
  */
-export type Glyph = 'circle' | 'square' | 'diamond' | 'triangle' | 'hexagon' | 'cross';
+export type Glyph =
+  | 'circle'
+  | 'square'
+  | 'diamond'
+  | 'triangle'
+  | 'hexagon'
+  | 'cross'
+  | 'pentagon'
+  | 'chevron'
+  | 'bars';
 
-/** Index into `--map-1…6`. A number so CSS can select on it. */
-export type Tone = 1 | 2 | 3 | 4 | 5 | 6;
+/** Index into `--map-1…9`. A number so CSS can select on it. */
+export type Tone = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export interface DomainSpec {
   readonly id: DomainId;
@@ -90,8 +104,12 @@ export interface DomainSpec {
   readonly processes: readonly string[];
 }
 
-/* The structure itself — six domains, four real processes each. The content
-   contract with messages/ is unchanged across all five layouts. */
+/* The structure itself. NINE domains as of 2026-08, four real processes each:
+   the phone operator, the loyalty club and content production were added by
+   direct request, alongside everything that already ran without a person in
+   the loop. The content contract with messages/ is otherwise unchanged.
+
+   Order is the reading order round the wheel, clockwise from the top. */
 export const DOMAINS: readonly DomainSpec[] = [
   {
     id: 'sales',
@@ -100,22 +118,10 @@ export const DOMAINS: readonly DomainSpec[] = [
     processes: ['lead-capture', 'quote', 'deal-followup', 'handoff'],
   },
   {
-    id: 'operations',
-    tone: 2,
-    glyph: 'square',
-    processes: ['order-intake', 'stock-check', 'dispatch', 'sla-watch'],
-  },
-  {
-    id: 'intelligence',
-    tone: 3,
-    glyph: 'cross',
-    processes: ['daily-brief', 'anomaly', 'forecast', 'board-pack'],
-  },
-  {
-    id: 'finance',
-    tone: 4,
-    glyph: 'diamond',
-    processes: ['invoice', 'reconcile', 'dunning', 'payout'],
+    id: 'voice',
+    tone: 7,
+    glyph: 'chevron',
+    processes: ['call-answer', 'call-book', 'call-route', 'call-log'],
   },
   {
     id: 'support',
@@ -124,10 +130,40 @@ export const DOMAINS: readonly DomainSpec[] = [
     processes: ['triage', 'first-reply', 'escalation', 'csat'],
   },
   {
+    id: 'operations',
+    tone: 2,
+    glyph: 'square',
+    processes: ['order-intake', 'stock-check', 'dispatch', 'sla-watch'],
+  },
+  {
+    id: 'finance',
+    tone: 4,
+    glyph: 'diamond',
+    processes: ['invoice', 'reconcile', 'dunning', 'payout'],
+  },
+  {
+    id: 'loyalty',
+    tone: 8,
+    glyph: 'pentagon',
+    processes: ['club-join', 'club-points', 'club-winback', 'club-occasion'],
+  },
+  {
     id: 'marketing',
     tone: 6,
     glyph: 'hexagon',
     processes: ['segment', 'campaign', 'content-queue', 'attribution'],
+  },
+  {
+    id: 'content',
+    tone: 9,
+    glyph: 'bars',
+    processes: ['content-plan', 'content-draft', 'content-publish', 'content-review'],
+  },
+  {
+    id: 'intelligence',
+    tone: 3,
+    glyph: 'cross',
+    processes: ['daily-brief', 'anomaly', 'forecast', 'board-pack'],
   },
 ] as const;
 
@@ -254,7 +290,7 @@ function buildMotes(count: number, spread: number, seed: string, cx = C, cy = C)
       phase: hash(key) % 8,
       /* Half the field is ivory. An evenly-mixed core reads as confetti; a
          brain is a pale mass with colour running through it. */
-      tone: Math.max(0, (hash(`${key}t`) % 12) - 5),
+      tone: Math.max(0, (hash(`${key}t`) % 18) - 8),
     };
   });
 }
@@ -322,7 +358,7 @@ export function layoutMandala(domains: readonly DomainSpec[] = DOMAINS): Mandala
     };
   });
 
-  const motes = buildMotes(190, 38, 'core');
+  const motes = buildMotes(200, 38, 'core');
 
   return {
     center: { x: C, y: C },

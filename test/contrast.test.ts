@@ -97,7 +97,7 @@ describe('contrast on the dark background', () => {
 // measurement. A node label is real text at ~15px effective size, so the bar is
 // AA normal, not the large-text exemption a coloured dot could have claimed.
 describe('capability map palette', () => {
-  const tones = [1, 2, 3, 4, 5, 6] as const;
+  const tones = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
   it.each(tones)('--map-%i clears AA as a label on the page background', (n) => {
     expect(contrast(token(`map-${n}`), token('bg-950'))).toBeGreaterThanOrEqual(AA_NORMAL);
