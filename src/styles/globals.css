@@ -165,12 +165,13 @@
 
   /* The hero's rotating job line. Absolute stack inside a sized box; only
    * opacity/translate move, and reduced-motion freezes on the first word. */
+  /* The rotating word INHERITS its colour and weight. Setting it apart made
+   * one word of a single sentence look like a different sentence; the motion
+   * is already all the emphasis it needs. */
   .rotWrap {
     position: relative;
     display: inline-block;
     white-space: nowrap;
-    color: var(--ink);
-    font-weight: 700;
   }
   .rotWord {
     position: absolute;

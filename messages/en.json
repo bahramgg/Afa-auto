@@ -37,7 +37,7 @@
       },
       "processes": {
         "value": "36",
-        "label": "repetitive jobs"
+        "label": "processes"
       },
       "stages": {
         "value": "108",
