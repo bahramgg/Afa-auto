@@ -21,8 +21,8 @@
     "switchTo": "Switch to {locale}"
   },
   "Hero": {
-    "eyebrow": "AFA · Business process automation",
-    "title": "We automate the repetitive processes in your business",
+    "eyebrow": "AFA",
+    "title": "Business process automation",
     "rotPrefix": "From answering calls and messages to",
     "rot1": "order intake",
     "rot2": "stock control",
@@ -30,7 +30,6 @@
     "rot4": "customer follow-up",
     "rot5": "content production",
     "rot6": "management reporting",
-    "sub": "Every process has a human checkpoint. The decisions that matter stay yours.",
     "stats": {
       "domains": {
         "value": "9",
@@ -43,10 +42,6 @@
       "stages": {
         "value": "108",
         "label": "automated stages"
-      },
-      "human": {
-        "value": "All",
-        "label": "with a human checkpoint"
       }
     },
     "ctaPrimary": "Free assessment",

@@ -106,9 +106,7 @@ export function Hero() {
               <RotatingWords words={[t('rot1'), t('rot2'), t('rot3'), t('rot4'), t('rot5'), t('rot6')]} />
             </p>
 
-            <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{t('sub')}</p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a href="#contact" className={`${action} bg-brand text-bg-950 shadow-brand`}>
                 {t('ctaPrimary')}
               </a>
@@ -120,9 +118,13 @@ export function Hero() {
               </Link>
             </div>
 
-            {/* Structural counts, over one hairline. No cards. */}
-            <dl className="mt-10 grid max-w-xl grid-cols-2 gap-x-8 gap-y-6 border-t border-border pt-7 sm:grid-cols-4">
-              {(['domains', 'processes', 'stages', 'human'] as const).map((stat) => (
+            {/* Structural counts, over one hairline. No cards. The human
+                checkpoint used to be a fourth column here and a sentence
+                above; both came out by direct request. The promise itself is
+                unchanged and still stated where it is demonstrated: on the
+                map, in the automation demo, and in the questions. */}
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-x-8 gap-y-6 border-t border-border pt-7">
+              {(['domains', 'processes', 'stages'] as const).map((stat) => (
                 <div key={stat}>
                   <dd className="text-2xl font-extrabold tabular-nums text-ink sm:text-3xl">
                     {t(`stats.${stat}.value`)}
