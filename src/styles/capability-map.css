@@ -81,17 +81,20 @@
   inline-size: auto;
   /* The height drives the size, but the COLUMN still wins: without this cap a
      square stage taller than a narrow viewport is wide is enough to widen its
-     grid track, and everything beside it — claim, buttons — is pushed off the
-     screen. Height then re-derives from the aspect ratio. */
+     grid track, and everything beside it is pushed off the screen. */
   max-inline-size: 100%;
   margin-inline: auto;
-  block-size: min(56svh, 78vw, 26rem);
+  block-size: min(58svh, 78vw, 27rem);
   aspect-ratio: 1;
+  /* Room at the foot for the ‹ domain › pill. Border-box means the padding
+     comes out of the drawing, not out of the stage, so the pill sits in dead
+     space instead of printing over the bottom of the wheel. */
+  padding-block-end: 3.5rem;
 }
 .tmapStage[data-fit='height'][data-view='fan'] { aspect-ratio: 1120 / 840; }
 
 @media (min-width: 640px) {
-  .tmapStage[data-fit='height'] { block-size: min(72svh, 84vw, 44rem); }
+  .tmapStage[data-fit='height'] { block-size: min(74svh, 84vw, 46rem); }
 }
 
 .tmapStage[data-fit='height'] .tmap {

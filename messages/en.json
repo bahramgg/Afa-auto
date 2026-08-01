@@ -33,20 +33,21 @@
     "stats": {
       "domains": {
         "value": "9",
-        "label": "business domains"
+        "label": "areas of the business"
       },
       "processes": {
         "value": "36",
-        "label": "processes it can take"
+        "label": "repetitive jobs"
       },
       "stages": {
         "value": "108",
-        "label": "automated stages"
+        "label": "automated steps"
       }
     },
     "ctaPrimary": "Free assessment",
     "ctaSecondary": "Full map",
-    "mapHint": "Click a domain to open it; click a process for the detail."
+    "mapHint": "Click a domain to open it; click a process for the detail.",
+    "statsLead": "What the map shows"
   },
   "Pulse": {
     "label": "operations console",

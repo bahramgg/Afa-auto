@@ -118,12 +118,16 @@ export function Hero() {
               </Link>
             </div>
 
-            {/* Structural counts, over one hairline. No cards. The human
-                checkpoint used to be a fourth column here and a sentence
-                above; both came out by direct request. The promise itself is
-                unchanged and still stated where it is demonstrated: on the
-                map, in the automation demo, and in the questions. */}
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-x-8 gap-y-6 border-t border-border pt-7">
+            {/* Structural counts, over one hairline. No cards.
+
+                They carry a lead-in now: on their own «۹ بخش کسب‌وکار» is a
+                number with no referent, and the first reader of this hero said
+                exactly that. Naming the map turns three abstract figures into
+                a caption for the drawing beside them. */}
+            <p className="mt-10 border-t border-border pt-6 text-xs text-dim">
+              {t('statsLead')}
+            </p>
+            <dl className="mt-4 grid max-w-lg grid-cols-3 gap-x-8 gap-y-6">
               {(['domains', 'processes', 'stages'] as const).map((stat) => (
                 <div key={stat}>
                   <dd className="text-2xl font-extrabold tabular-nums text-ink sm:text-3xl">
