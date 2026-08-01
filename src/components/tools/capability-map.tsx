@@ -622,8 +622,18 @@ function DomainVolume({
           <circle className="tmapHubRing" cx={hub.x} cy={hub.y} r={HUB_R} />
           <HubGlyph glyph={hub.glyph} x={hub.x} y={hub.y} r={HUB_R * 0.4} />
           {/* Inward, into the empty annulus — the one place nothing else
-              wants, so the name never fights a node or a curve. */}
-          <text className="tmapHubLabel" x={hub.lx} y={hub.ly + 5}>
+              wants, so the name never fights a node or a curve.
+
+              At nine domains the label arc is ~112 units wide, which is about
+              nine Latin capitals. `data-long` drops the size a step for
+              anything over that, so a long name shrinks instead of printing
+              into its neighbour (which is exactly what «Loyalty club» did). */}
+          <text
+            className="tmapHubLabel"
+            data-long={domainCopy.title.length > 10 || undefined}
+            x={hub.lx}
+            y={hub.ly + 5}
+          >
             {domainCopy.title}
           </text>
         </g>

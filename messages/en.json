@@ -21,16 +21,16 @@
     "switchTo": "Switch to {locale}"
   },
   "Hero": {
-    "eyebrow": "AFA · Business automation",
-    "title": "Hand repetitive work to a system",
-    "rotPrefix": "It takes over:",
-    "rot1": "Answering calls",
-    "rot2": "Answering messages",
-    "rot3": "Order intake",
-    "rot4": "Invoicing",
-    "rot5": "Content production",
-    "rot6": "The daily report",
-    "sub": "You only sign off on the decisions that matter.",
+    "eyebrow": "AFA · Business process automation",
+    "title": "We automate the repetitive processes in your business",
+    "rotPrefix": "From answering calls and messages to",
+    "rot1": "order intake",
+    "rot2": "stock control",
+    "rot3": "invoicing",
+    "rot4": "customer follow-up",
+    "rot5": "content production",
+    "rot6": "management reporting",
+    "sub": "Every process has a human checkpoint. The decisions that matter stay yours.",
     "stats": {
       "domains": {
         "value": "9",
@@ -244,7 +244,7 @@
         "tags": "invoices · matching · receivables"
       },
       "loyalty": {
-        "title": "Loyalty club",
+        "title": "Loyalty",
         "summary": "The customer who bought once and quietly disappeared.",
         "tags": "Membership · points · win-back"
       },

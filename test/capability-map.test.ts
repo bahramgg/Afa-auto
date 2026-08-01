@@ -332,6 +332,21 @@ describe('operating map — content', () => {
     }
   });
 
+  it('keeps domain names short enough for the label ring', () => {
+    // Nine domains means ~112 viewBox units of arc per label. The component
+    // shrinks anything over ten characters, and past about sixteen even the
+    // shrunk size runs into its neighbour, so the copy has to stay short.
+    for (const catalog of [fa, en]) {
+      const map = (catalog as Record<string, unknown>).Map as {
+        domains: Record<string, { title: string }>;
+      };
+      for (const domain of DOMAINS) {
+        const title = map.domains[domain.id]!.title;
+        expect(title.length, `Map.domains.${domain.id}.title is too long`).toBeLessThanOrEqual(16);
+      }
+    }
+  });
+
   it('has no orphan copy for a node that is not on the map', () => {
     const declared = new Set<string>(PROCESS_IDS);
     const written = Object.keys(

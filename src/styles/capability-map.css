@@ -306,6 +306,8 @@ html[lang='fa'] .tmapHubLabel {
   letter-spacing: 0;
   font-size: 17.5px;
 }
+.tmapHubLabel[data-long] { font-size: 13.5px; letter-spacing: 0.04em; }
+html[lang='fa'] .tmapHubLabel[data-long] { font-size: 15px; letter-spacing: 0; }
 .tmapNode:hover .tmapHubLabel,
 .tmapNode:focus-visible .tmapHubLabel,
 .tmapNode[aria-pressed='true'] .tmapHubLabel { fill: var(--tone); }
