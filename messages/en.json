@@ -49,31 +49,29 @@
     "statsLead": "What the map shows"
   },
   "Pulse": {
-    "label": "One working day",
+    "label": "Operations console",
     "items": {
       "assistant": {
         "text": "DM answered; consultation booked for Tuesday 10:30",
-        "time": "09:12"
+        "time": "2 minutes ago"
       },
       "order": {
         "text": "New order queued; stock confirmed, warehouse notified",
-        "time": "11:05"
+        "time": "9 minutes ago"
       },
       "invoice": {
         "text": "Bank transfer matched to invoice #218",
-        "time": "14:40"
+        "time": "21 minutes ago"
       },
       "brief": {
         "text": "Daily brief delivered to the owner",
         "time": "07:30"
       }
-    },
-    "lede": "Four things the system does over a single day with nobody driving it."
+    }
   },
   "Services": {
     "eyebrow": "Services",
     "title": "Ten domains of automation",
-    "lede": "The full list, from answering the phone to the management report. Open an entry for its detail and a sample run.",
     "scenarioLabel": "The situation",
     "solutionLabel": "What gets deployed",
     "mapCta": "Forty processes, on the operations map",
@@ -823,7 +821,7 @@
     "home": "Back to home"
   },
   "Footer": {
-    "tagline": "Repetitive work on the system; important decisions with you.",
+    "tagline": "Business process automation",
     "rights": "© {year} AFA. All rights reserved.",
     "familyLabel": "The AFA family",
     "family": {
@@ -831,5 +829,9 @@
       "pay": "AFA Pay, the crypto payment gateway"
     },
     "sectionsLabel": "On this page"
+  },
+  "ThemeSwitch": {
+    "toLight": "Day mode",
+    "toDark": "Night mode"
   }
 }

@@ -54,7 +54,9 @@ export function Services() {
   return (
     <section id="services" className="scroll-mt-24 border-t border-border py-16 sm:py-24">
       <Container>
-        <SectionHead index="01" eyebrow={t('eyebrow')} title={t('title')} lede={t('lede')} />
+        {/* No lede. The cards say what they are, and a paragraph explaining
+            that they open is a paragraph explaining a chevron. */}
+        <SectionHead index="01" eyebrow={t('eyebrow')} title={t('title')} />
 
         {/* items-start, so opening one card never stretches its neighbour. */}
         <div className="mt-12 grid items-start gap-4 lg:grid-cols-2">

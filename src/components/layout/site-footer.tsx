@@ -16,11 +16,15 @@ const sections = ['services', 'impact', 'work', 'start', 'contact'] as const;
    hairline, a copyright row, and then the ghost wordmark floating below all of
    it with nothing holding it. Three bands is what made it feel disorderly, not
    the contents. Everything now sits inside a single bordered card — mark,
-   links, family, rights, and the signature cropped along its foot — so the
+   links, family, rights, and the signature along its foot — so the
    page ends on one object rather than trailing off.
 
    The line about pricing after an assessment is gone by direct request; the
-   free assessment section makes that point where it belongs.
+   free assessment section makes that point where it belongs. So is the
+   copyright's own row: it is one short sentence and it did not need a rule and
+   a band to itself, so it sits under the mark with the rest of the identity
+   column. The tagline is the page's own headline now, rather than a second
+   slogan competing with it.
    -------------------------------------------------------------------------- */
 export function SiteFooter() {
   const t = useTranslations('Footer');
@@ -37,6 +41,7 @@ export function SiteFooter() {
             <div>
               <Logo label={nav('home')} />
               <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">{t('tagline')}</p>
+              <p className="mt-6 text-xs text-dim">{t('rights', { year })}</p>
             </div>
 
             <nav aria-label={t('sectionsLabel')}>
@@ -76,17 +81,14 @@ export function SiteFooter() {
             </nav>
           </div>
 
-          <p className="border-t border-border px-8 py-5 text-xs text-dim sm:px-10">
-            {t('rights', { year })}
-          </p>
-
-          {/* The signature, cropped to a sliver of its letterforms so it reads
-              as texture along the card's foot rather than a second heading or,
-              worse, an empty box. Inside the card now, which is the whole
-              point of the rebuild. */}
+          {/* The signature, WHOLE. It used to be cropped to a sliver of its
+              letterforms, which on a bounded card read as a word that had been
+              cut in half rather than as ground. Outline type at this size is
+              quiet enough not to need the crop. */}
           <div
             aria-hidden
-            className="ghost-word h-[0.24em] overflow-hidden border-t border-border text-center"
+            data-size="sm"
+            className="ghost-word border-t border-border py-6 text-center"
           >
             AFA
           </div>

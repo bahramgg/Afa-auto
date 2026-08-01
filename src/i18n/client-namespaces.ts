@@ -12,6 +12,7 @@ import type { AbstractIntlMessages } from 'next-intl';
 export const clientNamespaces = [
   'Nav', // site-header.tsx
   'LocaleSwitch', // locale-switch.tsx
+  'ThemeSwitch', // theme-switch.tsx
   'Impact', // impact-calculator.tsx
   'Contact', // lead-form.tsx
 ] as const;

@@ -1,0 +1,87 @@
+/* AFA site — THE DAY GROUND.
+ *
+ * Added 2026-08 by direct request («میخوام حالت روز هم به سایت اضافه کنی»).
+ *
+ * Everything here is an override of the site-local names declared in
+ * tokens.css, and nothing else: components keep using `bg-bg-950`, `text-ink`,
+ * `--tone` and the rest, and never learn which ground they are on. That is the
+ * whole reason the alias layer exists.
+ *
+ * WHY A SEPARATE FILE and not one more block at the foot of tokens.css: the
+ * contrast test reads these stylesheets as text and resolves each token to the
+ * hex the browser paints. A second `:root` block in the same file would make
+ * "last declaration wins" ambiguous for a test that has no cascade. Two files
+ * means two token sets, and test/contrast.test.ts measures both grounds
+ * independently — the day palette is held to the same AA floor as the night
+ * one, which is the only way a second theme is worth shipping.
+ *
+ * The specificity is `:root[data-theme='light']` (0,2,0) against tokens.css's
+ * `:root` (0,1,0), so this wins wherever the attribute is set and disappears
+ * entirely when it is not.
+ */
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Ground and surfaces. Not pure paper: a trace of the same navy runs through
+     the greys, so the day site is recognisably the night site with the lights
+     on rather than a different company. */
+  --bg-950: #ffffff;
+  --bg-900: #f8f9fd;
+  --bg-850: #eef1f8;
+  --surface: #f5f7fc;
+  --surface-2: #e9edf7;
+
+  --border: #dde2ee;
+  --border-glass: #c3cbdf;
+
+  --ink: #0b1020;
+  --muted: #414a63;
+  --dim: #5b6480;
+
+  /* Accents move to their light-ground primitives, which is exactly what the
+     600-weights in afa-tokens.css are for. --success is a site-local literal:
+     the family's green-600 is tuned for a chip fill, not for text on white. */
+  --blue: var(--afa-blue-600);
+  --violet: var(--afa-violet-600);
+  --lilac: var(--afa-violet-600);
+  --success: #0f7a3d;
+
+  /* The primary action INVERTS. On the deep ground the strongest chip on the
+     table is ivory; on paper it is ink. Buttons keep writing `text-bg-950`
+     over it and stay correct, because --bg-950 is white here. */
+  --grad-brand: linear-gradient(120deg, #161c33, #0b1020);
+  --shadow-brand: 0 6px 20px rgba(11, 16, 32, 0.18);
+  --shadow-brand-hover: 0 8px 26px rgba(11, 16, 32, 0.26);
+  /* The raised chip flips too: on paper the light edge is the highlight and
+     the drop is a hairline, not a hole. */
+  --shadow-raise:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 1px 3px rgba(11, 16, 32, 0.12);
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+
+  /* Window chrome — the calculator's frame and every console card. */
+  --win-bg: #ffffff;
+  --win-bar: #f2f5fb;
+
+  /* The map's ten categorical tones, re-cut for a white ground. Same ten hues
+     in the same order, dropped in lightness until each clears AA as real text
+     on both the page and a card. Measured in test/contrast.test.ts, which
+     loops the light set exactly as it loops the dark one. */
+  --map-1: #2540d6; /* blue    */
+  --map-2: #00706b; /* teal    */
+  --map-3: #6b39cf; /* violet  */
+  --map-4: #8a5300; /* amber   */
+  --map-5: #c02454; /* rose    */
+  --map-6: #1a7a3c; /* mint    */
+  --map-7: #00658c; /* cyan    */
+  --map-8: #ad4310; /* orange  */
+  --map-9: #6f5600; /* yellow  */
+  --map-10: #a52a97; /* magenta */
+
+  /* The dotted ground and the two fades are read from the family layer, which
+     already swaps them on [data-theme]; they are listed here only so the one
+     value this site sets by hand does not stay a night value. */
+  --dot-color: rgba(11, 16, 32, 0.08);
+}

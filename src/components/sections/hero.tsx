@@ -96,9 +96,15 @@ export function Hero() {
 
   return (
     <section id="top">
-      <div className="mx-auto w-full max-w-[86rem] px-4 py-12 sm:px-6 lg:min-h-[calc(100svh-4rem)] lg:py-8">
-        <div className="grid h-full grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14">
-          <div>
+      {/* The gutters grew 2026-08: «خیلی سمت راست هست متن و نوشته‌ها». At
+          86rem the column ran to within a few pixels of the window edge on a
+          laptop, which is what made the claim feel shoved into the corner. A
+          narrower page plus a real inset gives the type a margin to sit
+          against, and the text block itself is capped so its lines break at a
+          readable length instead of stretching to whatever is left. */}
+      <div className="mx-auto w-full max-w-[80rem] px-6 py-12 sm:px-10 lg:min-h-[calc(100svh-4rem)] lg:py-8 lg:ps-14">
+        <div className="grid h-full grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-12">
+          <div className="max-w-xl">
             {/* No eyebrow. «AFA» sat above the headline until 2026-08 and was
                 deleted by direct request: the mark is already in the header,
                 one screen-inch away, and a wordmark repeated over the claim

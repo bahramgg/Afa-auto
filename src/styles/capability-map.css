@@ -91,7 +91,7 @@
      grid track, and everything beside it is pushed off the screen. */
   max-inline-size: 100%;
   margin-inline: auto;
-  block-size: min(58svh, 78vw, 27rem);
+  block-size: min(66svh, 88vw, 31rem);
   aspect-ratio: 1;
   /* No foot padding any more. It existed to keep the ‹ domain › pill off the
      bottom of the wheel, and the hero has no pill: the space it reserved was
@@ -100,7 +100,7 @@
 .tmapStage[data-fit='height'][data-view='fan'] { aspect-ratio: 1120 / 840; }
 
 @media (min-width: 640px) {
-  .tmapStage[data-fit='height'] { block-size: min(74svh, 84vw, 46rem); }
+  .tmapStage[data-fit='height'] { block-size: min(82svh, 92vw, 54rem); }
 }
 
 .tmapStage[data-fit='height'] .tmap {

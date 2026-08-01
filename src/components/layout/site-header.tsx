@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/container';
 import { Logo } from '@/components/ui/logo';
 import { cn } from '@/lib/cn';
 import { LocaleSwitch } from './locale-switch';
+import { ThemeSwitch } from './theme-switch';
 
 /* -----------------------------------------------------------------------------
    Transparent over the hero, solid once the page moves. The mark sits at the
@@ -135,6 +136,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <ThemeSwitch />
             <LocaleSwitch />
 
             <button

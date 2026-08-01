@@ -11,36 +11,47 @@ import { join } from 'node:path';
 // here is the point — it means this test guards the colour the browser
 // actually paints, not the name it is reached by. An alias repointed at a
 // darker primitive fails here exactly as a bad hex used to.
-const styles = ['src/styles/tokens.css', 'src/styles/afa-tokens.css'].map((p) =>
-  readFileSync(join(process.cwd(), p), 'utf8'),
-);
+const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8');
 
 // Declaration order = cascade order. afa-tokens.css declares the deep-ground
 // block after the light one and at higher specificity ([data-theme='dark']),
-// so last-wins matches what this site renders — it sets data-theme="dark" on
-// <html> and has no light ground.
-const declarations = new Map<string, string>();
-for (const sheet of styles) {
-  for (const [, name, value] of sheet.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/gi)) {
-    declarations.set(name!.trim(), value!.trim());
+// so last-wins matches what this site renders by default.
+//
+// The DAY ground is a second, separate sheet (theme-light.css) layered on top
+// of the same base, which is exactly why it is its own file: two files means
+// two token sets a text-reading test can tell apart, and the day palette is
+// then held to the same AA floor as the night one instead of being taken on
+// trust. Every check below runs against both.
+function resolver(sheets: readonly string[]) {
+  const declarations = new Map<string, string>();
+  for (const sheet of sheets) {
+    for (const [, name, value] of sheet.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/gi)) {
+      declarations.set(name!.trim(), value!.trim());
+    }
   }
+
+  return function token(name: string, seen = new Set<string>()): string {
+    const key = `--${name}`;
+    if (seen.has(key)) throw new Error(`token ${key} resolves in a cycle`);
+    seen.add(key);
+
+    const value = declarations.get(key);
+    if (value === undefined) throw new Error(`token ${key} not found`);
+
+    if (/^#[0-9a-f]{6}$/i.test(value)) return value;
+
+    const alias = value.match(/^var\(\s*--([a-z0-9-]+)\s*\)$/i);
+    if (alias) return token(alias[1]!, seen);
+
+    throw new Error(`token ${key} is neither a 6-digit hex nor a plain var(): ${value}`);
+  };
 }
 
-function token(name: string, seen = new Set<string>()): string {
-  const key = `--${name}`;
-  if (seen.has(key)) throw new Error(`token ${key} resolves in a cycle`);
-  seen.add(key);
-
-  const value = declarations.get(key);
-  if (value === undefined) throw new Error(`token ${key} not found`);
-
-  if (/^#[0-9a-f]{6}$/i.test(value)) return value;
-
-  const alias = value.match(/^var\(\s*--([a-z0-9-]+)\s*\)$/i);
-  if (alias) return token(alias[1]!, seen);
-
-  throw new Error(`token ${key} is neither a 6-digit hex nor a plain var(): ${value}`);
-}
+const base = [read('src/styles/tokens.css'), read('src/styles/afa-tokens.css')];
+const grounds = [
+  ['night', resolver(base)],
+  ['day', resolver([...base, read('src/styles/theme-light.css')])],
+] as const;
 
 function luminance(hex: string): number {
   const channels = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
@@ -59,7 +70,7 @@ function contrast(a: string, b: string): number {
 const AA_NORMAL = 4.5;
 const AA_LARGE = 3; // ≥24px, or ≥18.66px bold
 
-describe('contrast on the dark background', () => {
+describe.each(grounds)('contrast on the %s ground', (_ground, token) => {
   const backgrounds = ['bg-950', 'bg-900', 'surface'] as const;
 
   it.each(backgrounds)('ink clears AA on --%s', (bg) => {
@@ -96,7 +107,7 @@ describe('contrast on the dark background', () => {
 // every one of them was measured rather than eyeballed — this is the
 // measurement. A node label is real text at ~15px effective size, so the bar is
 // AA normal, not the large-text exemption a coloured dot could have claimed.
-describe('capability map palette', () => {
+describe.each(grounds)('capability map palette on the %s ground', (_ground, token) => {
   const tones = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 
   it.each(tones)('--map-%i clears AA as a label on the page background', (n) => {
@@ -120,7 +131,9 @@ describe('capability map palette', () => {
     const status = new Set([token('success'), token('lilac')]);
     for (const n of tones) {
       const value = token(`map-${n}`);
-      if (n === 3) continue; // map-3 intentionally shares the violet-300 value
+      // map-3 intentionally shares the violet accent's value on the night
+      // ground; on the day ground the two are separate literals.
+      if (n === 3) continue;
       expect(status.has(value), `--map-${n} collides with a status token`).toBe(false);
     }
   });

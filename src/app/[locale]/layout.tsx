@@ -78,10 +78,13 @@ export default async function LocaleLayout(props: {
   const orgDescription = meta('description');
 
   return (
-    /* data-theme="dark" is what selects the deep-ground half of the shared
-     * brand tokens (afa-tokens.css). This site has no light ground, so it is
-     * declared once here rather than toggled — the attribute is a statement,
-     * not a preference. */
+    /* data-theme selects which half of the palette paints: the deep-ground
+     * block in afa-tokens.css plus this site's own night values, or the day
+     * overrides in theme-light.css. It is rendered as "dark" and corrected
+     * before first paint by the script below, for a visitor who has chosen
+     * otherwise. `suppressHydrationWarning` is what lets that correction
+     * survive hydration without React objecting to an attribute it did not
+     * write. */
     <html
       lang={typedLocale}
       dir={direction[typedLocale]}
@@ -89,6 +92,18 @@ export default async function LocaleLayout(props: {
       suppressHydrationWarning
     >
       <head>
+        {/* The theme, applied BEFORE the first paint. A blocking inline
+            script is the one correct place for this: run it from a component
+            effect instead and the visitor watches the night ground flash
+            before their stored choice arrives. It reads one key and writes one
+            attribute, and does nothing at all if the key is absent, which is
+            how dark stays the default. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('afa-theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t}}catch(e){}",
+          }}
+        />
         {/* Preload only the weight the LCP heading uses, for the active locale
          * — the rest load on demand via font-display: swap (plan §14). */}
         <link

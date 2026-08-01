@@ -36,25 +36,31 @@ mono console). One page, the RAS spine:
    canvas (trigger → decision → actions) with a LAST RUN log that ends on
    «منتظر تأیید شما» — the pause is the product. Copy arrives as props; the
    client ships no catalog.
-3. **Pulse** — one working day, four entries, after the offer rather than
-   before it. It was a live-looking telemetry strip carrying an honesty tag;
-   the tag is gone by direct request, so the pretence went with it. Clock times
-   rather than «۲ دقیقه پیش», and a heading that says what the reader is
-   looking at.
+3. **Pulse** — the operations console strip («کنسول عملیات»), after the offer
+   rather than before it. The live-looking treatment is back by direct request:
+   pulsing dots, relative timestamps, the console voice. What does NOT come
+   back is the honesty tag, which is deleted site-wide; the strip shows four
+   KINDS of line the console prints and never a volume, a total or a rate.
 4. **Impact** (02, «محاسبه‌گر») — the calculator, straight after the offer;
    the interactive moments ARE the argument, so they come early.
 5. **Work** (03) — proof as before → what was deployed → after.
-6. **Start** (04) — four steps + «چرا ما» differentiators (absorbed the old
-   Manifesto and the checkmark notes; one home for those claims, not three).
+6. **Start** (04) — the process, drawn as a PROCESS: four numbered nodes on
+   one rail, joined by connectors that end in an arrow (vertical on a phone,
+   horizontal from lg). «چرا ما» sits under it as a plain checked list on
+   hairlines, deliberately NOT a second grid — two identical four-column panels
+   read as a spreadsheet, which is what this section was. It absorbed the old
+   Manifesto and the checkmark notes; one home for those claims, not three.
 7. **Contact** (05) — reframed as the FREE ASSESSMENT («ارزیابی رایگان
    فرایندها») — the RAS conversion device; every CTA on the page converges
    here or on /map.
 
 The HEADER is four section anchors in one raised rail, with the read section
-lit by scroll-spy, and nothing else: /map and the free assessment were both
-removed from it by direct request. The FOOTER is ONE bordered block — mark,
-links, family, rights and the cropped ghost wordmark inside a single card,
-because three stacked bands is what made it read as disorderly.
+lit by scroll-spy, plus the language and the night/day switch. /map and the
+free assessment were both removed from it by direct request. The FOOTER is ONE
+bordered block — mark, tagline (the page's own headline, not a second slogan),
+rights, links, family and the whole ghost wordmark inside a single card. The
+copyright has no band of its own: it is one short sentence and it sits under
+the mark.
 
 `/map` is the only other route. The ghost wordmark (`.ghost-word` — Latin
 display always; it is the logotype, not a word being read) signs off inside
@@ -106,6 +112,18 @@ afa-site, afa-pay and this site. Three moves carry it:
 3. **Rationed light.** The ground stays deep. The brand gradient appears on
    the primary action only — no gradient headlines. Glow at most three times
    per page.
+
+**TWO GROUNDS as of 2026-08** («میخوام حالت روز هم به سایت اضافه کنی»). The
+night ground is the default and the brand; `src/styles/theme-light.css` is a
+DAY override of the same site-local names under `:root[data-theme='light']`,
+and components never learn which one they are on. The switch
+(`layout/theme-switch.tsx`) writes one attribute and the cascade does the rest;
+a blocking script in the layout re-applies the stored choice before first
+paint, so a returning visitor never sees the other ground flash. The system
+preference is NOT consulted — a laptop in light mode has not asked for a
+different brand. The day palette is a separate FILE precisely so
+`test/contrast.test.ts` can resolve both token sets independently and hold the
+day ground to the same AA floor, ten map tones included.
 
 **REPALETTED 2026-08** by direct request: warm black ground + a single
 ember-amber accent (`#b45309 → #d97416`, pale `#ffc46b` for focus/accent
@@ -225,7 +243,9 @@ which script they are rendering. Cormorant is display-only, never body.
 - **TypeScript strict. No `any`.** (enforced by ESLint)
 - **All color/spacing come from `src/styles/tokens.css`.** No hardcoded hex in
   components — use the mapped Tailwind utilities (`bg-bg-950`, `text-ink`,
-  `shadow-brand`, `rounded-card`, …) or the `--*` variables.
+  `shadow-brand`, `rounded-card`, …) or the `--*` variables. A new colour needs
+  a value on BOTH grounds and must clear AA on both; the token names do not
+  change, only what they resolve to.
 - **Logical CSS only.** Use `ms-/me-/ps-/pe-/start-/end-`; `ml-/mr-/pl-/pr-/
   left-/right-` are banned by ESLint so the site mirrors cleanly in RTL.
 - **No literal strings in JSX.** Every user-facing string comes from
@@ -254,7 +274,8 @@ which script they are rendering. Cormorant is display-only, never body.
 - `src/app/[locale]/` — routes. The `[locale]/layout.tsx` renders `<html>`.
 - `src/components/{ui,layout,sections,tools}/` — see plan §11.
 - `src/i18n/` — routing, navigation, request config.
-- `src/styles/` — `tokens.css` (source of truth), `fonts.css`, `globals.css`.
+- `src/styles/` — `tokens.css` (source of truth), `theme-light.css` (the day
+  overrides), `fonts.css`, `globals.css`.
 - `messages/{fa,en}.json` — all UI strings.
 - `content/{fa,en}/work/*.mdx` — case studies.
 - `workers/` — Cloudflare Workers (demo proxy, audit scan, lead intake).

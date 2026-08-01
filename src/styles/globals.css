@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './theme-light.css';
 @import './fonts.css';
 @import './capability-map.css';
 
@@ -29,6 +30,10 @@
   --color-map-4: var(--map-4);
   --color-map-5: var(--map-5);
   --color-map-6: var(--map-6);
+  --color-map-7: var(--map-7);
+  --color-map-8: var(--map-8);
+  --color-map-9: var(--map-9);
+  --color-map-10: var(--map-10);
 
   --radius-pill: var(--radius-pill);
   --radius-card: var(--radius-card);
@@ -51,6 +56,9 @@
 @layer base {
   html {
     background-color: var(--bg-950);
+    /* The night ground is the default; theme-light.css flips this to `light`
+       under [data-theme='light'], so form controls, scrollbars and the
+       browser's own chrome follow the page instead of fighting it. */
     color-scheme: dark;
   }
 
@@ -229,6 +237,13 @@
     color: transparent;
     -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 14%, transparent);
     user-select: none;
+  }
+  /* The footer's signature is set WHOLE now rather than cropped to a sliver,
+     and a word at the full display size fills half the card. This is the
+     signature size: legible as a mark, quiet enough to stay ground. */
+  .ghost-word[data-size='sm'] {
+    font-size: clamp(2.6rem, 8vw, 6rem);
+    line-height: 1;
   }
 
   /* The dotted ground. A gradient, not an image: the token file forbids url()
