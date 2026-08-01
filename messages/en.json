@@ -653,7 +653,6 @@
   "Start": {
     "eyebrow": "Process",
     "title": "Four steps to a live system",
-    "lede": "A figure only after the review meeting.",
     "steps": {
       "call": {
         "title": "The call",

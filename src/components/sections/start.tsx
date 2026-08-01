@@ -38,7 +38,9 @@ export function Start() {
   return (
     <section id="start" className="scroll-mt-24 border-t border-border py-16 sm:py-24">
       <Container>
-        <SectionHead index="04" eyebrow={t('eyebrow')} title={t('title')} lede={t('lede')} />
+        {/* No lede. «عدد، فقط بعد از جلسه بررسی» was deleted by direct
+            request; the proposal step says the same thing where it applies. */}
+        <SectionHead index="04" eyebrow={t('eyebrow')} title={t('title')} />
 
         {/* The rail. gap-x is zero on the wide layout on purpose: the
             connector runs to the edge of its own cell, so any horizontal gap
